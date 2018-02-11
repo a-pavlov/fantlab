@@ -22,7 +22,7 @@ import java.util.Map;
 public class WebScraper {
     public WebDriver driver = new FirefoxDriver();
 
-    private static final String USER_MARKS_ALL_FORMAT = "%s/marks%s";
+    private static final String USER_MARKS_ALL_FORMAT = "%s/markspage%d";
 
     @Data
     @AllArgsConstructor
@@ -76,7 +76,7 @@ public class WebScraper {
         assert user != null;
         List<Mark> marks = new LinkedList<Mark>();
         for(int page = 0; page < 2; ++page) {
-            String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, (page==0)?"":"page" + Integer.toString(page));
+            String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page + 1);
             driver.navigate().to(pageUrl);
             List<WebElement> table = driver.findElements(By.xpath("/html/body/div[3]/div/div/div[2]/main/table[1]/tbody/tr"));
 
@@ -136,4 +136,5 @@ public class WebScraper {
     public void closeBrowser() {
         driver.close();
     }
+
 }

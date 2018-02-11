@@ -31,18 +31,25 @@ public class Main {
 
             log.info("start with username: \"{}\" and password: \"{}\"", username, password);
 
+            FLAccum accum = new FLAccum();
             System.setProperty("webdriver.gecko.driver", "/home/apavlov/dev/geckodriver");
             WebScraper webSrcapper = new WebScraper();
             webSrcapper.openFLSite();
             webSrcapper.login(username, password);
             List<WebElement> links = webSrcapper.openHLinks();
+
             for(WebElement link: links) {
-                String user = link.getAttribute("href");
-                log.info("link: {}", link.getAttribute("href"));
-                List<WebScraper.Mark> marks = webSrcapper.getUserMarks(user);
+                String user = FLUtil.link2Name(link.getAttribute("href"));
+                log.info("user {} id {} link {}"
+                        , link.getText()
+                        , user
+                        , link.getAttribute("href"));
+                List<WebScraper.Mark> marks = webSrcapper.getUserMarks(link.getAttribute("href"));
                 for(final WebScraper.Mark m: marks) {
-                    log.info("mark: {}", m);
+                    log.info("add mark {}", m);
+                    accum.addMark(user, FLUtil.link2Name(m.getUrl()), m.getValue());
                 }
+
                 break;
             }
 
