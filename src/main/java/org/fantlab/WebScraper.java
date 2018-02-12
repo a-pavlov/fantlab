@@ -14,6 +14,8 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by apavlov on 08.02.18.
@@ -37,6 +39,30 @@ public class WebScraper {
      */
     public void openFLSite() {
         driver.navigate().to("https://fantlab.ru/");
+    }
+
+    public List<String> fetchBooksByGenre(final String genre, int page) {
+        /*driver.navigate().to("https://fantlab.ru/bygenre");
+        WebElement cb = driver.findElement(By.name(genre));
+        if (!cb.isSelected()) cb.click();
+        WebElement button = driver.findElement(By.xpath("//form[@name='genrevoteform']/input[@type='submit']"));
+        button.click();
+        */
+
+        try {
+            driver.navigate().to(String.format("https://fantlab.ru/bygenre?form=&lang=&%s=on&page=%d", genre, page));
+            List<WebElement> table = driver.findElements(By.xpath("/html/body/div[3]/div/div/div[2]/main/table/tbody/tr"));
+            return table.stream().skip(2).map(x -> {
+                List<WebElement> hrefs = x.findElements(By.tagName("a"));
+                // list no more than one line here
+                if (!hrefs.isEmpty() && hrefs.get(0).getAttribute("href").contains("/work")) return hrefs.get(0).getAttribute("href");
+                return null;
+            }).filter(x  -> x != null).collect(Collectors.toList());
+        } catch(Exception e) {
+            log.warn("error on fetch books by genre {}", e.getMessage());
+        }
+
+        return null;
     }
 
     public List<WebElement> openHLinks() {
