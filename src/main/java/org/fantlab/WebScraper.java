@@ -101,7 +101,7 @@ public class WebScraper {
     public List<Mark> getUserMarks(final String user) {
         assert user != null;
         List<Mark> marks = new LinkedList<Mark>();
-        for(int page = 0; page < 2; ++page) {
+        for(int page = 0; page < 10; ++page) {
             String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page + 1);
             driver.navigate().to(pageUrl);
             List<WebElement> table = driver.findElements(By.xpath("/html/body/div[3]/div/div/div[2]/main/table[1]/tbody/tr"));

@@ -9,12 +9,12 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.*;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by apavlov on 08.02.18.
@@ -44,9 +44,22 @@ public class Main {
         if (username == null || password == null) throw new FLException("username or password missed");
 
         log.info("start with username: \"{}\" and password: \"{}\"", username, password);
+        String genreFilename = prop.getProperty("books_genre");
+        Set<String> genreDict = new HashSet<>();
+
+        if (genreFilename != null) {
+            try (Stream<String> stream = Files.lines(Paths.get(genreFilename))) {
+                stream.forEach(x -> genreDict.add(x));
+            } catch (Exception e) {
+                log.error("reading genres {} error {}", genreFilename, e);
+            }
+        } else {
+            log.info("genre file name missed - do not use genre classifier");
+        }
+
+        log.info("genre dictionary size: {}", genreDict.size());
 
         FLAccum accum = new FLAccum();
-        System.setProperty("webdriver.gecko.driver", "/home/apavlov/dev/geckodriver");
 
         webSrcapper.openFLSite();
         webSrcapper.login(username, password);
@@ -65,8 +78,8 @@ public class Main {
                     , link.getSecond());
             List<WebScraper.Mark> marks = webSrcapper.getUserMarks((String) link.getSecond());
             for(final WebScraper.Mark m: marks) {
-                //log.info("add mark {}", m);
-                accum.addMark(user, FLUtil.link2Name(m.getUrl()), m.getValue());
+                final String bookId = FLUtil.link2Name(m.getUrl());
+                if (genreDict.contains(bookId)) accum.addMark(user, bookId, m.getValue());
             }
 
             if (i-- == 0) break;
@@ -115,7 +128,7 @@ public class Main {
         if (bgFile == null) throw new FLException("Property books_genre wasn't provided");
 
         try(PrintWriter writer = new PrintWriter(bgFile)) {
-            for (int i = 301; i < 305; ++i) {
+            for (int i = 1; i < 305; ++i) {
                 List<String> works = webSrcapper.fetchBooksByGenre("wg1", i);
                 if (works.isEmpty()) break;
                 works.stream().forEach(x -> writer.write(FLUtil.link2Name(x) + "\n"));
