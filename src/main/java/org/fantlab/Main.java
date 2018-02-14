@@ -69,20 +69,22 @@ public class Main {
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .collect(Collectors.toList());
 
-        int i = 3;
-        for(Tuple link: links) {
+        int usersCount = Math.max(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150, links.size());
+        int maxMarks= prop.getProperty("max_marks")!=null?Integer.parseInt(prop.getProperty("max_marks")):1000;
+
+        for(int i = 0; i < usersCount; ++i) {
+            Tuple<String, String> link = links.get(i);
+
             String user = FLUtil.link2Name((String)link.getSecond());
-            log.info("user {} id {} link {}"
+            log.debug("user {} id {} link {}"
                     , link.getFirst()
                     , user
                     , link.getSecond());
-            List<WebScraper.Mark> marks = webSrcapper.getUserMarks((String) link.getSecond());
+            List<WebScraper.Mark> marks = webSrcapper.getUserMarks((String) link.getSecond(), maxMarks);
             for(final WebScraper.Mark m: marks) {
                 final String bookId = FLUtil.link2Name(m.getUrl());
                 if (genreDict.contains(bookId)) accum.addMark(user, bookId, m.getValue());
             }
-
-            if (i-- == 0) break;
         }
 
         String fileMarks = prop.getProperty("marks_file");
