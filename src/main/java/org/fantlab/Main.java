@@ -67,6 +67,7 @@ public class Main {
         List<Tuple<String, String>> links = webSrcapper.openHLinks()
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
+                .filter(x -> x.getSecond().contains("/user"))
                 .collect(Collectors.toList());
 
         int usersCount = Math.max(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150, links.size());

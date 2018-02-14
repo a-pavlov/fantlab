@@ -98,55 +98,72 @@ public class WebScraper {
         submit_button.click();
     }
 
+    private void getUserMarksFromPage(final String pageUrl, List<Mark> marks, int maxMarks) {
+        driver.navigate().to(pageUrl);
+        List<WebElement> table = driver.findElements(By.xpath("/html/body/div[3]/div/div/div[2]/main/table[1]/tbody/tr"));
+
+        log.debug("navigate to {} table size {}"
+                , pageUrl
+                , table.size());
+
+        if (table.isEmpty()) return;
+
+        for(int i = 1; i < table.size(); ++i) {
+            WebElement tr = table.get(i);
+            List<WebElement> tds = tr.findElements(By.tagName("td"));
+            if (tds.size() < 2) {
+                break;
+            }
+
+            int mark = 0;
+
+            try {
+                mark = Integer.parseInt(tds.get(1).getText());
+            } catch (NumberFormatException e) {
+                // just ignore
+            }
+
+            if (mark > 0) {
+                WebElement tda = tds.get(0).findElement(By.tagName("a"));
+                if (tda != null) {
+                    marks.add(new Mark(tda.getAttribute("href"), mark));
+                }
+            }
+
+            if (marks.size() >= maxMarks) break;
+        }
+    }
+
     public List<Mark> getUserMarks(final String user, int maxMarks) {
         assert user != null;
         List<Mark> marks = new LinkedList<Mark>();
         for(int page = 0; page < 1000; ++page) {
             String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page + 1);
+            boolean finished = false;
 
-            try {
-                driver.navigate().to(pageUrl);
-                List<WebElement> table = driver.findElements(By.xpath("/html/body/div[3]/div/div/div[2]/main/table[1]/tbody/tr"));
-
-                log.debug("navigate to {} table size {}"
-                        , pageUrl
-                        , table.size());
-
-                if (table.isEmpty()) break;
-
-                for(int i = 1; i < table.size(); ++i) {
-                    WebElement tr = table.get(i);
-                    List<WebElement> tds = tr.findElements(By.tagName("td"));
-                    if (tds.size() < 2) {
-                        break;
-                    }
-
-                    int mark = 0;
-
-                    try {
-                        mark = Integer.parseInt(tds.get(1).getText());
-                    } catch (NumberFormatException e) {
-                        // just ignore
-                    }
-
-                    if (mark > 0) {
-                        WebElement tda = tds.get(0).findElement(By.tagName("a"));
-                        if (tda != null) {
-                            marks.add(new Mark(tda.getAttribute("href"), mark));
-                        }
-                    }
-
-                    if (marks.size() >= maxMarks) break;
-
+            // retry five times if some error occurred
+            for(int iteration = 0; iteration < 5; ++iteration) {
+                try {
+                    int beforeMarks = marks.size();
+                    getUserMarksFromPage(pageUrl, marks, maxMarks);
+                    finished = (beforeMarks == marks.size() || marks.size() >= maxMarks);
+                    break;
+                } catch (Exception e) {
+                    log.error("iteration {} get page {} raised exception {}"
+                            , iteration
+                            , page
+                            , e.getMessage());
                 }
-            } catch(Exception e) {
-                log.error("get page {} raised exception {}"
-                        , page
-                        , e.getMessage());
+            }
+
+            if (finished) {
+                break;
             }
         }
 
-        log.debug("total marks {}", marks.size());
+        log.info("user {} marks collected {}"
+                , user
+                , marks.size());
 
         return marks;
     }
