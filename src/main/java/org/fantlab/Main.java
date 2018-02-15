@@ -3,16 +3,11 @@ package org.fantlab;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -81,8 +76,12 @@ public class Main {
                     , link.getFirst()
                     , user
                     , link.getSecond());
-            List<WebScraper.Mark> marks = webSrcapper.getUserMarks((String) link.getSecond(), maxMarks);
-            for(final WebScraper.Mark m: marks) {
+            FLUserMarksCollector umc = new FLUserMarksCollector(webSrcapper.getDriver());
+            umc.collectUserMarks((String) link.getSecond(), maxMarks);
+            log.info("user {} status {}", (String) link.getSecond(), umc.isFinished()?"true":"false");
+
+            List<FLUserMarksCollector.Mark> marks = umc.getMarks();
+            for(final FLUserMarksCollector.Mark m: marks) {
                 final String bookId = FLUtil.link2Name(m.getUrl());
                 if (genreDict.contains(bookId)) accum.addMark(user, bookId, m.getValue());
             }
