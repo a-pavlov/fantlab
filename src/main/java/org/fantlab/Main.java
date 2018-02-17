@@ -3,11 +3,15 @@ package org.fantlab;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import sun.nio.ch.ThreadPool;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,7 +33,39 @@ public class Main {
         System.setProperty("webdriver.gecko.driver", "/home/apavlov/dev/geckodriver");
     }
 
-    private static final WebScraper webSrcapper = new WebScraper();
+    private static final int MAX_THREADS_DRIVERS = 5;
+    private static final ExecutorService service = Executors.newFixedThreadPool(MAX_THREADS_DRIVERS);
+
+    private static final FLWebDriverCache<WebDriver> webCache = new FLWebDriverCache<WebDriver>(MAX_THREADS_DRIVERS) {
+        @Override
+        public WebDriver newInstance() {
+            return new FirefoxDriver();
+        }
+
+        @Override
+        public void finalize(WebDriver instance) {
+            try {
+                instance.close();
+            } catch(Exception e) {
+                log.warn("close driver error {}", e.getMessage());
+            }
+        }
+    };
+
+
+    private static class FLUserMarksCallable implements Callable<FLUserMarksCollector> {
+        private final FLUserMarksCollector collector;
+
+        public FLUserMarksCallable(final FLUserMarksCollector collector) {
+            this.collector = collector;
+        }
+
+        @Override
+        public FLUserMarksCollector call() throws Exception {
+            assert !collector.isFinished();
+            return collector.collectUserMarks();
+        }
+    }
 
     private static void collectMarks(final Properties prop) throws IOException, FLException {
 
@@ -53,22 +89,82 @@ public class Main {
         }
 
         log.info("genre dictionary size: {}", genreDict.size());
+        int maxMarks= prop.getProperty("max_marks")!=null?Integer.parseInt(prop.getProperty("max_marks")):1000;
+
+        WebScraper webSrcapper = new WebScraper(webCache.alloc());
 
         FLAccum accum = new FLAccum();
 
         webSrcapper.openFLSite();
         webSrcapper.login(username, password);
-        webSrcapper.openHLinks();
-        List<Tuple<String, String>> links = webSrcapper.openHLinks()
+
+        List<FLUserMarksCollector> pendingTasks = webSrcapper.openHLinks()
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .filter(x -> x.getSecond().contains("/user"))
+                .map(x -> new FLUserMarksCollector(null, (String) x.getSecond(), maxMarks))
+                .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150)
                 .collect(Collectors.toList());
 
-        int usersCount = Math.max(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150, links.size());
-        int maxMarks= prop.getProperty("max_marks")!=null?Integer.parseInt(prop.getProperty("max_marks")):1000;
+        webCache.free(webSrcapper.getDriver(), true);
 
-        for(int i = 0; i < usersCount; ++i) {
+        log.info("start scan for {} users", pendingTasks);
+
+        List<Future<FLUserMarksCollector>> runningTasks = new LinkedList<>();
+
+        // loop while we have at least one pending or running task
+        while(!pendingTasks.isEmpty() || !runningTasks.isEmpty()) {
+
+            if (!pendingTasks.isEmpty()) {
+                // try to start new task
+                WebDriver driver = webCache.alloc();
+
+                if (driver != null) {
+                    FLUserMarksCollector pendingTask = pendingTasks.get(0);
+                    pendingTask.setDriver(driver);
+                    Future<FLUserMarksCollector> future = service.submit(new FLUserMarksCallable(pendingTask));
+                    runningTasks.add(future);
+                    pendingTasks.remove(0);
+                } else {
+                    try {
+                        log.trace("no available drivers, wait");
+                        Thread.sleep(5000);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+
+            Iterator<Future<FLUserMarksCollector>> itr = runningTasks.iterator();
+            while(itr.hasNext()) {
+                Future<FLUserMarksCollector> f = itr.next();
+
+                if (f.isDone()) {
+                    try {
+                        FLUserMarksCollector fc = f.get();
+                        webCache.free(fc.getDriver(), fc.isFinished());
+
+                        // if task is not finished - add it again to pendings tasks list
+                        if (fc.isFinished()) {
+                            for(final FLUserMarksCollector.Mark m: fc.getMarks()) {
+                                final String bookId = FLUtil.link2Name(m.getUrl());
+                                if (genreDict.contains(bookId)) accum.addMark(FLUtil.link2Name(fc.getUser()), bookId, m.getValue());
+                            }
+                        } else {
+                            pendingTasks.add(fc);
+                        }
+                    } catch(ExecutionException e) {
+                        log.error("execution exception {}", e.getMessage());
+                    } catch(InterruptedException e) {
+                        log.error("interrupted exception {}", e.getMessage());
+                    } finally {
+                        itr.remove();
+                    }
+                }
+            }
+        }
+
+        /*for(int i = 0; i < usersCount; ++i) {
             Tuple<String, String> link = links.get(i);
 
             String user = FLUtil.link2Name((String)link.getSecond());
@@ -76,8 +172,8 @@ public class Main {
                     , link.getFirst()
                     , user
                     , link.getSecond());
-            FLUserMarksCollector umc = new FLUserMarksCollector(webSrcapper.getDriver());
-            umc.collectUserMarks((String) link.getSecond(), maxMarks);
+            FLUserMarksCollector umc = new FLUserMarksCollector(webSrcapper.getDriver(), (String) link.getSecond(), maxMarks);
+            umc.collectUserMarks();
             log.info("user {} status {}", (String) link.getSecond(), umc.isFinished()?"true":"false");
 
             List<FLUserMarksCollector.Mark> marks = umc.getMarks();
@@ -85,7 +181,7 @@ public class Main {
                 final String bookId = FLUtil.link2Name(m.getUrl());
                 if (genreDict.contains(bookId)) accum.addMark(user, bookId, m.getValue());
             }
-        }
+        }*/
 
         String fileMarks = prop.getProperty("marks_file");
         String fileUsers = prop.getProperty("users_file");
@@ -100,6 +196,8 @@ public class Main {
             } catch(IOException e) {
                 log.error("I/O error on write marks {}", e);
             }
+        } else {
+            log.warn("marks file is not specified");
         }
 
         if (fileUsers != null) {
@@ -112,6 +210,8 @@ public class Main {
             } catch(IOException e) {
                 log.error("I/O error on write users {}", e);
             }
+        } else {
+            log.warn("users file is not specified");
         }
 
         if (fileBooks != null) {
@@ -122,12 +222,16 @@ public class Main {
             } catch(IOException e) {
                 log.error("I/O error on write books {}", e);
             }
+        } else {
+            log.warn("books file is not specified");
         }
     }
 
     private static void collectDictionaryByGenre(final Properties prop) throws IOException, FLException {
         String bgFile = prop.getProperty("books_genre");
         if (bgFile == null) throw new FLException("Property books_genre wasn't provided");
+
+        WebScraper webSrcapper = new WebScraper(webCache.alloc());
 
         try(PrintWriter writer = new PrintWriter(bgFile)) {
             for (int i = 1; i < 305; ++i) {
@@ -139,6 +243,8 @@ public class Main {
         catch(IOException e) {
             log.error("I/O error on write books by genres {}", e);
         }
+
+        webCache.free(webSrcapper.getDriver(), true);
     }
 
     public static void main(String args[]) throws IOException {
@@ -160,8 +266,8 @@ public class Main {
         } catch(IOException e) {
             log.error("IO exception: {}", e);
         } finally {
-            webSrcapper.saveScreenshot();
-            webSrcapper.closeBrowser();
+            service.shutdown();
+            webCache.shutdown();
         }
     }
 }

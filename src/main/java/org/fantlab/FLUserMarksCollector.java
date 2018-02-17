@@ -31,6 +31,9 @@ public class FLUserMarksCollector {
 
     List<Mark> marks = new LinkedList<>();
 
+    final String user;
+    final int maxMarks;
+
     /**
      * web driver as is
      */
@@ -46,11 +49,16 @@ public class FLUserMarksCollector {
      */
     int page = 1;
 
-    public FLUserMarksCollector(final WebDriver driver) {
+    public FLUserMarksCollector(final WebDriver driver
+            , final String user
+            , int maxMarks) {
         this.driver = driver;
+        this.user = user;
+        this.maxMarks = maxMarks;
     }
 
     public void setDriver(final WebDriver driver) {
+        assert driver != null;
         this.driver = driver;
     }
 
@@ -100,9 +108,8 @@ public class FLUserMarksCollector {
         marks.addAll(localMarks);
     }
 
-    public boolean collectUserMarks(final String user, int maxMarks) {
+    public FLUserMarksCollector collectUserMarks() {
         assert user != null;
-        List<Mark> marks = new LinkedList<Mark>();
         for(; page < MAX_PAGES; ++page) {
             String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page);
 
@@ -134,6 +141,6 @@ public class FLUserMarksCollector {
                 , user
                 , marks.size());
 
-        return finished;
+        return this;
     }
 }

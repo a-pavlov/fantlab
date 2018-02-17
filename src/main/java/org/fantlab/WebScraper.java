@@ -23,10 +23,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Getter
+@AllArgsConstructor
 public class WebScraper {
-    public WebDriver driver = new FirefoxDriver();
+    private final WebDriver driver;
 
     private static final String USER_MARKS_ALL_FORMAT = "%s/markspage%d";
+
+
 
     /**
      * Open the test website.
