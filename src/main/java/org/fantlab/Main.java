@@ -1,5 +1,6 @@
 package org.fantlab;
 
+import jdk.nashorn.internal.runtime.ECMAErrors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -93,18 +94,44 @@ public class Main {
 
         WebScraper webSrcapper = new WebScraper(webCache.alloc());
 
-        FLAccum accum = new FLAccum();
+        String fileMarks = prop.getProperty("marks_file");
+        String fileUsers = prop.getProperty("users_file");
+        String fileBooks = prop.getProperty("books_file");
+        String myUri = prop.getProperty("my_uri");
+
+        Map<String, Integer> booksDict = new HashMap<>();
+
+        if (fileBooks != null) {
+            try (BufferedReader br = new BufferedReader(new FileReader(fileBooks))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] parts = line.split(",");
+                    if (parts.length == 2) {
+                        booksDict.put(parts[1], Integer.parseInt(parts[0]));
+                    }
+                }
+            } catch(Exception e) {
+                log.info("reading books dictionary file failed {}", e.getMessage());
+            }
+        }
+
+        log.info("load books dictionary size {}", booksDict.size());
+
+        FLAccum accum = new FLAccum(booksDict);
 
         webSrcapper.openFLSite();
         webSrcapper.login(username, password);
 
-        List<FLUserMarksCollector> pendingTasks = webSrcapper.openHLinks()
+        // collect at least one neighbor here
+        List<FLUserMarksCollector> pendingTasks =
+                Stream.concat(myUri!=null?Stream.of(new FLUserMarksCollector(null, myUri, maxMarks)):Stream.empty(), webSrcapper.openHLinks()
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .filter(x -> x.getSecond().contains("/user"))
                 .map(x -> new FLUserMarksCollector(null, (String) x.getSecond(), maxMarks))
-                .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150)
+                .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150))
                 .collect(Collectors.toList());
+
 
         webCache.free(webSrcapper.getDriver(), true);
 
@@ -183,10 +210,6 @@ public class Main {
             }
         }*/
 
-        String fileMarks = prop.getProperty("marks_file");
-        String fileUsers = prop.getProperty("users_file");
-        String fileBooks = prop.getProperty("books_file");
-
         if (fileMarks != null) {
             try (PrintWriter writer = new PrintWriter(fileMarks)) {
                 for (List<Integer> marks : accum.getMarks()) {
@@ -225,6 +248,7 @@ public class Main {
         } else {
             log.warn("books file is not specified");
         }
+
     }
 
     private static void collectDictionaryByGenre(final Properties prop) throws IOException, FLException {

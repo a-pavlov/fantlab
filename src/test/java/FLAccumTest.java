@@ -2,6 +2,8 @@ import org.fantlab.FLAccum;
 import org.junit.Test;
 import org.junit.internal.matchers.StringContains;
 
+import java.util.HashMap;
+
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +14,7 @@ public class FLAccumTest {
 
     @Test
     public void testAccumInitialization() {
-        FLAccum accum = new FLAccum();
+        FLAccum accum = new FLAccum(new HashMap<>());
         accum.addMark("user1", "book1", 10);
         accum.addMark("user1", "book2", 9);
         accum.addMark("user1", "book3", 4);

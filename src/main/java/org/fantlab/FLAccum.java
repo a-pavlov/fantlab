@@ -1,5 +1,6 @@
 package org.fantlab;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.*;
@@ -8,21 +9,23 @@ import java.util.*;
  * Created by apavlov on 11.02.18.
  */
 @Getter
+@AllArgsConstructor
 public class FLAccum {
     /**
      * rows(books) dictionary
      */
-    private Map<String, Integer> books = new HashMap<String, Integer>();
+    private Map<String, Integer> books;
 
     /**
      * marks matrix
      */
-    private List<List<Integer>> marks = new LinkedList<List<Integer>>();
+    private final List<List<Integer>> marks = new LinkedList<List<Integer>>();
 
     /**
      * users list
      */
-    private List<String> users = new LinkedList<String>();
+    private final List<String> users = new LinkedList<String>();
+
 
     /**
      * works in manner - add all marks for user1, next all marks for user2 and so on
