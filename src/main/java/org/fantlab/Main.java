@@ -34,7 +34,7 @@ public class Main {
         System.setProperty("webdriver.gecko.driver", "/home/apavlov/dev/geckodriver");
     }
 
-    private static final int MAX_THREADS_DRIVERS = 5;
+    private static final int MAX_THREADS_DRIVERS = 8;
     private static final ExecutorService service = Executors.newFixedThreadPool(MAX_THREADS_DRIVERS);
 
     private static final FLWebDriverCache<WebDriver> webCache = new FLWebDriverCache<WebDriver>(MAX_THREADS_DRIVERS) {
@@ -72,8 +72,11 @@ public class Main {
 
         String username = prop.getProperty("username");
         String password = prop.getProperty("password");
+        String myUri = prop.getProperty("my_uri");
 
         if (username == null || password == null) throw new FLException("username or password missed");
+        if (myUri == null) throw new FLException("Self uri is not defined");
+
 
         log.info("start with username: \"{}\" and password: \"{}\"", username, password);
         String genreFilename = prop.getProperty("books_genre");
@@ -97,7 +100,6 @@ public class Main {
         String fileMarks = prop.getProperty("marks_file");
         String fileUsers = prop.getProperty("users_file");
         String fileBooks = prop.getProperty("books_file");
-        String myUri = prop.getProperty("my_uri");
 
         Map<String, Integer> booksDict = new HashMap<>();
 
@@ -124,72 +126,31 @@ public class Main {
 
         // collect at least one neighbor here
         List<FLUserMarksCollector> pendingTasks =
-                Stream.concat(myUri!=null?Stream.of(new FLUserMarksCollector(null, myUri, maxMarks)):Stream.empty(), webSrcapper.openHLinks()
+                webSrcapper.openHLinks()
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .filter(x -> x.getSecond().contains("/user"))
                 .map(x -> new FLUserMarksCollector(null, (String) x.getSecond(), maxMarks))
-                .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150))
+                .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150)
                 .collect(Collectors.toList());
 
 
         webCache.free(webSrcapper.getDriver(), true);
 
-        log.info("start scan for {} users", pendingTasks);
-
-        List<Future<FLUserMarksCollector>> runningTasks = new LinkedList<>();
-
-        // loop while we have at least one pending or running task
-        while(!pendingTasks.isEmpty() || !runningTasks.isEmpty()) {
-
-            if (!pendingTasks.isEmpty()) {
-                // try to start new task
-                WebDriver driver = webCache.alloc();
-
-                if (driver != null) {
-                    FLUserMarksCollector pendingTask = pendingTasks.get(0);
-                    pendingTask.setDriver(driver);
-                    Future<FLUserMarksCollector> future = service.submit(new FLUserMarksCallable(pendingTask));
-                    runningTasks.add(future);
-                    pendingTasks.remove(0);
-                } else {
-                    try {
-                        log.trace("no available drivers, wait");
-                        Thread.sleep(5000);
-                    } catch (Exception e) {
-                        // ignore
-                    }
-                }
-            }
-
-            Iterator<Future<FLUserMarksCollector>> itr = runningTasks.iterator();
-            while(itr.hasNext()) {
-                Future<FLUserMarksCollector> f = itr.next();
-
-                if (f.isDone()) {
-                    try {
-                        FLUserMarksCollector fc = f.get();
-                        webCache.free(fc.getDriver(), fc.isFinished());
-
-                        // if task is not finished - add it again to pendings tasks list
-                        if (fc.isFinished()) {
-                            for(final FLUserMarksCollector.Mark m: fc.getMarks()) {
-                                final String bookId = FLUtil.link2Name(m.getUrl());
-                                if (genreDict.contains(bookId)) accum.addMark(FLUtil.link2Name(fc.getUser()), bookId, m.getValue());
-                            }
-                        } else {
-                            pendingTasks.add(fc);
-                        }
-                    } catch(ExecutionException e) {
-                        log.error("execution exception {}", e.getMessage());
-                    } catch(InterruptedException e) {
-                        log.error("interrupted exception {}", e.getMessage());
-                    } finally {
-                        itr.remove();
-                    }
-                }
-            }
+        if (myUri != null) {
+            log.info("collect self marks in single mode to make sure we have own marks on first place");
+            List<FLUserMarksCollector> myList = new LinkedList<>();
+            myList.add(new FLUserMarksCollector(null, myUri, maxMarks));
+            processTasks(myList, webCache, genreDict, accum);
         }
+
+        processTasks(webSrcapper.openHLinks()
+                .stream()
+                .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
+                .filter(x -> x.getSecond().contains("/user"))
+                .map(x -> new FLUserMarksCollector(null, (String) x.getSecond(), maxMarks))
+                .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150)
+                .collect(Collectors.toList()), webCache, genreDict, accum);
 
         /*for(int i = 0; i < usersCount; ++i) {
             Tuple<String, String> link = links.get(i);
@@ -248,7 +209,70 @@ public class Main {
         } else {
             log.warn("books file is not specified");
         }
+    }
 
+    private static void processTasks(final List<FLUserMarksCollector> pendingTasks
+            , final FLWebDriverCache<WebDriver> webCache
+            , final Set<String> genreDict
+            , final FLAccum accum) {
+
+        log.info("process tasks {} started", pendingTasks.size());
+
+        List<Future<FLUserMarksCollector>> runningTasks = new LinkedList<>();
+
+        // loop while we have at least one pending or running task
+        while(!pendingTasks.isEmpty() || !runningTasks.isEmpty()) {
+
+            if (!pendingTasks.isEmpty()) {
+                // try to start new task
+                WebDriver driver = webCache.alloc();
+
+                if (driver != null) {
+                    FLUserMarksCollector pendingTask = pendingTasks.get(0);
+                    pendingTask.setDriver(driver);
+                    Future<FLUserMarksCollector> future = service.submit(new FLUserMarksCallable(pendingTask));
+                    runningTasks.add(future);
+                    pendingTasks.remove(0);
+                } else {
+                    try {
+                        log.trace("no available drivers, wait");
+                        Thread.sleep(5000);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+
+            Iterator<Future<FLUserMarksCollector>> itr = runningTasks.iterator();
+            while(itr.hasNext()) {
+                Future<FLUserMarksCollector> f = itr.next();
+
+                if (f.isDone()) {
+                    try {
+                        FLUserMarksCollector fc = f.get();
+                        webCache.free(fc.getDriver(), fc.isFinished());
+
+                        // if task is not finished - add it again to pendings tasks list
+                        if (fc.isFinished()) {
+                            for(final FLUserMarksCollector.Mark m: fc.getMarks()) {
+                                final String bookId = FLUtil.link2Name(m.getUrl());
+                                if (genreDict.contains(bookId)) accum.addMark(FLUtil.link2Name(fc.getUser()), bookId, m.getValue());
+                            }
+                        } else {
+                            pendingTasks.add(fc);
+                        }
+                    } catch(ExecutionException e) {
+                        log.error("execution exception {}", e.getMessage());
+                    } catch(InterruptedException e) {
+                        log.error("interrupted exception {}", e.getMessage());
+                    } finally {
+                        itr.remove();
+                    }
+                }
+            }
+        }
+
+        log.info("process tasks completed");
     }
 
     private static void collectDictionaryByGenre(final Properties prop) throws IOException, FLException {
