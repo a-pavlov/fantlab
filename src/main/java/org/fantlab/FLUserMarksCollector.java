@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by apavlov on 15.02.18.
@@ -31,8 +32,11 @@ public class FLUserMarksCollector {
 
     List<Mark> marks = new LinkedList<>();
 
-    final String user;
-    final int maxMarks;
+    private final String user;
+    private final int maxMarks;
+    private final Set<String> genre;
+    private int totalMarkPages = -1;
+    private final int pagesPerUserLimit;
 
     /**
      * web driver as is
@@ -40,21 +44,28 @@ public class FLUserMarksCollector {
     private WebDriver driver;
 
     /**
-     * collection finished or not
-     */
-    boolean finished = false;
-
-    /**
      *  current page
      */
     int page = 1;
 
+    public enum CollectorStatus {
+        CS_PROGRESS,
+        CS_BAD,
+        CS_FINISHED
+    }
+
+    private CollectorStatus collectorStatus = CollectorStatus.CS_PROGRESS;
+
     public FLUserMarksCollector(final WebDriver driver
             , final String user
-            , int maxMarks) {
+            , int maxMarks
+            , final Set<String> genre
+            , int pagesPerUserLimit) {
         this.driver = driver;
         this.user = user;
         this.maxMarks = maxMarks;
+        this.genre = genre;
+        this.pagesPerUserLimit = pagesPerUserLimit;
     }
 
     public void setDriver(final WebDriver driver) {
@@ -69,7 +80,7 @@ public class FLUserMarksCollector {
      * @param marks
      * @param maxMarks
      */
-    private void getUserMarksFromPage(final String pageUrl, List<Mark> marks, int maxMarks) {
+    private int getUserMarksFromPage(final String pageUrl, List<Mark> marks, int maxMarks) {
         driver.navigate().to(pageUrl);
         List<WebElement> table = driver.findElements(By.xpath("/html/body/div[3]/div/div/div[2]/main/table[1]/tbody/tr"));
 
@@ -78,6 +89,7 @@ public class FLUserMarksCollector {
                 , table.size());
 
         List<Mark> localMarks = new LinkedList<>();
+        int marksOnPage = 0;
 
         for(int i = 1; i < table.size(); ++i) {
             WebElement tr = table.get(i);
@@ -92,13 +104,18 @@ public class FLUserMarksCollector {
             try {
                 mark = Integer.parseInt(tds.get(1).getText());
             } catch (NumberFormatException e) {
-               log.warn("hmm mark is not integer");
+               log.trace("hmm mark is not integer");
             }
 
             if (mark > 0) {
                 WebElement tda = tds.get(0).findElement(By.tagName("a"));
-                if (tda != null) {
-                    localMarks.add(new Mark(tda.getAttribute("href"), mark));
+                if (tda != null){
+                    if (genre.isEmpty() || genre.contains(FLUtil.link2Name(tda.getAttribute("href"))))
+                    {
+                        localMarks.add(new Mark(tda.getAttribute("href"), mark));
+                    }
+
+                    ++marksOnPage;
                 }
             }
 
@@ -106,35 +123,64 @@ public class FLUserMarksCollector {
         }
 
         marks.addAll(localMarks);
+        return marksOnPage;
     }
 
     public FLUserMarksCollector collectUserMarks() {
         assert user != null;
-        for(; page < MAX_PAGES; ++page) {
-            String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page);
 
-            boolean roundCompleted = false;
+        try {
+            if (totalMarkPages == -1) {
+                String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, 1);
+                driver.navigate().to(pageUrl);
 
-            for(int iteration = 0; iteration < 2; ++iteration) {
-                try {
-                    int beforeMarks = marks.size();
-                    getUserMarksFromPage(pageUrl, marks, maxMarks);
-                    finished = (beforeMarks == marks.size() || marks.size() >= maxMarks);
-                    roundCompleted = true;
-                    break;
-                } catch (Exception e) {
-                    log.error("iteration {} get page {} raised exception {}"
-                            , iteration
-                            , page
-                            , e.getMessage());
+                WebElement div = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/main/div[3]"));
+
+                if (div == null) {
+                    collectorStatus = CollectorStatus.CS_BAD;
+                    log.warn("didn't find div element with links");
+                } else {
+                    List<WebElement> pageLinks = div.findElements(By.tagName("a"));
+
+                    if (pageLinks.size() > pagesPerUserLimit) {
+                        log.warn("user {} has pages {} greater than limit {}", user, pageLinks.size(), pagesPerUserLimit);
+                        collectorStatus = CollectorStatus.CS_BAD;
+                    }
+
+                    totalMarkPages = pageLinks.size();
                 }
             }
+        } catch(Exception e) {
+            log.warn("total pages count for user error {}", e.getMessage());
+            totalMarkPages = 0;
+        }
 
-            /**
-             *  if round failed - exit cycle without increase page
-             *  if finished - exit with finished
-             */
-            if (!roundCompleted || finished) break;
+        if (collectorStatus == CollectorStatus.CS_PROGRESS) {
+            for (; page < MAX_PAGES; ++page) {
+                String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page);
+
+                boolean roundCompleted = false;
+
+                for (int iteration = 0; iteration < 2; ++iteration) {
+                    try {
+                        int marksOnPage = getUserMarksFromPage(pageUrl, marks, maxMarks);
+                        collectorStatus = (marksOnPage == 0 || marks.size() >= maxMarks)?CollectorStatus.CS_FINISHED:CollectorStatus.CS_PROGRESS;
+                        roundCompleted = true;
+                        break;
+                    } catch (Exception e) {
+                        log.error("iteration {} get page {} raised exception {}"
+                                , iteration
+                                , page
+                                , e.getMessage());
+                    }
+                }
+
+                /**
+                 *  if round failed - exit cycle without increase page
+                 *  if finished - exit with finished
+                 */
+                if (!roundCompleted || collectorStatus == CollectorStatus.CS_FINISHED) break;
+            }
         }
 
         log.info("user {} marks collected {}"
