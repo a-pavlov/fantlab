@@ -260,6 +260,13 @@ public class Main {
         webCache.free(webSrcapper.getDriver(), true);
     }
 
+    private static void collectUserData(Properties prop) throws FLException {
+        String myUri = prop.getProperty("my_uri");
+        if (myUri == null) throw new FLException("Self uri is not defined");
+        FLUserProfileCollector uc = new FLUserProfileCollector(webCache.alloc(), myUri);
+        uc.collectUserProfileData();
+    }
+
     public static void main(String args[]) throws IOException {
         try {
             Properties prop = new Properties();
@@ -272,8 +279,12 @@ public class Main {
             if (gecko == null) new FLException("webdriver_gecko_driver is not specified in properties");
             System.setProperty("webdriver.gecko.driver", gecko);
 
-            if (args.length > 0 && args[0].equals("genre")) {
-                collectDictionaryByGenre(prop);
+            if (args.length > 0) {
+                if (args[0].equals("genre")) {
+                    collectDictionaryByGenre(prop);
+                } else if (args[0].equals("user")) {
+                    collectUserData(prop);
+                }
             } else {
                 collectMarks(prop);
             }
