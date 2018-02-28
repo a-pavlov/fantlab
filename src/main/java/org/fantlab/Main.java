@@ -29,11 +29,6 @@ public class Main {
         private final Y second;
     }
 
-    static
-    {
-        System.setProperty("webdriver.gecko.driver", "/home/apavlov/dev/geckodriver");
-    }
-
     private static final int MAX_THREADS_DRIVERS = 10;
     private static final ExecutorService service = Executors.newFixedThreadPool(MAX_THREADS_DRIVERS);
 
@@ -294,6 +289,10 @@ public class Main {
 
             if (input == null) throw new FLException("config.properties wasn't found in resources root");
             prop.load(input);
+
+            final String gecko = prop.getProperty("webdriver_gecko_driver");
+            if (gecko == null) new FLException("webdriver_gecko_driver is not specified in properties");
+            System.setProperty("webdriver.gecko.driver", gecko);
 
             if (args.length > 0 && args[0].equals("genre")) {
                 collectDictionaryByGenre(prop);
