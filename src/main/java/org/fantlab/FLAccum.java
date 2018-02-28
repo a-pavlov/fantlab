@@ -35,6 +35,7 @@ public class FLAccum {
      * @param mark - 1-10 mark range
      */
     public void addMark(final String userName, final String bookName, int mark) {
+        assert mark != 0;
         if (users.isEmpty() || !users.get(users.size() -1).equals(userName)) {
             // register new user
             users.add(userName);

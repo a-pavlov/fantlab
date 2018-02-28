@@ -58,7 +58,7 @@ public class Main {
 
         @Override
         public FLUserMarksCollector call() throws Exception {
-            assert collector.getCollectorStatus() == FLUserMarksCollector.CollectorStatus.CS_PROGRESS;
+            assert !collector.isFinished();
             return collector.collectUserMarks();
         }
     }
@@ -125,7 +125,7 @@ public class Main {
         if (myUri != null) {
             log.info("collect self marks in single mode to make sure we have own marks on first place");
             List<FLUserMarksCollector> myList = new LinkedList<>();
-            myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict, normalUserMaxPages));
+            myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict));
             processTasks(myList, webCache, genreDict, accum);
         }
 
@@ -133,7 +133,7 @@ public class Main {
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .filter(x -> x.getSecond().contains("/user"))
-                .map(x -> new FLUserMarksCollector(null, (String) x.getSecond(), maxMarks, genreDict, normalUserMaxPages))
+                .map(x -> new FLUserMarksCollector(null, (String) x.getSecond(), maxMarks, genreDict))
                 .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150)
                 .collect(Collectors.toList()), webCache, genreDict, accum);
 
@@ -216,30 +216,9 @@ public class Main {
                 if (f.isDone()) {
                     try {
                         FLUserMarksCollector fc = f.get();
-                        webCache.free(fc.getDriver()
-                                , fc.getCollectorStatus().equals(FLUserMarksCollector.CollectorStatus.CS_BAD)
-                                        || fc.getCollectorStatus().equals(FLUserMarksCollector.CollectorStatus.CS_FINISHED));
+                        webCache.free(fc.getDriver(), fc.isFinished());
 
-                        // if task is not finished - add it again to pendings tasks list
-                        switch (fc.getCollectorStatus()) {
-                            case CS_BAD:
-                                // forget collector
-                                log.info("skip collector for user {}", fc.getUser());
-                                break;
-                            case CS_FINISHED: {
-                                for(final FLUserMarksCollector.Mark m: fc.getMarks()) {
-                                    final String bookId = FLUtil.link2Name(m.getUrl());
-                                    accum.addMark(FLUtil.link2Name(fc.getUser()), bookId, m.getValue());
-                                }
-
-                                break;
-                            }
-                            case CS_PROGRESS:
-                                pendingTasks.add(fc);
-                                break;
-                        }
-
-                        /*if (fc.) {
+                        if (fc.isFinished()) {
                             for(final FLUserMarksCollector.Mark m: fc.getMarks()) {
                                 final String bookId = FLUtil.link2Name(m.getUrl());
                                 accum.addMark(FLUtil.link2Name(fc.getUser()), bookId, m.getValue());
@@ -247,7 +226,6 @@ public class Main {
                         } else {
                             pendingTasks.add(fc);
                         }
-                        */
                     } catch(ExecutionException e) {
                         log.error("execution exception {}", e.getMessage());
                     } catch(InterruptedException e) {
