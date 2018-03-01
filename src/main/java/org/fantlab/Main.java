@@ -1,12 +1,10 @@
 package org.fantlab;
 
-import jdk.nashorn.internal.runtime.ECMAErrors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import sun.nio.ch.ThreadPool;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -47,21 +45,6 @@ public class Main {
             }
         }
     };
-
-
-    private static class FLUserMarksCallable implements Callable<FLUserMarksCollector> {
-        private final FLUserMarksCollector collector;
-
-        public FLUserMarksCallable(final FLUserMarksCollector collector) {
-            this.collector = collector;
-        }
-
-        @Override
-        public FLUserMarksCollector call() throws Exception {
-            assert !collector.isFinished();
-            return collector.collectUserMarks();
-        }
-    }
 
     private static void collectMarks(final Properties prop) throws IOException, FLException {
 
@@ -124,7 +107,7 @@ public class Main {
 
         if (myUri != null) {
             log.info("collect self marks in single mode to make sure we have own marks on first place");
-            List<FLUserMarksCollector> myList = new LinkedList<>();
+            List<FLCollector> myList = new LinkedList<>();
             myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict));
             processTasks(myList, webCache, genreDict, accum);
         }
@@ -177,14 +160,14 @@ public class Main {
         }
     }
 
-    private static void processTasks(final List<FLUserMarksCollector> pendingTasks
+    private static void processTasks(final List<FLCollector> pendingTasks
             , final FLWebDriverCache<WebDriver> webCache
             , final Set<String> genreDict
             , final FLAccum accum) {
 
         log.info("process tasks {} started", pendingTasks.size());
 
-        List<Future<FLUserMarksCollector>> runningTasks = new LinkedList<>();
+        List<Future<FLCollector>> runningTasks = new LinkedList<>();
 
         // loop while we have at least one pending or running task
         while(!pendingTasks.isEmpty() || !runningTasks.isEmpty()) {
@@ -194,9 +177,9 @@ public class Main {
                 WebDriver driver = webCache.alloc();
 
                 if (driver != null) {
-                    FLUserMarksCollector pendingTask = pendingTasks.get(0);
+                    FLCollector pendingTask = pendingTasks.get(0);
                     pendingTask.setDriver(driver);
-                    Future<FLUserMarksCollector> future = service.submit(new FLUserMarksCallable(pendingTask));
+                    Future<FLCollector> future = service.submit(new FLCallable(pendingTask));
                     runningTasks.add(future);
                     pendingTasks.remove(0);
                 } else {
@@ -209,20 +192,17 @@ public class Main {
                 }
             }
 
-            Iterator<Future<FLUserMarksCollector>> itr = runningTasks.iterator();
+            Iterator<Future<FLCollector>> itr = runningTasks.iterator();
             while(itr.hasNext()) {
-                Future<FLUserMarksCollector> f = itr.next();
+                Future<FLCollector> f = itr.next();
 
                 if (f.isDone()) {
                     try {
-                        FLUserMarksCollector fc = f.get();
+                        FLCollector fc = f.get();
                         webCache.free(fc.getDriver(), fc.isFinished());
 
                         if (fc.isFinished()) {
-                            for(final FLUserMarksCollector.Mark m: fc.getMarks()) {
-                                final String bookId = FLUtil.link2Name(m.getUrl());
-                                accum.addMark(FLUtil.link2Name(fc.getUser()), bookId, m.getValue());
-                            }
+                            fc.storeResuls(accum);
                         } else {
                             pendingTasks.add(fc);
                         }
@@ -264,7 +244,7 @@ public class Main {
         String myUri = prop.getProperty("my_uri");
         if (myUri == null) throw new FLException("Self uri is not defined");
         FLUserProfileCollector uc = new FLUserProfileCollector(webCache.alloc(), myUri);
-        uc.collectUserProfileData();
+        uc.collect();
         log.info("collected {}", uc.getUserData().toString());
         webCache.free(uc.getDriver(), true);
     }

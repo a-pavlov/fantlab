@@ -18,7 +18,7 @@ import java.util.Set;
  */
 @Slf4j
 @Getter
-public class FLUserMarksCollector {
+public class FLUserMarksCollector extends FLCollector {
     @Data
     @AllArgsConstructor
     @ToString
@@ -37,17 +37,9 @@ public class FLUserMarksCollector {
     private final Set<String> genre;
 
     /**
-     * web driver as is
-     */
-    private WebDriver driver;
-
-    /**
      *  current page
      */
     int page = 1;
-
-    private boolean finished  = false;
-
 
     public FLUserMarksCollector(final WebDriver driver
             , final String user
@@ -115,36 +107,9 @@ public class FLUserMarksCollector {
         return marksOnPage;
     }
 
-    public FLUserMarksCollector collectUserMarks() {
+    @Override
+    public void collect() {
         assert user != null;
-
-        // do not check users links here
-        /*try {
-            if (totalMarkPages == -1) {
-                String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, 1);
-                driver.navigate().to(pageUrl);
-
-                WebElement div = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/main/div[3]"));
-
-                if (div == null) {
-                    collectorStatus = CollectorStatus.CS_BAD;
-                    log.warn("didn't find div element with links");
-                } else {
-                    List<WebElement> pageLinks = div.findElements(By.tagName("a"));
-
-                    if (pageLinks.size() > pagesPerUserLimit) {
-                        log.warn("user {} has pages {} greater than limit {}", user, pageLinks.size(), pagesPerUserLimit);
-                        collectorStatus = CollectorStatus.CS_BAD;
-                    }
-
-                    totalMarkPages = pageLinks.size();
-                }
-            }
-        } catch(Exception e) {
-            log.warn("total pages count for user error {}", e.getMessage());
-            totalMarkPages = 0;
-        }
-        */
 
         for (; page < MAX_PAGES; ++page) {
             String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page);
@@ -164,6 +129,14 @@ public class FLUserMarksCollector {
         }
 
         log.info("user {} marks collected {}", user, marks.size());
-        return this;
+    }
+
+    @Override
+    public void storeResuls(FLAccum accum) {
+        assert isFinished();
+        for(final FLUserMarksCollector.Mark m: getMarks()) {
+            final String bookId = FLUtil.link2Name(m.getUrl());
+            accum.addMark(FLUtil.link2Name(getUser()), bookId, m.getValue());
+        }
     }
 }

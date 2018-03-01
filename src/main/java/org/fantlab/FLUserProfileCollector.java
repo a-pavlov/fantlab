@@ -16,8 +16,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @Getter
-public class FLUserProfileCollector {
-    private final WebDriver driver;
+public class FLUserProfileCollector extends FLCollector {
     private final String userUrl;
 
     public static Pattern regPattern = Pattern.compile("^Оценок\\s+(?<d1>[0-9-:\\s]+)");
@@ -92,7 +91,8 @@ public class FLUserProfileCollector {
         }
     }
 
-    public void collectUserProfileData() {
+    @Override
+    public void collect() {
         driver.navigate().to(userUrl);
         WebElement table = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/main/div[1]/table/tbody/tr[1]/td[2]/table"));
         List<WebElement> trs = table.findElements(By.tagName("tr"));
@@ -100,5 +100,13 @@ public class FLUserProfileCollector {
         for(WebElement tr: trs) {
             extractDataFromString(tr.getText());
         }
+
+        finished = true;
+    }
+
+    @Override
+    public void storeResuls(FLAccum accum) {
+        assert isFinished();
+        accum.setUserData(userUrl, userData);
     }
 }

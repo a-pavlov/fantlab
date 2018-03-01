@@ -26,6 +26,8 @@ public class FLAccum {
      */
     private final List<String> users = new LinkedList<String>();
 
+    private final Map<String, FLUserProfileCollector.UserData> usersData = new HashMap<>();
+
 
     /**
      * works in manner - add all marks for user1, next all marks for user2 and so on
@@ -59,5 +61,9 @@ public class FLAccum {
         assert index != null;
         assert index < marks.get(marks.size() - 1).size();
         marks.get(marks.size() - 1).set(index, mark);
+    }
+
+    public void setUserData(final String userName, final FLUserProfileCollector.UserData userData) {
+        usersData.put(userName, userData);
     }
 }
