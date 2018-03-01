@@ -265,6 +265,8 @@ public class Main {
         if (myUri == null) throw new FLException("Self uri is not defined");
         FLUserProfileCollector uc = new FLUserProfileCollector(webCache.alloc(), myUri);
         uc.collectUserProfileData();
+        log.info("collected {}", uc.getUserData().toString());
+        webCache.free(uc.getDriver(), true);
     }
 
     public static void main(String args[]) throws IOException {
