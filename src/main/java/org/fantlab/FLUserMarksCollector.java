@@ -67,7 +67,7 @@ public class FLUserMarksCollector extends FLCollector {
         driver.navigate().to(pageUrl);
         List<WebElement> table = driver.findElements(By.xpath("/html/body/div[3]/div/div/div[2]/main/table[1]/tbody/tr"));
 
-        log.debug("navigate to {} table size {}", pageUrl, table.size());
+        log.info("navigate to {} table size {}", pageUrl, table.size());
 
         List<Mark> localMarks = new LinkedList<>();
         int marksOnPage = 0;

@@ -33,7 +33,9 @@ public class Main {
     private static final FLWebDriverCache<WebDriver> webCache = new FLWebDriverCache<WebDriver>(MAX_THREADS_DRIVERS) {
         @Override
         public WebDriver newInstance() {
-            return new FirefoxDriver();
+            WebDriver driver = new FirefoxDriver();
+            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+            return driver;
         }
 
         @Override
@@ -109,16 +111,41 @@ public class Main {
             log.info("collect self marks in single mode to make sure we have own marks on first place");
             List<FLCollector> myList = new LinkedList<>();
             myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict));
-            processTasks(myList, webCache, genreDict, accum);
+            processTasks(myList, webCache, accum);
         }
 
-        processTasks(webSrcapper.openHLinks()
+
+        List<Tuple<String, String>> sourceUsers = webSrcapper
+                .openHLinks()
+                .stream()
+                .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
+                .filter(x -> x.getSecond().contains("/user"))
+                .collect(Collectors.toList());
+
+        log.info("source users count {}", sourceUsers.size());
+
+        processTasks(sourceUsers.stream().map(x -> new FLUserProfileCollector(null, x.second)).collect(Collectors.toList())
+                , webCache
+                , accum);
+
+
+        int validUserMaxMarks = prop.getProperty("valid_user_max_marks")!=null?Integer.parseInt(prop.getProperty("valid_user_max_marks")):6000;
+
+        // process users only valid users
+        processTasks(sourceUsers.stream()
+                .filter(x -> accum.getUsersData().containsKey(x.second) && accum.getUsersData().get(x.second).getMarks() < validUserMaxMarks)
+                .map(x -> new FLUserMarksCollector(null, x.second, maxMarks, genreDict))
+                .collect(Collectors.toList())
+                , webCache, accum);
+
+        /*processTasks(webSrcapper.openHLinks()
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .filter(x -> x.getSecond().contains("/user"))
                 .map(x -> new FLUserMarksCollector(null, (String) x.getSecond(), maxMarks, genreDict))
                 .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150)
-                .collect(Collectors.toList()), webCache, genreDict, accum);
+                .collect(Collectors.toList()), webCache, accum);
+                */
 
         if (fileMarks != null) {
             try (PrintWriter writer = new PrintWriter(fileMarks)) {
@@ -162,7 +189,6 @@ public class Main {
 
     private static void processTasks(final List<FLCollector> pendingTasks
             , final FLWebDriverCache<WebDriver> webCache
-            , final Set<String> genreDict
             , final FLAccum accum) {
 
         log.info("process tasks {} started", pendingTasks.size());
