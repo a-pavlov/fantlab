@@ -34,7 +34,7 @@ public class Main {
         @Override
         public WebDriver newInstance() {
             WebDriver driver = new FirefoxDriver();
-            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+            //driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
             return driver;
         }
 
@@ -110,7 +110,7 @@ public class Main {
         if (myUri != null) {
             log.info("collect self marks in single mode to make sure we have own marks on first place");
             List<FLCollector> myList = new LinkedList<>();
-            myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict));
+            myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict, 0));
             processTasks(myList, webCache, accum);
         }
 
@@ -134,7 +134,8 @@ public class Main {
         // process users only valid users
         processTasks(sourceUsers.stream()
                 .filter(x -> accum.getUsersData().containsKey(x.second) && accum.getUsersData().get(x.second).getMarks() < validUserMaxMarks)
-                .map(x -> new FLUserMarksCollector(null, x.second, maxMarks, genreDict))
+                .limit(prop.getProperty("max_users")!=null?Integer.parseInt(prop.getProperty("max_users")):150)
+                .map(x -> new FLUserMarksCollector(null, x.second, maxMarks, genreDict, accum.getUsersData().get(x.second).getMarks()))
                 .collect(Collectors.toList())
                 , webCache, accum);
 

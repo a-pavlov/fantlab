@@ -93,15 +93,24 @@ public class FLUserProfileCollector extends FLCollector {
 
     @Override
     public void collect() {
-        driver.navigate().to(userUrl);
-        WebElement table = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/main/div[1]/table/tbody/tr[1]/td[2]/table"));
-        List<WebElement> trs = table.findElements(By.tagName("tr"));
-        log.info("lines {}", trs.size());
-        for(WebElement tr: trs) {
-            extractDataFromString(tr.getText());
-        }
+        try {
+            driver.navigate().to(userUrl);
+            if (driver.getTitle().equals("503 Service Temporarily Unavailable")) {
+                log.warn("service temporary unavailable, exit");
+                return;
+            }
 
-        finished = true;
+            WebElement table = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/main/div[1]/table/tbody/tr[1]/td[2]/table"));
+            List<WebElement> trs = table.findElements(By.tagName("tr"));
+            log.info("lines {}", trs.size());
+            for (WebElement tr : trs) {
+                extractDataFromString(tr.getText());
+            }
+
+            finished = true;
+        } catch (Exception e) {
+            log.warn("get user profile error {}", e.getMessage());
+        }
     }
 
     @Override

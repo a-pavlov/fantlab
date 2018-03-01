@@ -40,15 +40,18 @@ public class FLUserMarksCollector extends FLCollector {
      *  current page
      */
     int page = 1;
+    int userTotalMarks = 0;
 
     public FLUserMarksCollector(final WebDriver driver
             , final String user
             , int maxMarks
-            , final Set<String> genre) {
+            , final Set<String> genre
+            , int userTotalMarks) {
         this.driver = driver;
         this.user = user;
         this.maxMarks = maxMarks;
         this.genre = genre;
+        this.userTotalMarks = userTotalMarks;
     }
 
     public void setDriver(final WebDriver driver) {
@@ -104,19 +107,22 @@ public class FLUserMarksCollector extends FLCollector {
         }
 
         marks.addAll(localMarks);
+        userTotalMarks -= marksOnPage;
         return marksOnPage;
     }
 
     @Override
     public void collect() {
         assert user != null;
+        log.info("start collection for {} marks limit {} total marks is {}"
+            ,user, maxMarks, userTotalMarks);
 
         for (; page < MAX_PAGES; ++page) {
             String pageUrl = String.format(USER_MARKS_ALL_FORMAT, user, page);
 
             try {
                 int marksOnPage = getUserMarksFromPage(pageUrl, marks, maxMarks);
-                finished = (marksOnPage == 0 || marks.size() >= maxMarks);
+                finished = (marksOnPage == 0 || marks.size() >= maxMarks || userTotalMarks <= 0);
             } catch (Exception e) {
                 log.warn("get page {} raised exception {}", page, e.getMessage());
             }
@@ -128,7 +134,8 @@ public class FLUserMarksCollector extends FLCollector {
             if (finished) break;
         }
 
-        log.info("user {} marks collected {}", user, marks.size());
+        log.info("user {} marks collected {} remain marks {}"
+                , user, marks.size(), userTotalMarks);
     }
 
     @Override
