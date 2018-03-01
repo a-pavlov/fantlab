@@ -100,7 +100,7 @@ public class Main {
 
         log.info("load books dictionary size {}", booksDict.size());
 
-        FLAccum accum = new FLAccum(booksDict);
+        FLAccum accum = new FLAccum();
 
         webSrcapper.openFLSite();
         webSrcapper.login(username, password);
@@ -120,6 +120,7 @@ public class Main {
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .filter(x -> x.getSecond().contains("/user"))
+                .limit(10)
                 .collect(Collectors.toList());
 
         log.info("source users count {}", sourceUsers.size());
@@ -150,8 +151,9 @@ public class Main {
 
         if (fileMarks != null) {
             try (PrintWriter writer = new PrintWriter(fileMarks)) {
-                for (List<Integer> marks : accum.getMarks()) {
-                    writer.write(marks.stream().map(x -> x.toString()).collect(Collectors.joining(",")));
+                int totalMarks = accum.getTotalMarks();
+                for(int i = 0; i < totalMarks; i++) {
+                    writer.write(accum.getMarksByIndex(i).stream().map(x -> x.toString()).collect(Collectors.joining(",")));
                     writer.write('\n');
                 }
             } catch(IOException e) {
@@ -165,6 +167,7 @@ public class Main {
             try(PrintWriter writer = new PrintWriter(fileUsers)) {
                 Iterator<String> itr = accum.getUsers().iterator();
                 int index = 0;
+
                 while(itr.hasNext()) {
                     writer.write(Integer.toString(index++) + "," + itr.next() + "\n");
                 }

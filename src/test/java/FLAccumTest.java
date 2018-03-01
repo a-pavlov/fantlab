@@ -3,6 +3,7 @@ import org.junit.Test;
 import org.junit.internal.matchers.StringContains;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -14,7 +15,7 @@ public class FLAccumTest {
 
     @Test
     public void testAccumInitialization() {
-        FLAccum accum = new FLAccum(new HashMap<>());
+        FLAccum accum = new FLAccum();
         accum.addMark("user1", "book1", 10);
         accum.addMark("user1", "book2", 9);
         accum.addMark("user1", "book3", 4);
@@ -51,6 +52,29 @@ public class FLAccumTest {
 
         for(int i = 0; i < 4; ++i)
             assertEquals(5, accum.getMarks().get(i).size());
+    }
+
+    @Test
+    public void testAccumGetters() {
+        FLAccum accum = new FLAccum();
+        accum.addMark("user1", "book1", 10);
+        accum.addMark("user1", "book2", 9);
+        accum.addMark("user1", "book3", 4);
+        accum.addMark("user2", "book1", 3);
+        accum.addMark("user2", "book4", 1);
+        accum.addMark("user3", "book5", 8);
+        assertEquals(5, accum.getTotalMarks());
+        List<Integer> book1 = accum.getMarksByIndex(0);
+        assertEquals(3, book1.size());
+        assertEquals(10, book1.get(0).intValue());
+        assertEquals(3, book1.get(1).intValue());
+        assertEquals(0, book1.get(2).intValue());
+        List<Integer> book3 = accum.getMarksByIndex(4);
+        assertEquals(3, book3.size());
+        assertEquals(0, book3.get(0).intValue());
+        assertEquals(0, book3.get(1).intValue());
+        assertEquals(8, book3.get(2).intValue());
+
     }
 
 }
