@@ -110,7 +110,7 @@ public class Main {
         if (myUri != null) {
             log.info("collect self marks in single mode to make sure we have own marks on first place");
             List<FLCollector> myList = new LinkedList<>();
-            myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict, 0));
+            myList.add(new FLUserMarksCollector(null, myUri, maxMarks, genreDict, 1000));
             processTasks(myList, webCache, accum);
         }
 
