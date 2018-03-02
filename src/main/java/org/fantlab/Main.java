@@ -74,7 +74,6 @@ public class Main {
 
         log.info("genre dictionary size: {}", genreDict.size());
         int maxMarks= prop.getProperty("max_marks")!=null?Integer.parseInt(prop.getProperty("max_marks")):1000;
-        int normalUserMaxPages = prop.getProperty("normal_user_max_pages")!=null?Integer.parseInt(prop.getProperty("normal_user_max_pages")):15;
 
         WebScraper webSrcapper = new WebScraper(webCache.alloc());
 
@@ -120,7 +119,6 @@ public class Main {
                 .stream()
                 .map(x -> new Tuple<String, String>(x.getText(), x.getAttribute("href")))
                 .filter(x -> x.getSecond().contains("/user"))
-                .limit(10)
                 .collect(Collectors.toList());
 
         log.info("source users count {}", sourceUsers.size());
