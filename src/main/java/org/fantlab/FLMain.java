@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,7 +19,8 @@ import java.util.stream.Stream;
  * Created by apavlov on 08.02.18.
  */
 @Slf4j
-public class Main {
+@Getter
+public class FLMain {
 
     @AllArgsConstructor
     @Getter
@@ -27,28 +29,52 @@ public class Main {
         private final Y second;
     }
 
-    private static final int MAX_THREADS_DRIVERS = 10;
-    private static final ExecutorService service = Executors.newFixedThreadPool(MAX_THREADS_DRIVERS);
+    private final ExecutorService service;
 
-    private static final FLWebDriverCache<WebDriver> webCache = new FLWebDriverCache<WebDriver>(MAX_THREADS_DRIVERS) {
-        @Override
-        public WebDriver newInstance() {
-            WebDriver driver = new FirefoxDriver();
-            //driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-            return driver;
+    private final FLWebDriverCache<WebDriver> webCache;
+
+    public FLMain(boolean gecko, int maxThreads) {
+        if (gecko) {
+            webCache = new FLWebDriverCache<WebDriver>(maxThreads) {
+                @Override
+                public WebDriver newInstance() {
+                    WebDriver driver = new FirefoxDriver();
+                    //driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+                    return driver;
+                }
+
+                @Override
+                public void finalize(WebDriver instance) {
+                    try {
+                        instance.close();
+                    } catch(Exception e) {
+                        log.warn("close driver error {}", e.getMessage());
+                    }
+                }
+            };
+        } else {
+            webCache = new FLWebDriverCache<WebDriver>(maxThreads) {
+                @Override
+                public WebDriver newInstance() {
+                    WebDriver driver = new PhantomJSDriver();
+                    return driver;
+                }
+
+                @Override
+                public void finalize(WebDriver instance) {
+                    try {
+                        instance.close();
+                    } catch(Exception e) {
+                        log.warn("close driver error {}", e.getMessage());
+                    }
+                }
+            };
         }
 
-        @Override
-        public void finalize(WebDriver instance) {
-            try {
-                instance.close();
-            } catch(Exception e) {
-                log.warn("close driver error {}", e.getMessage());
-            }
-        }
-    };
+        service = Executors.newFixedThreadPool(maxThreads);
+    }
 
-    private static void collectMarks(final Properties prop) throws IOException, FLException {
+    private void collectMarks(final Properties prop) throws IOException, FLException {
 
         String username = prop.getProperty("username");
         String password = prop.getProperty("password");
@@ -189,7 +215,7 @@ public class Main {
         }
     }
 
-    private static void processTasks(final List<FLCollector> pendingTasks
+    private void processTasks(final List<FLCollector> pendingTasks
             , final FLWebDriverCache<WebDriver> webCache
             , final FLAccum accum) {
 
@@ -248,7 +274,7 @@ public class Main {
         log.info("process tasks completed");
     }
 
-    private static void collectDictionaryByGenre(final Properties prop) throws IOException, FLException {
+    private void collectDictionaryByGenre(final Properties prop) throws IOException, FLException {
         String bgFile = prop.getProperty("books_genre");
         if (bgFile == null) throw new FLException("Property books_genre wasn't provided");
 
@@ -268,7 +294,7 @@ public class Main {
         webCache.free(webSrcapper.getDriver(), true);
     }
 
-    private static void collectUserData(Properties prop) throws FLException {
+    private void collectUserData(Properties prop) throws FLException {
         String myUri = prop.getProperty("my_uri");
         if (myUri == null) throw new FLException("Self uri is not defined");
         FLUserProfileCollector uc = new FLUserProfileCollector(webCache.alloc(), myUri);
@@ -278,25 +304,39 @@ public class Main {
     }
 
     public static void main(String args[]) throws IOException {
+        FLMain fl = null;
+
         try {
             Properties prop = new Properties();
-            InputStream input = Main.class.getClassLoader().getResourceAsStream("config.properties");
+            InputStream input = FLMain.class.getClassLoader().getResourceAsStream("config.properties");
 
             if (input == null) throw new FLException("config.properties wasn't found in resources root");
             prop.load(input);
 
             final String gecko = prop.getProperty("webdriver_gecko_driver");
-            if (gecko == null) new FLException("webdriver_gecko_driver is not specified in properties");
-            System.setProperty("webdriver.gecko.driver", gecko);
+            final String phantomjs = prop.getProperty("webdriver_phantomjs_driver");
+
+            int maxThreads = prop.getProperty("max_threads")!=null?Integer.parseInt(prop.getProperty("max_threads")):4;
+
+            if (gecko == null && phantomjs == null) new FLException("No driver specified in properties");
+
+            if (gecko != null) {
+                System.setProperty("webdriver.gecko.driver", gecko);
+                fl = new FLMain(true, maxThreads);
+
+            } else {
+                System.setProperty("phantomjs.binary.path", phantomjs);
+                fl = new FLMain(false, maxThreads);
+            }
 
             if (args.length > 0) {
                 if (args[0].equals("genre")) {
-                    collectDictionaryByGenre(prop);
+                    fl.collectDictionaryByGenre(prop);
                 } else if (args[0].equals("user")) {
-                    collectUserData(prop);
+                    fl.collectUserData(prop);
                 }
             } else {
-                collectMarks(prop);
+                fl.collectMarks(prop);
             }
 
         } catch(FLException e) {
@@ -304,8 +344,10 @@ public class Main {
         } catch(IOException e) {
             log.error("IO exception: {}", e);
         } finally {
-            service.shutdown();
-            webCache.shutdown();
+            if (fl != null) {
+                fl.getService().shutdown();
+                fl.getWebCache().shutdown();
+            }
         }
     }
 }
