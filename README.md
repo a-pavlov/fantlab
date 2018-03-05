@@ -1,4 +1,4 @@
-# fantlab
+# Recommendation system for fantlab.ru
 Collaborative filtering for prediction marks on fantlab.ru based on marks of your co-thinkers.
 Math model from Coursera "Machine Learning" by Andrew Ng.
 
