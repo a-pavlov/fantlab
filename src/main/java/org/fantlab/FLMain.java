@@ -203,9 +203,15 @@ public class FLMain {
         }
 
         if (fileBooks != null) {
+            // ok, sort books in position order
+            String sortedByPosition[] = new String[accum.getBooks().size()];
+            Arrays.fill(sortedByPosition, null);
+            accum.getBooks().entrySet().stream().forEach(x -> sortedByPosition[x.getValue()] = x.getKey());
+            for(int i = 0; i < sortedByPosition.length; ++i) assert sortedByPosition[i] != null;
+
             try(PrintWriter writer = new PrintWriter(fileBooks)) {
-                for(Map.Entry<String, Integer> entry: accum.getBooks().entrySet()) {
-                    writer.write(entry.getValue().toString() + "," + entry.getKey() + "\n");
+                for(int i = 0; i < sortedByPosition.length; ++i) {
+                    writer.write(String.format("%d,%s\n", i, sortedByPosition[i]));
                 }
             } catch(IOException e) {
                 log.error("I/O error on write books {}", e);

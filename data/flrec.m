@@ -60,7 +60,7 @@ fprintf('Recommender system learning completed.\n');
 p = X * Theta';
 my_predictions = p(:,1) + Ymean;
 
-fb = fopen('sbooks.csv', 'r');
+fb = fopen('books.csv', 'r');
 books = textscan(fb, '%d %s', 'delimiter', ',');
 
 [r, ix] = sort(my_predictions, 'descend');
