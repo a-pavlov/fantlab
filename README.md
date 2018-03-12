@@ -12,6 +12,7 @@ Math model from Coursera "Machine Learning" by Andrew Ng.
 * Extract genres to narrow down recommendations amount and use only preferred genre
 * Extract user's marks, with first your marks
 * Learch function for collaborative filtering and provide recommendations
+* Apache Mahout recommendation system experemental support in separated project
 
 ## How to use
 * Extract genre using FLMain class with "genre" parameter. Count of pages is hardcoded now 
