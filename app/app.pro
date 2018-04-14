@@ -48,8 +48,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
+    htmlparser.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    htmlparser.h
 
 FORMS    += mainwindow.ui
 

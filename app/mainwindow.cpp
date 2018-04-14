@@ -1,10 +1,23 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include <QDebug>
+#include <QStandardPaths>
+#include <QFileDialog>
+#include <QFile>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <myhtml/api.h>
+
+#include "htmlparser.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
+
+    HtmlParser htmlp();
 
     /*ptracker = new PiwikTracker(NULL, QUrl("http://www.emuletorrent.com"), 1);
     connect(ptracker, SIGNAL(requestStarted(QUrl)), this, SLOT(on_requestStarted(QUrl)));
@@ -24,37 +37,54 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(promo, SIGNAL(restoredItems(int)), this, SLOT(on_promoRestored(int)));
     promo->requestPromotions();
     */
+    connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
 }
 
 MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::on_expEdit_textChanged(const QString &arg1)
+mystatus_t serialization_callback(const char* data, size_t len, void* ctx) {
+    Q_ASSERT(ctx != NULL);
+    ((HtmlParser*)ctx)->exec(data, len);
+    return MyCORE_STATUS_OK;
+}
+
+void MainWindow::on_openFile(bool b)
 {
-    btnSend->setDisabled(arg1.isEmpty());
-}
+    QString fileName = QFileDialog::getOpenFileName(this
+                                                    , tr("Open html page")
+                                                    , QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
+                                                    , tr("html files (*.html)"));
+    qDebug() << "file name " << fileName;
+    QString content = "";
+    if (!fileName.isEmpty()) {
+        QFile file(fileName);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            content = in.readAll();
+        }
+    }
 
-void MainWindow::on_btnSend_clicked()
-{
+    qDebug() << "content size " << content.length();
+    if (!content.isEmpty()){
+        QByteArray html = content.toUtf8();
+        // basic init
+        myhtml_t* myhtml = myhtml_create();
+        myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
 
-}
+        // first tree init
+        myhtml_tree_t* tree = myhtml_tree_create();
+        myhtml_tree_init(tree, myhtml);
 
-void MainWindow::on_piwikReplyFinished(QNetworkReply::NetworkError code, QString errorString) {
+        myhtml_tree_parse_flags_set(tree, static_cast<myhtml_tree_parse_flags_t>(MyHTML_TREE_PARSE_FLAGS_WITHOUT_DOCTYPE_IN_TREE | MyHTML_TREE_PARSE_FLAGS_SKIP_WHITESPACE_TOKEN));
+        myhtml_parse(tree, MyENCODING_UTF_8, html.constData(), html.size());
+        myhtml_serialization_tree_callback(myhtml_tree_get_node_html(tree), serialization_callback, &hp);
+        myhtml_tree_destroy(tree);
+        myhtml_destroy(myhtml);
+    }
 
-}
-
-void MainWindow::on_piwikReplyError(QNetworkReply::NetworkError code) {
-
-}
-
-void MainWindow::on_requestStarted(const QUrl& url) {
-
-}
-
-void MainWindow::on_promoReceived(int c) {
-
-}
-
-void MainWindow::on_promoRestored(int c) {    
+    foreach(QStringList list, hp.getResults()) {
+        qDebug() << list;
+    }
 }

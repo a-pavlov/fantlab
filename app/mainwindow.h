@@ -5,26 +5,19 @@
 #include <QNetworkReply>
 
 #include "ui_mainwindow.h"
+#include "htmlparser.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
-
+private:
+    HtmlParser hp;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private slots:
-    void on_expEdit_textChanged(const QString &arg1);
-
-    void on_btnSend_clicked();
-
-    void on_piwikReplyFinished(QNetworkReply::NetworkError code, QString errorString);
-    void on_piwikReplyError(QNetworkReply::NetworkError code);
-    void on_requestStarted(const QUrl& url);
-
-    void on_promoReceived(int);
-    void on_promoRestored(int);
+    void on_openFile(bool);
 };
 
 #endif // MAINWINDOW_H
