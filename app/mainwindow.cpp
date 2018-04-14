@@ -3,6 +3,7 @@
 #include <QStandardPaths>
 #include <QFileDialog>
 #include <QFile>
+#include <QSortFilterProxyModel>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,13 +12,23 @@
 #include <myhtml/api.h>
 
 #include "htmlparser.h"
+#include "cothinkermodel.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
+    co_thinkers = new CoThinkerModel(this);
+    ct_sort = new QSortFilterProxyModel(this);
+    ct_sort->setSourceModel(co_thinkers);
+    ct_sort->setSortRole(CoThinkerModel::SortRole);
+    ct_sort->setDynamicSortFilter(true);
+    ctTree->setModel(ct_sort);
+    ctTree->setRootIsDecorated(false);
+    ctTree->setSortingEnabled(true);
 
-    HtmlParser htmlp();
+    connect(ctTree->header(), SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
+            this, SLOT(ctSortChanged(int, Qt::SortOrder)));
 
     /*ptracker = new PiwikTracker(NULL, QUrl("http://www.emuletorrent.com"), 1);
     connect(ptracker, SIGNAL(requestStarted(QUrl)), this, SLOT(on_requestStarted(QUrl)));
@@ -84,7 +95,9 @@ void MainWindow::on_openFile(bool b)
         myhtml_destroy(myhtml);
     }
 
-    foreach(QStringList list, hp.getResults()) {
-        qDebug() << list;
-    }
+    co_thinkers->populate(hp.getResults());
+}
+
+void MainWindow::ctSortChanged(int logicalIndex, Qt::SortOrder order) {
+    ct_sort->sort(logicalIndex, order);
 }
