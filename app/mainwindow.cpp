@@ -68,18 +68,16 @@ void MainWindow::on_openFile(bool b)
                                                     , QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
                                                     , tr("html files (*.html)"));
     qDebug() << "file name " << fileName;
-    QString content = "";
+    QByteArray html;
+
     if (!fileName.isEmpty()) {
         QFile file(fileName);
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&file);
-            content = in.readAll();
+        if (file.open(QIODevice::ReadOnly)) {
+            html = file.readAll();
         }
     }
 
-    qDebug() << "content size " << content.length();
-    if (!content.isEmpty()){
-        QByteArray html = content.toUtf8();
+    if (!html.isEmpty()){
         // basic init
         myhtml_t* myhtml = myhtml_create();
         myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
