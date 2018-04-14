@@ -61,8 +61,8 @@ mystatus_t serialization_callback(const char* data, size_t len, void* ctx) {
     return MyCORE_STATUS_OK;
 }
 
-void MainWindow::on_openFile(bool b)
-{
+void MainWindow::on_openFile(bool)
+{    
     QString fileName = QFileDialog::getOpenFileName(this
                                                     , tr("Open html page")
                                                     , QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)

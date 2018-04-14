@@ -87,6 +87,7 @@ int HtmlParser::Controller::processImpl(const char* data, size_t len, int curren
 }
 
 int HtmlParser::Collector::processImpl(const char* data, size_t len, int currentIndex, int totalIndexes) {
-    accum = QString::fromUtf8(data, len);
+    Q_UNUSED(totalIndexes);
+    accum = QString::fromUtf8(data, static_cast<int>(len));
     return currentIndex + 1;
 }

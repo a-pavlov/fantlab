@@ -7,10 +7,12 @@ CoThinkerModel::CoThinkerModel(QObject *parent) :
 }
 
 int CoThinkerModel::rowCount(const QModelIndex& parent) const {
+    Q_UNUSED(parent);
     return co_thinkers.size();
 }
 
 int CoThinkerModel::columnCount(const QModelIndex& parent) const {
+    Q_UNUSED(parent);
     return CTM_COLCOUNT;
 }
 
