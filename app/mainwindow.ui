@@ -28,6 +28,13 @@
        <widget class="QLineEdit" name="expEdit"/>
       </item>
       <item>
+       <widget class="QPushButton" name="btnOctave">
+        <property name="text">
+         <string>Octave</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnSend">
         <property name="enabled">
          <bool>false</bool>

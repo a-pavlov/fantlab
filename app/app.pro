@@ -49,11 +49,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     htmlparser.cpp \
-    cothinkermodel.cpp
+    cothinkermodel.cpp \
+    octave.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
-    cothinkermodel.h
+    cothinkermodel.h \
+    octave.h
 
 FORMS    += mainwindow.ui
 

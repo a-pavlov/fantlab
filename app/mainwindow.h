@@ -9,6 +9,7 @@
 
 class CoThinkerModel;
 class QSortFilterProxyModel;
+class Octave;
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -17,6 +18,7 @@ private:
     HtmlParser hp;
     CoThinkerModel* co_thinkers;
     QSortFilterProxyModel* ct_sort;
+    Octave* octave;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -24,6 +26,7 @@ public:
 private slots:
     void on_openFile(bool);
     void ctSortChanged(int logicalIndex, Qt::SortOrder order);
+    void on_btnOctaveClicked(bool);
 };
 
 #endif // MAINWINDOW_H

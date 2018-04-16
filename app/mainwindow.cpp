@@ -13,10 +13,11 @@
 
 #include "htmlparser.h"
 #include "cothinkermodel.h"
+#include "octave.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
-{
+{    
     setupUi(this);
     co_thinkers = new CoThinkerModel(this);
     ct_sort = new QSortFilterProxyModel(this);
@@ -48,7 +49,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(promo, SIGNAL(restoredItems(int)), this, SLOT(on_promoRestored(int)));
     promo->requestPromotions();
     */
+
+    octave = new Octave(this);
+
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
+    connect(btnOctave, SIGNAL(clicked(bool)), this, SLOT(on_btnOctaveClicked(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -98,4 +103,11 @@ void MainWindow::on_openFile(bool)
 
 void MainWindow::ctSortChanged(int logicalIndex, Qt::SortOrder order) {
     ct_sort->sort(logicalIndex, order);
+}
+
+void MainWindow::on_btnOctaveClicked(bool)
+{
+    qDebug() << Q_FUNC_INFO;
+    octave->startOctave();
+
 }
