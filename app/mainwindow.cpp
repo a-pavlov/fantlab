@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QSortFilterProxyModel>
+#include <QNetworkAccessManager>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,9 +15,10 @@
 #include "htmlparser.h"
 #include "cothinkermodel.h"
 #include "octave.h"
+#include "work.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent), nam(new QNetworkAccessManager(this))
 {    
     setupUi(this);
     co_thinkers = new CoThinkerModel(this);
@@ -54,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
     connect(btnOctave, SIGNAL(clicked(bool)), this, SLOT(on_btnOctaveClicked(bool)));
+
+    work = new Work(nam, this);
 }
 
 MainWindow::~MainWindow()
@@ -108,6 +112,6 @@ void MainWindow::ctSortChanged(int logicalIndex, Qt::SortOrder order) {
 void MainWindow::on_btnOctaveClicked(bool)
 {
     qDebug() << Q_FUNC_INFO;
-    octave->startOctave();
-
+    //octave->startOctave();
+    work->sendRequest();
 }

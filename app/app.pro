@@ -57,6 +57,8 @@ HEADERS  += mainwindow.h \
     cothinkermodel.h \
     octave.h
 
+include(fantlab/fantlab.pri)
+
 FORMS    += mainwindow.ui
 
 CONFIG(debug, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/debug
