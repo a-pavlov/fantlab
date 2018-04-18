@@ -7,16 +7,17 @@
 #include <QNetworkReply>
 
 class QNetworkAccessManager;
+class QNetworkRequest;
 
-class Work : public QObject
+class Request : public QObject
 {
     Q_OBJECT
 private:
     QNetworkAccessManager* manager;
 public:
-    explicit Work(QNetworkAccessManager* m, QObject *parent = 0);
+    explicit Request(QNetworkAccessManager* m, QObject *parent = 0);
 
-    void sendRequest();
+    void sendRequest(QNetworkRequest*);
 signals:
 
 private slots:

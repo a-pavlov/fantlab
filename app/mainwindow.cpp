@@ -15,7 +15,7 @@
 #include "htmlparser.h"
 #include "cothinkermodel.h"
 #include "octave.h"
-#include "work.h"
+#include "request.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this))
@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
     connect(btnOctave, SIGNAL(clicked(bool)), this, SLOT(on_btnOctaveClicked(bool)));
 
-    work = new Work(nam, this);
+    work = new Request(nam, this);
 }
 
 MainWindow::~MainWindow()
@@ -113,5 +113,5 @@ void MainWindow::on_btnOctaveClicked(bool)
 {
     qDebug() << Q_FUNC_INFO;
     //octave->startOctave();
-    work->sendRequest();
+    work->sendRequest(new QNetworkRequest(QUrl("https://api.fantlab.ru/work/7067/extended")));
 }

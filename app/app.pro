@@ -16,6 +16,11 @@ win32 {
 
 INCLUDEPATH += $$(MYHTML_ROOT)/include
 
+linux-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
+linux-g++-32:QMAKE_TARGET.arch = x86
+linux-g++-64:QMAKE_TARGET.arch = x86_64
+
+
 CONFIG(release, debug|release) {
     !contains(QMAKE_TARGET.arch, x86_64) {
         message("release x86 build")
@@ -34,7 +39,11 @@ CONFIG(release, debug|release) {
     }
 }
 
-LIBS += myhtml_static.lib
+win32 {
+    LIBS += myhtml_static.lib
+} else {
+    LIBS += -lmyhtml_static
+}
 
 MOC_DIR = $$OBJECTS_DIR/moc
 RCC_DIR = $$OBJECTS_DIR/rcc
@@ -61,15 +70,7 @@ include(fantlab/fantlab.pri)
 
 FORMS    += mainwindow.ui
 
-CONFIG(debug, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/debug
-CONFIG(release, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/release
-
-#DISTFILES += \
-#    banner.html \
-#    banner2.html \
-#    banner_old.html \
-#    banner3.html
-
-#RESOURCES +=
-
-#OTHER_FILES += banner.html
+win32 {
+    CONFIG(debug, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/debug
+    CONFIG(release, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/release
+}

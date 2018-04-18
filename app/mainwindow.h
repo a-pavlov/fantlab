@@ -10,7 +10,7 @@
 class CoThinkerModel;
 class QSortFilterProxyModel;
 class Octave;
-class Work;
+class Request;
 class QNetworkAccessManager;
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
@@ -21,7 +21,7 @@ private:
     CoThinkerModel* co_thinkers;
     QSortFilterProxyModel* ct_sort;
     Octave* octave;
-    Work* work;
+    Request* work;
     QNetworkAccessManager* nam;
 public:
     explicit MainWindow(QWidget *parent = 0);
