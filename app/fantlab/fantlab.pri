@@ -1,5 +1,7 @@
 INCLUDEPATH += $$PWD
 
-HEADERS +=  $$PWD/request.h
+HEADERS +=  $$PWD/request.h \
+    $$PWD/user.h
 
-SOURCES += $$PWD/request.cpp
+SOURCES += $$PWD/request.cpp \
+    $$PWD/user.cpp

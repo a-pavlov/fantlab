@@ -3,13 +3,16 @@
 #include <QNetworkReply>
 #include <QDebug>
 
+QString Request::apiUrl = QString("https://api.fantlab.ru");
+
 Request::Request(QNetworkAccessManager* m, QObject *parent)
     : QObject(parent), manager(m) {
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(endRequest(QNetworkReply*)));
     connect(manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this, SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 }
 
-void Request::sendRequest(QNetworkRequest* request) {
+void Request::start() {
+    QNetworkRequest* request = getRequest();
     request->setRawHeader("Content-Type", "application/json");
     request->setOriginatingObject(this);
     QNetworkReply* reply = manager->get(*request);

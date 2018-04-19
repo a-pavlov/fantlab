@@ -21,7 +21,7 @@ private:
     CoThinkerModel* co_thinkers;
     QSortFilterProxyModel* ct_sort;
     Octave* octave;
-    Request* work;
+    Request* user;
     QNetworkAccessManager* nam;
 public:
     explicit MainWindow(QWidget *parent = 0);

@@ -9,15 +9,15 @@
 class QNetworkAccessManager;
 class QNetworkRequest;
 
-class Request : public QObject
-{
-    Q_OBJECT
+class Request : public QObject {
+    Q_OBJECT    
 private:
     QNetworkAccessManager* manager;
 public:
+    static QString apiUrl;
     explicit Request(QNetworkAccessManager* m, QObject *parent = 0);
-
-    void sendRequest(QNetworkRequest*);
+    void start();
+    virtual QNetworkRequest* getRequest() const = 0;
 signals:
 
 private slots:

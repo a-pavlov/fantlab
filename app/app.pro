@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui xml network
+CONFIG += c++11
 
 # Store temporary files in separate directories
 win32 {
