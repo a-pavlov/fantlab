@@ -3,15 +3,11 @@
 
 #include <QObject>
 
-class TestJson : public QObject
-{
+class TestJson : public QObject {
     Q_OBJECT
-public:
-    explicit TestJson(QObject *parent = nullptr);
+private slots:
+    void testUtils();
 
-signals:
-
-public slots:
 };
 
 #endif // TESTJSON_H

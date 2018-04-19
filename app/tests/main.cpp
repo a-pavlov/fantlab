@@ -1,8 +1,11 @@
 #include <QCoreApplication>
+#include <QTest>
 
-int main(int argc, char *argv[])
-{
+#include "testjson.h"
+
+int main(int argc, char *argv[]) {
+    freopen("testing.log", "w", stdout);
     QCoreApplication a(argc, argv);
-
-    return a.exec();
+    QTest::qExec(new TestJson, argc, argv);
+    return 0;
 }

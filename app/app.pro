@@ -59,12 +59,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     htmlparser.cpp \
     cothinkermodel.cpp \
-    octave.cpp
+    octave.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
     cothinkermodel.h \
-    octave.h
+    octave.h \
+    utils.h
 
 include(fantlab/fantlab.pri)
 
