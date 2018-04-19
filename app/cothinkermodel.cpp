@@ -1,8 +1,9 @@
 #include "cothinkermodel.h"
 #include <QColor>
+#include <QNetworkAccessManager>
 
 CoThinkerModel::CoThinkerModel(QObject *parent) :
-    QAbstractListModel(parent)
+    QAbstractListModel(parent), nam(NULL)
 {
 }
 
@@ -110,4 +111,19 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
 const CoThinker& CoThinkerModel::at(const QModelIndex& index) const {
     Q_ASSERT(index.row() < rowCount());
     return co_thinkers.at(index.row());
+}
+
+void CoThinkerModel::start(QNetworkAccessManager* m) {
+    Q_ASSERT(nam == NULL);
+    nam = m;
+    updateIndex = 0;
+}
+
+void CoThinkerModel::updateData() {
+    // load new data here
+    while(pendingRequests.size() < 10) {
+        // add some here
+    }
+
+
 }

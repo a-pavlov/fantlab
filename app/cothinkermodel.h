@@ -16,8 +16,10 @@ struct CoThinker {
         , similarity(s) {}
 };
 
-class CoThinkerModel : public QAbstractListModel
-{
+class QNetworkAccessManager;
+class Request;
+
+class CoThinkerModel : public QAbstractListModel {
     Q_OBJECT
 public:
     enum Roles {
@@ -32,8 +34,13 @@ public:
     QVariant data(const QModelIndex& index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     void populate(const QList<QStringList>&);
+    void start(QNetworkAccessManager*);
 private:
+    int updateIndex;
+    void updateData();
+    QList<Request*> pendingRequests;
     QList<CoThinker> co_thinkers;
+    QNetworkAccessManager* nam;
     const CoThinker& at(const QModelIndex&) const;
 signals:
 
