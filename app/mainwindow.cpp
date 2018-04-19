@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
     connect(btnOctave, SIGNAL(clicked(bool)), this, SLOT(on_btnOctaveClicked(bool)));
 
-    user = new User(10072, nam, this);
+    user = new User(14545, nam, this);
 }
 
 MainWindow::~MainWindow()

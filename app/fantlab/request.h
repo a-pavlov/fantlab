@@ -5,6 +5,7 @@
 #include <QList>
 #include <QSslError>
 #include <QNetworkReply>
+#include <QJsonDocument>
 
 class QNetworkAccessManager;
 class QNetworkRequest;
@@ -18,6 +19,7 @@ public:
     explicit Request(QNetworkAccessManager* m, QObject *parent = 0);
     void start();
     virtual QNetworkRequest* getRequest() const = 0;
+    virtual void processResponse(const QJsonDocument&) = 0;
 signals:
 
 private slots:

@@ -35,7 +35,9 @@ void Request::endRequest(QNetworkReply* reply) {
         qDebug() << reply->error() << reply->errorString();
         //emit replyError(reply, reply->error(), reply->errorString());
     } else {
-        qDebug() << reply->readAll();
+        QJsonParseError error;
+        QJsonDocument jd = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error == QJsonParseError::NoError) processResponse(jd);
     }
 
     qDebug() << "got our requst";

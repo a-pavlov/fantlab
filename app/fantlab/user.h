@@ -14,6 +14,7 @@ private:
 public:
     User(int, QNetworkAccessManager* m, QObject *parent = 0);
     QNetworkRequest* getRequest() const;
+    void processResponse(const QJsonDocument&);
 };
 
 #endif // USER_H
