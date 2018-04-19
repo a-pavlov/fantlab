@@ -1,6 +1,19 @@
 #include "cothinkermodel.h"
+#include "user.h"
+#include "utils.h"
 #include <QColor>
 #include <QNetworkAccessManager>
+
+QString CoThinker::status2Str(CoThinker::OperStatus os) {
+    const static QString ss[]  = {
+        QString("None"),
+        QString("Requested"),
+        QString("Finished"),
+        QString("Failed")
+    };
+
+    return ss[os];
+}
 
 CoThinkerModel::CoThinkerModel(QObject *parent) :
     QAbstractListModel(parent), nam(NULL)
@@ -28,8 +41,13 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
         switch(index.column()) {
             case CTM_URL:   return at(index).url;
             case CTM_NAME:  return at(index).name;
-            case CTM_MARKS_PAIR:  return at(index).marks;
+            case CTM_MARKS_PAIR:  return at(index).pairs;
             case CTM_SIMILARITY:  return at(index).similarity;
+            case CTM_LOGIN: return at(index).login;
+            case CTM_CLASS: return at(index).className;
+            case CTM_MARKS: return at(index).marks;
+            case CTM_FAILCOUNT: return at(index).failCount;
+            case CTM_STATUS: return CoThinker::status2Str(at(index).status);
             default:
             break;
             }
@@ -39,8 +57,13 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
         switch(index.column()) {
             case CTM_URL:       return at(index).url;
             case CTM_NAME:      return at(index).name;
-            case CTM_MARKS_PAIR:return at(index).marks;
+            case CTM_MARKS_PAIR:return at(index).pairs;
             case CTM_SIMILARITY:return at(index).similarity;
+            case CTM_LOGIN: return at(index).login;
+            case CTM_CLASS: return at(index).className;
+            case CTM_MARKS: return at(index).marks;
+            case CTM_FAILCOUNT: return at(index).failCount;
+            case CTM_STATUS: return CoThinker::status2Str(at(index).status);
             default:
             break;
             }
@@ -87,6 +110,11 @@ QVariant CoThinkerModel::headerData(int section, Qt::Orientation orientation, in
             case CTM_NAME:      return tr("Name");
             case CTM_MARKS_PAIR:return tr("Pairs");
             case CTM_SIMILARITY:return tr("Similarity");
+            case CTM_LOGIN: return tr("Login");
+            case CTM_CLASS: return tr("Class");
+            case CTM_MARKS: return tr("Marks");
+            case CTM_FAILCOUNT: return tr("Fail count");
+            case CTM_STATUS: return tr("Status");
             default:
                 Q_ASSERT(false);
                 break;
@@ -117,13 +145,35 @@ void CoThinkerModel::start(QNetworkAccessManager* m) {
     Q_ASSERT(nam == NULL);
     nam = m;
     updateIndex = 0;
+    updateData(NULL);
 }
 
-void CoThinkerModel::updateData() {
-    // load new data here
-    while(pendingRequests.size() < 10) {
-        // add some here
+
+void CoThinkerModel::updateData(User* u) {
+
+    // remove request
+    if (u != NULL) {
+        co_thinkers[u->getPosition()].className = u->getClassName();
+        co_thinkers[u->getPosition()].login = u->getLogin();
+        co_thinkers[u->getPosition()].marks = u->getMarks();
+        co_thinkers[u->getPosition()].status = CoThinker::OS_FINISHED;
+        emit dataChanged(index(u->getPosition(), 0), index(u->getPosition(), columnCount() - 1));
+        bool b = pendingRequests.removeOne(u);
+        qDebug() << "remove from position " << u->getPosition() << (b?"OK":"FAIL");
+        u->deleteLater();
     }
 
+    qDebug() << "pendings " << pendingRequests.size();
 
+    // load new data here
+    if (pendingRequests.size() < 5) {
+        while(pendingRequests.size() < 15 && updateIndex < co_thinkers.size()) {
+            qDebug() << "add request for " << Utils::url2UserId(co_thinkers[updateIndex].url) << " at " << updateIndex;
+            co_thinkers[updateIndex].status = CoThinker::OS_PENDING;
+            emit dataChanged(index(updateIndex, 0), index(updateIndex, columnCount() - 1));
+            pendingRequests.append(new User(Utils::url2UserId(co_thinkers[updateIndex].url), updateIndex, this, nam, this));
+            pendingRequests.last()->start();
+            ++updateIndex;
+        }
+    }
 }

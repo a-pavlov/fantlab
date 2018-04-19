@@ -26,21 +26,16 @@ void Request::start() {
 
 void Request::endRequest(QNetworkReply* reply) {
     if (reply->request().originatingObject() != this) {
-        // That's not the request sent by the object -> stop the method here !
-        qDebug() << "not our request";
         return;
     }
 
     if (reply->error() != QNetworkReply::NoError) {
-        qDebug() << reply->error() << reply->errorString();
-        //emit replyError(reply, reply->error(), reply->errorString());
+        qDebug() << reply->error() << reply->errorString();        
     } else {
         QJsonParseError error;
         QJsonDocument jd = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error == QJsonParseError::NoError) processResponse(jd);
     }
-
-    qDebug() << "got our requst";
 }
 
 void Request::sslErrors(QNetworkReply * reply, const QList<QSslError> & errors) {

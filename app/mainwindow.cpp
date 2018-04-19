@@ -57,7 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
     connect(btnOctave, SIGNAL(clicked(bool)), this, SLOT(on_btnOctaveClicked(bool)));
 
-    user = new User(14545, nam, this);
+    user = new User(14545, 0, NULL, nam, this);
+    user->start();
 }
 
 MainWindow::~MainWindow()
@@ -112,6 +113,5 @@ void MainWindow::ctSortChanged(int logicalIndex, Qt::SortOrder order) {
 void MainWindow::on_btnOctaveClicked(bool)
 {
     qDebug() << Q_FUNC_INFO;
-    //octave->startOctave();
-    user->start();
+    co_thinkers->start(nam);
 }
