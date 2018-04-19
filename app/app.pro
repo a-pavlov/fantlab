@@ -74,3 +74,5 @@ win32 {
     CONFIG(debug, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/debug
     CONFIG(release, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/release
 }
+
+SUBDIRS += tests
