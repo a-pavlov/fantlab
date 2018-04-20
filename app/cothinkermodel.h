@@ -17,7 +17,11 @@ struct CoThinker {
     QString name;
     int pairs;
     double similarity;
-    int marks;
+    int markCount;
+    int messageCount;
+    int responseCount;
+    int ticketsCount;
+    int topicCount;
     int failCount;
 
     QString login;
@@ -29,7 +33,11 @@ struct CoThinker {
         , name(n)
         , pairs(p)
         , similarity(s)
-        , marks(0)
+        , markCount(0)
+        , messageCount(0)
+        , responseCount(0)
+        , ticketsCount(0)
+        , topicCount(0)
         , failCount(0)
         , status(OS_NONE) {}
 
@@ -52,7 +60,11 @@ public:
                    , CTM_SIMILARITY
                    , CTM_LOGIN
                    , CTM_CLASS
-                   , CTM_MARKS
+                   , CTM_MARK_COUNT
+                   , CTM_MESSAGE_COUNT
+                   , CTM_RESPONSE_COUNT
+                   , CTM_TICKETS_COUNT
+                   , CTM_TOPIC_COUNT
                    , CTM_FAILCOUNT
                    , CTM_STATUS
                    , CTM_COLCOUNT};

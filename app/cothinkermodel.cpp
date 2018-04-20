@@ -45,7 +45,11 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
             case CTM_SIMILARITY:  return at(index).similarity;
             case CTM_LOGIN: return at(index).login;
             case CTM_CLASS: return at(index).className;
-            case CTM_MARKS: return at(index).marks;
+            case CTM_MARK_COUNT: return at(index).markCount;
+            case CTM_MESSAGE_COUNT: return at(index).messageCount;
+            case CTM_RESPONSE_COUNT: return at(index).responseCount;
+            case CTM_TICKETS_COUNT: return at(index).ticketsCount;
+            case CTM_TOPIC_COUNT: return at(index).topicCount;
             case CTM_FAILCOUNT: return at(index).failCount;
             case CTM_STATUS: return CoThinker::status2Str(at(index).status);
             default:
@@ -61,7 +65,11 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
             case CTM_SIMILARITY:return at(index).similarity;
             case CTM_LOGIN: return at(index).login;
             case CTM_CLASS: return at(index).className;
-            case CTM_MARKS: return at(index).marks;
+            case CTM_MARK_COUNT: return at(index).markCount;
+            case CTM_MESSAGE_COUNT: return at(index).messageCount;
+            case CTM_RESPONSE_COUNT: return at(index).responseCount;
+            case CTM_TICKETS_COUNT: return at(index).ticketsCount;
+            case CTM_TOPIC_COUNT: return at(index).topicCount;
             case CTM_FAILCOUNT: return at(index).failCount;
             case CTM_STATUS: return CoThinker::status2Str(at(index).status);
             default:
@@ -112,7 +120,11 @@ QVariant CoThinkerModel::headerData(int section, Qt::Orientation orientation, in
             case CTM_SIMILARITY:return tr("Similarity");
             case CTM_LOGIN: return tr("Login");
             case CTM_CLASS: return tr("Class");
-            case CTM_MARKS: return tr("Marks");
+            case CTM_MARK_COUNT: return tr("Marks");
+            case CTM_MESSAGE_COUNT: return tr("Messages");
+            case CTM_RESPONSE_COUNT: return tr("Responses");
+            case CTM_TICKETS_COUNT: return tr("Tickets");
+            case CTM_TOPIC_COUNT: return tr("Topics");
             case CTM_FAILCOUNT: return tr("Fail count");
             case CTM_STATUS: return tr("Status");
             default:
@@ -153,9 +165,13 @@ void CoThinkerModel::updateData(User* u) {
 
     // remove request
     if (u != NULL) {
-        co_thinkers[u->getPosition()].className = u->getClassName();
-        co_thinkers[u->getPosition()].login = u->getLogin();
-        co_thinkers[u->getPosition()].marks = u->getMarks();
+        co_thinkers[u->getPosition()].className = u->className;
+        co_thinkers[u->getPosition()].login = u->login;
+        co_thinkers[u->getPosition()].markCount = u->markCount;
+        co_thinkers[u->getPosition()].messageCount = u->messageCount;
+        co_thinkers[u->getPosition()].responseCount = u->responseCount;
+        co_thinkers[u->getPosition()].ticketsCount = u->ticketsCount;
+        co_thinkers[u->getPosition()].topicCount = u->topicCount;
         co_thinkers[u->getPosition()].status = CoThinker::OS_FINISHED;
         emit dataChanged(index(u->getPosition(), CTM_LOGIN), index(u->getPosition(), CTM_STATUS));
         bool b = pendingRequests.removeOne(u);

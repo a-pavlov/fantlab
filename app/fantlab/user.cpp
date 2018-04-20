@@ -9,10 +9,14 @@
 #include <QDebug>
 
 User::User(int id, int pos, CoThinkerModel* mod, QNetworkAccessManager* m, QObject *parent): Request(m, parent)
-  , userId(id)
-  , marks(0)
-  , position(pos)
-  , model(mod) {
+    , userId(id)
+    , position(pos)
+    , model(mod)
+    , markCount(0)
+    , messageCount(0)
+    , responseCount(0)
+    , ticketsCount(0)
+    , topicCount(0) {
 }
 
 User::~User() {
@@ -27,7 +31,11 @@ void User::processResponse(const QJsonDocument& jd) {
     QJsonObject o = jd.object();
     login = o["login"].toString();
     className = o["class_name"].toString();
-    marks = o["markcount"].toString().trimmed().toInt();
+    markCount = o["markcount"].toString().trimmed().toInt();
+    messageCount = o["messagecount"].toString().trimmed().toInt();
+    responseCount = o["responsecount"].toString().trimmed().toInt();
+    ticketsCount = o["tickets_count"].toString().trimmed().toInt();
+    topicCount = o["topiccount"].toString().trimmed().toInt();
 
     if (model != NULL) {
         model->updateData(this);

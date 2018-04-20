@@ -10,31 +10,25 @@ class QNetworkRequest;
 class CoThinkerModel;
 
 class User : public Request {
-    Q_OBJECT
+    Q_OBJECT    
+
 private:
     int userId;
-    int marks;
     int position;
     CoThinkerModel* model;
+public:
     QString login;
     QString className;
-public:
+    int markCount;
+    int messageCount;
+    int responseCount;
+    int ticketsCount;
+    int topicCount;
+
     User(int id, int pos, CoThinkerModel* mod, QNetworkAccessManager* m, QObject *parent = 0);
     ~User();
     QNetworkRequest* getRequest() const;
-    void processResponse(const QJsonDocument&);
-
-    const QString& getLogin() const {
-        return login;
-    }
-
-    const QString& getClassName() const {
-        return className;
-    }
-
-    int getMarks() const {
-        return marks;
-    }
+    void processResponse(const QJsonDocument&);    
 
     int getPosition() const {
         return position;
