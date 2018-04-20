@@ -13,11 +13,11 @@ class User : public Request {
     Q_OBJECT
 private:
     int userId;
+    int marks;
+    int position;
     CoThinkerModel* model;
     QString login;
     QString className;
-    int marks;
-    int position;
 public:
     User(int id, int pos, CoThinkerModel* mod, QNetworkAccessManager* m, QObject *parent = 0);
     ~User();

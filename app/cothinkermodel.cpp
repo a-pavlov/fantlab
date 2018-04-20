@@ -157,20 +157,17 @@ void CoThinkerModel::updateData(User* u) {
         co_thinkers[u->getPosition()].login = u->getLogin();
         co_thinkers[u->getPosition()].marks = u->getMarks();
         co_thinkers[u->getPosition()].status = CoThinker::OS_FINISHED;
-        emit dataChanged(index(u->getPosition(), 0), index(u->getPosition(), columnCount() - 1));
+        emit dataChanged(index(u->getPosition(), CTM_LOGIN), index(u->getPosition(), CTM_STATUS));
         bool b = pendingRequests.removeOne(u);
-        qDebug() << "remove from position " << u->getPosition() << (b?"OK":"FAIL");
+        Q_ASSERT(b);
         u->deleteLater();
-    }
-
-    qDebug() << "pendings " << pendingRequests.size();
+    }    
 
     // load new data here
     if (pendingRequests.size() < 5) {
         while(pendingRequests.size() < 15 && updateIndex < co_thinkers.size()) {
-            qDebug() << "add request for " << Utils::url2UserId(co_thinkers[updateIndex].url) << " at " << updateIndex;
             co_thinkers[updateIndex].status = CoThinker::OS_PENDING;
-            emit dataChanged(index(updateIndex, 0), index(updateIndex, columnCount() - 1));
+            emit dataChanged(index(updateIndex, CTM_STATUS), index(updateIndex, CTM_STATUS));
             pendingRequests.append(new User(Utils::url2UserId(co_thinkers[updateIndex].url), updateIndex, this, nam, this));
             pendingRequests.last()->start();
             ++updateIndex;

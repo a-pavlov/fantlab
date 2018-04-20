@@ -39,7 +39,6 @@ void Request::endRequest(QNetworkReply* reply) {
 }
 
 void Request::sslErrors(QNetworkReply * reply, const QList<QSslError> & errors) {
-    qDebug() << "sll errors, ignore";
     reply->ignoreSslErrors();
 }
 

@@ -10,6 +10,7 @@
 
 User::User(int id, int pos, CoThinkerModel* mod, QNetworkAccessManager* m, QObject *parent): Request(m, parent)
   , userId(id)
+  , marks(0)
   , position(pos)
   , model(mod) {
 }
@@ -23,12 +24,11 @@ QNetworkRequest* User::getRequest() const {
 }
 
 void User::processResponse(const QJsonDocument& jd) {
-    qDebug() << "is obj " << jd.isObject();
     QJsonObject o = jd.object();
     login = o["login"].toString();
     className = o["class_name"].toString();
     marks = o["markcount"].toString().trimmed().toInt();
-    qDebug() << "login " << login << " class " << className << " marks " << marks;
+
     if (model != NULL) {
         model->updateData(this);
     }
