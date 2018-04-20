@@ -19,8 +19,12 @@ INCLUDEPATH += ../
 SOURCES += \
         main.cpp \
         testjson.cpp \
-        ../utils.cpp
+        ../utils.cpp \
+        ../markstorage.cpp \
+        testmarkstorage.cpp
 
 HEADERS += \
     ../utils.h \
-    testjson.h
+    ../markstorage.h \
+    testjson.h \
+    testmarkstorage.h

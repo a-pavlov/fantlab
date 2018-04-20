@@ -61,13 +61,15 @@ SOURCES += main.cpp\
     htmlparser.cpp \
     cothinkermodel.cpp \
     octave.cpp \
-    utils.cpp
+    utils.cpp \
+    markstorage.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
     cothinkermodel.h \
     octave.h \
-    utils.h
+    utils.h \
+    markstorage.h
 
 include(fantlab/fantlab.pri)
 

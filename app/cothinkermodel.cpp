@@ -161,7 +161,7 @@ void CoThinkerModel::updateData(User* u) {
         bool b = pendingRequests.removeOne(u);
         Q_ASSERT(b);
         u->deleteLater();
-    }    
+    }
 
     // load new data here
     if (pendingRequests.size() < 5) {
