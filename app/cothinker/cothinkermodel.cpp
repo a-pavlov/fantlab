@@ -151,18 +151,28 @@ const User& CoThinkerModel::at(const QModelIndex& index) const {
 void CoThinkerModel::start() {
     updateIndex = 0;
     pendingRequests = 0;
+    totalCount = 0;
+    errorCount = 0;
+    executeRequests = true;
     updateData(-1);
+}
+
+void CoThinkerModel::stop() {
+    executeRequests = false;
 }
 
 void CoThinkerModel::updateData(int pos) {
     if (pos != -1) {
+        Q_ASSERT(pos < rowCount());
         // position finished, update model
         --pendingRequests;
+        ++totalCount;
+        errorCount += (co_thinkers.at(pos)->errorCode != 0)?1:0;
         emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_STATUS));
-    }
+    }    
 
     // load new data here
-    if (pendingRequests < 5) {
+    if (executeRequests && pendingRequests < 5) {
         while(pendingRequests < 15 && updateIndex < co_thinkers.size()) {
             co_thinkers[updateIndex]->status = tr("Requested");
             emit dataChanged(index(updateIndex, CTM_STATUS), index(updateIndex, CTM_STATUS));
@@ -170,5 +180,10 @@ void CoThinkerModel::updateData(int pos) {
             ++updateIndex;
             ++pendingRequests;
         }
+    }
+
+    if (pendingRequests == 0) {
+        // data request finished
+        emit dataRefreshed(totalCount, errorCount);
     }
 }

@@ -17,20 +17,21 @@ User::User(const QString& u
            , int pos
            , CoThinkerModel* mod          
            , QObject *parent): QObject(parent)
+    , request(NULL)
     , url(u)
     , name(nm)
     , pairs(pr)
     , similarity(sim)
     , userId(id)
-    , position(pos)
-    , model(mod)
+    , position(pos)    
     , markCount(0)
     , messageCount(0)
     , responseCount(0)
     , ticketsCount(0)
     , topicCount(0)
-    , failCount(0) {
-    qDebug() << "create user " << userId;
+    , failCount(0)
+    , errorCode(0)
+    , model(mod) {
 }
 
 /*
@@ -59,21 +60,32 @@ User::~User() {
 }
 
 void User::requestData() {
+    Q_ASSERT(request == NULL);
     request = new Request();
     connect(request, SIGNAL(finished(QJsonDocument)), this, SLOT(processResponse(QJsonDocument)));
     connect(request, SIGNAL(jsonError(int)), this, SLOT(jsonError(int)));
     connect(request, SIGNAL(networkError(int)), this, SLOT(networkError(int)));
-    qDebug() << "start request " << QString::number(userId);
     request->start(new QNetworkRequest(QUrl(Request::apiUrl + "/user/" + QString::number(userId))), model->getNetworkManager());
 }
 
+void User::finishRequest() {
+    Q_ASSERT(request != NULL);
+    disconnect(request, 0, 0, 0);
+    request->deleteLater();
+    request = NULL;
+}
+
 void User::jsonError(int ec) {
+    errorCode = ec;
     status = tr("Json error %1").arg(ec);
-    model->updateData(position);
+    finishRequest();
+    model->updateData(position);    
 }
 
 void User::networkError(int ec) {
+    errorCode = ec;
     status = tr("Network error %1").arg(ec);
+    finishRequest();
     model->updateData(position);
 }
 
@@ -87,8 +99,6 @@ void User::processResponse(const QJsonDocument& jd) {
     ticketsCount = o["tickets_count"].toString().trimmed().toInt();
     topicCount = o["topiccount"].toString().trimmed().toInt();
     status = tr("Finished");
-
-    if (model != NULL) {
-        model->updateData(position);
-    }    
+    finishRequest();
+    model->updateData(position);
 }

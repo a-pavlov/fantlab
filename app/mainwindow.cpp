@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QSortFilterProxyModel>
 #include <QNetworkAccessManager>
+#include <QMessageBox>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
     connect(btnOctave, SIGNAL(clicked(bool)), this, SLOT(on_btnOctaveClicked(bool)));
+    connect(btnSend, SIGNAL(clicked(bool)), this, SLOT(on_btnSendClicked(bool)));
+    connect(co_thinkers, SIGNAL(dataRefreshed(int,int)), this, SLOT(onRefreshCompleted(int,int)));
 
     //user = new User(14545, 0, NULL, nam, this);
     //user->start();
@@ -87,7 +90,7 @@ void MainWindow::on_openFile(bool)
         }
     }
 
-    if (!html.isEmpty()){
+    if (!html.isEmpty()) {
         // basic init
         myhtml_t* myhtml = myhtml_create();
         myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
@@ -110,8 +113,14 @@ void MainWindow::ctSortChanged(int logicalIndex, Qt::SortOrder order) {
     ct_sort->sort(logicalIndex, order);
 }
 
-void MainWindow::on_btnOctaveClicked(bool)
-{
-    qDebug() << Q_FUNC_INFO;
+void MainWindow::on_btnOctaveClicked(bool) {
     co_thinkers->start();
+}
+
+void MainWindow::on_btnSendClicked(bool) {
+    co_thinkers->stop();
+}
+
+void MainWindow::onRefreshCompleted(int total, int error) {
+    QMessageBox::information(this, tr("Refresh completed"), tr("Total users %1 with errors %2").arg(total).arg(error));
 }

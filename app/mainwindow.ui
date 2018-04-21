@@ -30,17 +30,17 @@
       <item>
        <widget class="QPushButton" name="btnOctave">
         <property name="text">
-         <string>Octave</string>
+         <string>Start</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnSend">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
-         <string>Send</string>
+         <string>Stop</string>
         </property>
        </widget>
       </item>
@@ -57,7 +57,7 @@
      <x>0</x>
      <y>0</y>
      <width>964</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

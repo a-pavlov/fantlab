@@ -13,20 +13,12 @@ class User : public QObject {
 private:
     Request* request;
 public:
-    enum OperStatus {
-        OS_NONE = 0,
-        OS_PENDING,
-        OS_FINISHED,
-        OS_ERROR
-    };
-
     QString url;
     QString name;
     int pairs;
     double similarity;
     int userId;
-    int position;
-    CoThinkerModel* model;
+    int position;    
     QString login;
     QString className;
     int markCount;
@@ -36,6 +28,8 @@ public:
     int topicCount;
     int failCount;
     QString status;
+    int errorCode;
+    CoThinkerModel* model;
 
     User(const QString& u
          , const QString& nm
@@ -52,7 +46,8 @@ public:
     void requestData();
 
     int getPosition() const { return position; }
-
+private:
+    void finishRequest();
 private slots:
     void processResponse(const QJsonDocument&);
     void jsonError(int);

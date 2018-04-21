@@ -76,16 +76,20 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     void populate(const QList<QStringList>&);
     void start();
+    void stop();
     void updateData(int pos);
     QNetworkAccessManager* getNetworkManager() const { return nam; }
 private:
     int updateIndex;
     int pendingRequests;
+    int totalCount;
+    int errorCount;
+    bool executeRequests;
     QList<User*> co_thinkers;
     QNetworkAccessManager* nam;
     const User& at(const QModelIndex&) const;
 signals:
-
+    void dataRefreshed(int totalCount, int errorsCount);
 private slots:
 
 public slots:

@@ -31,6 +31,8 @@ private slots:
     void on_openFile(bool);
     void ctSortChanged(int logicalIndex, Qt::SortOrder order);
     void on_btnOctaveClicked(bool);
+    void on_btnSendClicked(bool);
+    void onRefreshCompleted(int, int);
 };
 
 #endif // MAINWINDOW_H
