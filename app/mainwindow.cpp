@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this))
 {    
     setupUi(this);
-    co_thinkers = new CoThinkerModel(this);
+    co_thinkers = new CoThinkerModel(nam, this);
     ct_sort = new QSortFilterProxyModel(this);
     ct_sort->setSourceModel(co_thinkers);
     ct_sort->setSortRole(CoThinkerModel::SortRole);
@@ -113,5 +113,5 @@ void MainWindow::ctSortChanged(int logicalIndex, Qt::SortOrder order) {
 void MainWindow::on_btnOctaveClicked(bool)
 {
     qDebug() << Q_FUNC_INFO;
-    co_thinkers->start(nam);
+    co_thinkers->start();
 }

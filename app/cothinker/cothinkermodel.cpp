@@ -4,19 +4,9 @@
 #include <QColor>
 #include <QNetworkAccessManager>
 
-QString CoThinker::status2Str(CoThinker::OperStatus os) {
-    const static QString ss[]  = {
-        QString("None"),
-        QString("Requested"),
-        QString("Finished"),
-        QString("Failed")
-    };
 
-    return ss[os];
-}
-
-CoThinkerModel::CoThinkerModel(QObject *parent) :
-    QAbstractListModel(parent), nam(NULL)
+CoThinkerModel::CoThinkerModel(QNetworkAccessManager* m, QObject *parent) :
+    QAbstractListModel(parent), nam(m)
 {
 }
 
@@ -51,7 +41,7 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
             case CTM_TICKETS_COUNT: return at(index).ticketsCount;
             case CTM_TOPIC_COUNT: return at(index).topicCount;
             case CTM_FAILCOUNT: return at(index).failCount;
-            case CTM_STATUS: return CoThinker::status2Str(at(index).status);
+            case CTM_STATUS: return at(index).status;
             default:
             break;
             }
@@ -71,7 +61,7 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
             case CTM_TICKETS_COUNT: return at(index).ticketsCount;
             case CTM_TOPIC_COUNT: return at(index).topicCount;
             case CTM_FAILCOUNT: return at(index).failCount;
-            case CTM_STATUS: return CoThinker::status2Str(at(index).status);
+            case CTM_STATUS: return at(index).status;
             default:
             break;
             }
@@ -137,56 +127,48 @@ QVariant CoThinkerModel::headerData(int section, Qt::Orientation orientation, in
 }
 
 void CoThinkerModel::populate(const QList<QStringList>& data) {
+    co_thinkers.reserve(data.size());
     foreach(const QStringList& ct, data) {
         Q_ASSERT(ct.size() == 4);
         emit beginInsertRows(QModelIndex(), co_thinkers.size(), co_thinkers.size());
-        co_thinkers.push_back(CoThinker(ct.at(0)
+        co_thinkers.push_back(new User(ct.at(0)
                                         , ct.at(1)
                                         , ct.at(2).toInt()
-                                        , ct.at(3).toDouble()));
+                                        , ct.at(3).toDouble()
+                                        , Utils::url2UserId(ct.at(0))
+                                        , co_thinkers.size()
+                                        , this
+                                        , this));
         endInsertRows();
     }
 }
 
-const CoThinker& CoThinkerModel::at(const QModelIndex& index) const {
+const User& CoThinkerModel::at(const QModelIndex& index) const {
     Q_ASSERT(index.row() < rowCount());
-    return co_thinkers.at(index.row());
+    return *co_thinkers.at(index.row());
 }
 
-void CoThinkerModel::start(QNetworkAccessManager* m) {
-    Q_ASSERT(nam == NULL);
-    nam = m;
+void CoThinkerModel::start() {
     updateIndex = 0;
-    updateData(NULL);
+    pendingRequests = 0;
+    updateData(-1);
 }
 
-
-void CoThinkerModel::updateData(User* u) {
-
-    // remove request
-    if (u != NULL) {
-        co_thinkers[u->getPosition()].className = u->className;
-        co_thinkers[u->getPosition()].login = u->login;
-        co_thinkers[u->getPosition()].markCount = u->markCount;
-        co_thinkers[u->getPosition()].messageCount = u->messageCount;
-        co_thinkers[u->getPosition()].responseCount = u->responseCount;
-        co_thinkers[u->getPosition()].ticketsCount = u->ticketsCount;
-        co_thinkers[u->getPosition()].topicCount = u->topicCount;
-        co_thinkers[u->getPosition()].status = CoThinker::OS_FINISHED;
-        emit dataChanged(index(u->getPosition(), CTM_LOGIN), index(u->getPosition(), CTM_STATUS));
-        bool b = pendingRequests.removeOne(u);
-        Q_ASSERT(b);
-        u->deleteLater();
+void CoThinkerModel::updateData(int pos) {
+    if (pos != -1) {
+        // position finished, update model
+        --pendingRequests;
+        emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_STATUS));
     }
 
     // load new data here
-    if (pendingRequests.size() < 5) {
-        while(pendingRequests.size() < 15 && updateIndex < co_thinkers.size()) {
-            co_thinkers[updateIndex].status = CoThinker::OS_PENDING;
+    if (pendingRequests < 5) {
+        while(pendingRequests < 15 && updateIndex < co_thinkers.size()) {
+            co_thinkers[updateIndex]->status = tr("Requested");
             emit dataChanged(index(updateIndex, CTM_STATUS), index(updateIndex, CTM_STATUS));
-            pendingRequests.append(new User(Utils::url2UserId(co_thinkers[updateIndex].url), updateIndex, this, nam, this));
-            pendingRequests.last()->start();
+            co_thinkers[updateIndex]->requestData();
             ++updateIndex;
+            ++pendingRequests;
         }
     }
 }

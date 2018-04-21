@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <QAbstractListModel>
+#include "user.h"
 
-
+/*
 struct CoThinker {
     enum OperStatus {
         OS_NONE = 0,
@@ -42,10 +43,9 @@ struct CoThinker {
         , status(OS_NONE) {}
 
     static QString status2Str(OperStatus os);
-};
+};*/
 
 class QNetworkAccessManager;
-class User;
 
 class CoThinkerModel : public QAbstractListModel {
     Q_OBJECT
@@ -69,20 +69,21 @@ public:
                    , CTM_STATUS
                    , CTM_COLCOUNT};
 
-    explicit CoThinkerModel(QObject *parent = 0);
+    explicit CoThinkerModel(QNetworkAccessManager* man, QObject *parent = 0);
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
     int columnCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex& index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     void populate(const QList<QStringList>&);
-    void start(QNetworkAccessManager*);
-    void updateData(User* u);
+    void start();
+    void updateData(int pos);
+    QNetworkAccessManager* getNetworkManager() const { return nam; }
 private:
     int updateIndex;
-    QList<User*> pendingRequests;
-    QList<CoThinker> co_thinkers;
+    int pendingRequests;
+    QList<User*> co_thinkers;
     QNetworkAccessManager* nam;
-    const CoThinker& at(const QModelIndex&) const;
+    const User& at(const QModelIndex&) const;
 signals:
 
 private slots:

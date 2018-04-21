@@ -59,19 +59,18 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     htmlparser.cpp \
-    cothinkermodel.cpp \
     octave.cpp \
     utils.cpp \
     markstorage.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
-    cothinkermodel.h \
     octave.h \
     utils.h \
     markstorage.h
 
-include(fantlab/fantlab.pri)
+include(rest/rest.pri)
+include(cothinker/cothinker.pri)
 
 FORMS    += mainwindow.ui
 
