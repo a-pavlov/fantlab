@@ -169,7 +169,7 @@ void CoThinkerModel::updateData(int pos) {
         ++totalCount;
         errorCount += (co_thinkers.at(pos)->errorCode != 0)?1:0;
         emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_STATUS));
-    }    
+    }
 
     // load new data here
     if (executeRequests && pendingRequests < 5) {

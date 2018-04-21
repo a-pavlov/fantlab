@@ -30,9 +30,10 @@ public:
 private slots:
     void on_openFile(bool);
     void ctSortChanged(int logicalIndex, Qt::SortOrder order);
-    void on_btnOctaveClicked(bool);
-    void on_btnSendClicked(bool);
     void onRefreshCompleted(int, int);
+    void on_actionOpen_triggered();
+    void on_actionRequest_triggered();
+    void on_actionCancel_triggered();
 };
 
 #endif // MAINWINDOW_H

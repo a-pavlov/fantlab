@@ -16,37 +16,6 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Enter expression</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="expEdit"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnOctave">
-        <property name="text">
-         <string>Start</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnSend">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Stop</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
      <widget class="QTreeView" name="ctTree"/>
     </item>
    </layout>
@@ -60,22 +29,49 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
+   <widget class="QMenu" name="menu">
     <property name="title">
-     <string>File</string>
+     <string>Actions</string>
     </property>
     <addaction name="actionOpen"/>
    </widget>
-   <addaction name="menuFile"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/files.ico</normaloff>:/icons/files.ico</iconset>
+   </property>
    <property name="text">
-    <string>Open</string>
+    <string>Open file</string>
+   </property>
+  </action>
+  <action name="actionRequest">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/down.ico</normaloff>:/icons/down.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Request data</string>
+   </property>
+   <property name="toolTip">
+    <string>Request data</string>
+   </property>
+  </action>
+  <action name="actionCancel">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/button_cancel.ico</normaloff>:/icons/button_cancel.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Cancel request</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
