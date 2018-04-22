@@ -19,8 +19,7 @@
 #include "user.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), nam(new QNetworkAccessManager(this))
-{    
+    QMainWindow(parent), nam(new QNetworkAccessManager(this)) {
     setupUi(this);
     co_thinkers = new CoThinkerModel(nam, this);
     ct_sort = new QSortFilterProxyModel(this);
@@ -57,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addSeparator();
     menu->addAction(actionRequest);
     menu->addAction(actionCancel);
+    menu->addSeparator();
+    menu->addAction(actionRecommend);
 
     actionOpen->setEnabled(true);
     actionRequest->setEnabled(false);
@@ -134,4 +135,8 @@ void MainWindow::on_actionCancel_triggered() {
     actionRequest->setEnabled(true);
     actionCancel->setEnabled(false);
     co_thinkers->stop();
+}
+
+void MainWindow::on_actionRecommend_triggered() {
+    octave->startOctave();
 }

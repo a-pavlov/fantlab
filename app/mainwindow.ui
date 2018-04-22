@@ -68,6 +68,18 @@
     <string>Cancel request</string>
    </property>
   </action>
+  <action name="actionRecommend">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/filefind.ico</normaloff>:/icons/filefind.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Recommend</string>
+   </property>
+   <property name="toolTip">
+    <string>Generate recommendations</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

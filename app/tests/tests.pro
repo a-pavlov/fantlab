@@ -22,10 +22,12 @@ SOURCES += \
         testjson.cpp \
         ../utils.cpp \
         ../markstorage.cpp \
-        testmarkstorage.cpp
+        testmarkstorage.cpp \
+    testoctaveoutput.cpp
 
 HEADERS += \
     ../utils.h \
     ../markstorage.h \
     testjson.h \
-    testmarkstorage.h
+    testmarkstorage.h \
+    testoctaveoutput.h
