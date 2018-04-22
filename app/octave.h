@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QProcess>
 
-class Octave : public QProcess
-{
+class Octave : public QProcess {
     Q_OBJECT
 public:
     Octave(QObject* parent = 0);
@@ -13,6 +12,8 @@ public:
 private slots:
     void octaveReadyReadStandardError();
     void octaveReadyReadStandardOutput();
+signals:
+    void iteration(int, QString);
 };
 
 #endif // OCTAVE_H

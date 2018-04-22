@@ -1,4 +1,5 @@
 #include "octave.h"
+#include "utils.h"
 #include <QDebug>
 #include <QStringList>
 
@@ -14,7 +15,15 @@ void Octave::octaveReadyReadStandardError() {
 }
 
 void Octave::octaveReadyReadStandardOutput() {
-    qDebug() << this->readAllStandardOutput();
+    QString data(this->readAllStandardOutput());
+    foreach(const QString& line, data.split("\n", QString::SkipEmptyParts)) {
+        if (Utils::isIteration(line)) continue;
+        QPair<int, QString> cost = Utils::octaveCost(line);
+        if (cost.first != 0 && !cost.second.isNull()) {
+            emit iteration(cost.first, cost.second);
+        } else
+        qDebug() << "line " << line;
+    }
 }
 
 void Octave::startOctave() {

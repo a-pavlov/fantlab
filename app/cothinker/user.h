@@ -4,8 +4,10 @@
 #include <QObject>
 #include <QString>
 
+QT_BEGIN_NAMESPACE
 class CoThinkerModel;
 class Request;
+QT_END_NAMESPACE
 
 class User : public QObject {
     Q_OBJECT    

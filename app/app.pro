@@ -71,6 +71,7 @@ HEADERS  += mainwindow.h \
 
 include(rest/rest.pri)
 include(cothinker/cothinker.pri)
+include(statusbar/statusbar.pri)
 
 FORMS    += mainwindow.ui
 

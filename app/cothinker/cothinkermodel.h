@@ -5,47 +5,9 @@
 #include <QAbstractListModel>
 #include "user.h"
 
-/*
-struct CoThinker {
-    enum OperStatus {
-        OS_NONE = 0,
-        OS_PENDING,
-        OS_FINISHED,
-        OS_ERROR
-    };
-
-    QString url;
-    QString name;
-    int pairs;
-    double similarity;
-    int markCount;
-    int messageCount;
-    int responseCount;
-    int ticketsCount;
-    int topicCount;
-    int failCount;
-
-    QString login;
-    QString className;
-    OperStatus status;
-
-    CoThinker(const QString& u, const QString& n, int p, double s):
-        url(u)
-        , name(n)
-        , pairs(p)
-        , similarity(s)
-        , markCount(0)
-        , messageCount(0)
-        , responseCount(0)
-        , ticketsCount(0)
-        , topicCount(0)
-        , failCount(0)
-        , status(OS_NONE) {}
-
-    static QString status2Str(OperStatus os);
-};*/
-
+QT_BEGIN_NAMESPACE
 class QNetworkAccessManager;
+QT_END_NAMESPACE
 
 class CoThinkerModel : public QAbstractListModel {
     Q_OBJECT

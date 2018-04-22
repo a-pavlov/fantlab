@@ -7,11 +7,14 @@
 #include "ui_mainwindow.h"
 #include "htmlparser.h"
 
+QT_BEGIN_NAMESPACE
 class CoThinkerModel;
 class QSortFilterProxyModel;
 class Octave;
 class Request;
 class QNetworkAccessManager;
+class StatusBar;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -23,6 +26,7 @@ private:
     Octave* octave;
     Request* user;
     QNetworkAccessManager* nam;
+    StatusBar* sb;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -35,6 +39,8 @@ private slots:
     void on_actionRequest_triggered();
     void on_actionCancel_triggered();
     void on_actionRecommend_triggered();
+
+    void onIteration(int, QString);
 };
 
 #endif // MAINWINDOW_H

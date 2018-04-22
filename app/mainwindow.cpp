@@ -6,6 +6,7 @@
 #include <QSortFilterProxyModel>
 #include <QNetworkAccessManager>
 #include <QMessageBox>
+#include <QMainWindow>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +18,7 @@
 #include "cothinkermodel.h"
 #include "octave.h"
 #include "user.h"
+#include "status_bar.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this)) {
@@ -64,9 +66,14 @@ MainWindow::MainWindow(QWidget *parent) :
     actionCancel->setEnabled(false);
 
     octave = new Octave(this);
+    connect(octave, SIGNAL(iteration(int,QString)), this, SLOT(onIteration(int,QString)));
 
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));    
     connect(co_thinkers, SIGNAL(dataRefreshed(int,int)), this, SLOT(onRefreshCompleted(int,int)));
+
+    sb = new StatusBar(this, QMainWindow::statusBar());
+    sb->setIteration(0);
+    sb->setCost("N/A");
 }
 
 MainWindow::~MainWindow() {}
@@ -139,4 +146,9 @@ void MainWindow::on_actionCancel_triggered() {
 
 void MainWindow::on_actionRecommend_triggered() {
     octave->startOctave();
+}
+
+void MainWindow::onIteration(int step, QString cost) {
+    sb->setIteration(step);
+    sb->setCost(cost);
 }

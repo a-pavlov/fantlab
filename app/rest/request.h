@@ -7,8 +7,10 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 
+QT_BEGIN_NAMESPACE
 class QNetworkAccessManager;
 class QNetworkRequest;
+QT_END_NAMESPACE
 
 class Request : public QObject {
     Q_OBJECT    
