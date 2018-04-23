@@ -68,3 +68,20 @@ void TestMarkStorage::testStorageGetters() {
     QCOMPARE(book3.at(1), 0);
     QCOMPARE(book3.at(2), 8);
 }
+
+void TestMarkStorage::testStorageArbitraryInput() {
+    MarkStorage accum;
+    accum.addMark(1, 1, 10);
+    accum.addMark(2, 2, 9);
+    accum.addMark(1, 2, 4);
+    accum.addMark(2, 1, 9);
+    QCOMPARE(accum.getWorkIndexes().size(), 2);
+    QCOMPARE(accum.getUsers().size(), 2);
+    QCOMPARE(accum.getMarkMatrix().size(), 2);
+    accum.addMark(2, 3, 6);
+    QCOMPARE(accum.getUsers().size(), 2);
+    QCOMPARE(accum.getWorkIndexes().size(), 3);
+    QCOMPARE(accum.getMarkMatrix().size(), 2);
+    QCOMPARE(accum.getMarkMatrix().at(0).size(), 3);
+    QCOMPARE(accum.getMarkMatrix().at(1).size(), 3);
+}

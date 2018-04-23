@@ -7,16 +7,20 @@ MarkStorage::MarkStorage() {
 void MarkStorage::addMark(int user, int work, int mark) {
     //public void addMark(final String userName, final String bookName, int mark) {
     Q_ASSERT(mark != 0);
-    if (users.isEmpty() || (users.at(users.size() - 1) != user)) {
-        // register new user
-        users.append(user);
-        // no good solution
+    int userPos = -1;
+    QMap<int, int>::const_iterator itr = userIndexes.find(user);
+    if (itr == userIndexes.end()) {
+        userPos = userIndexes.size();
+        userIndexes.insert(user, userIndexes.size());
         markMatrix.append(QList<int>());
         for(int i = 0; i < workIndexes.size(); i++) markMatrix.back().append(0);
+    } else {
+        userPos = itr.value();
     }
 
-    int userPos = markMatrix.size() - 1;
-    Q_ASSERT(markMatrix.size() == users.size());
+    Q_ASSERT(userPos != -1);
+    Q_ASSERT(markMatrix.size() == userIndexes.size());
+
     int index = workIndexes.value(work, -1);
 
     if (index == -1) {
@@ -26,13 +30,7 @@ void MarkStorage::addMark(int user, int work, int mark) {
         for(int i = 0; i < markMatrix.size(); ++i) {
             markMatrix[i].append(0);
         }
-
-        //foreach(QList<int>& userMarks, marks) {
-        //    usersMarks.add(0);
-        //}
-        //assert !marks.get(userPos).stream().filter(x -> x.compareTo(0) > 0).collect(Collectors.toList()).isEmpty();
     }
-
 
     Q_ASSERT(index != -1);
     Q_ASSERT(index < markMatrix.at(userPos).size());

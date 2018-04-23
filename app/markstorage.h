@@ -6,9 +6,28 @@
 
 class MarkStorage {
 private:
+    /**
+     * @brief workIndexes
+     * work id as key, position as value
+     */
     QMap<int, int> workIndexes;
+    /**
+     * @brief markMatrix
+     * MxN
+     * M users count
+     * N works count
+     * 2x4
+     *    w1 w2 w3 w4
+     * u1 *  *  *  *
+     * u2 *  *  *  *
+     *
+     */
     QList<QList<int>> markMatrix;
-    QList<int> users;
+    /**
+     * @brief userIndexes
+     * user id as key, position as value
+     */
+    QMap<int, int> userIndexes;
 public:
     MarkStorage();
     void addMark(int user, int work, int mark);
@@ -21,8 +40,8 @@ public:
         return markMatrix;
     }
 
-    const QList<int>& getUsers() const {
-        return users;
+    const QMap<int, int>& getUsers() const {
+        return userIndexes;
     }
 
     int getTotalMarks() const {

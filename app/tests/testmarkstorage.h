@@ -14,6 +14,7 @@ signals:
 private slots:
     void testStorageInit();
     void testStorageGetters();
+    void testStorageArbitraryInput();
 };
 
 #endif // TESTMARKSTORAGE_H
