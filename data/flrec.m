@@ -10,7 +10,7 @@ my_ratings = Y(:,1);
 %  Useful Values
 num_users = size(Y, 2);
 num_marks = size(Y, 1);
-num_features = 60;
+num_features = textread("num_features.txt", "%d", "endofline", "\n");
 
 fprintf("start with %d users %d marks learn %d features\n", num_users, num_marks, num_features)
 
@@ -25,15 +25,16 @@ initial_parameters = [X(:); Theta(:)];
 options = optimset('GradObj', 'on', 'MaxIter', 100);
 
 % Set Regularization
-la = [0.1 0.3 0.4 0.45 0.5 0.55 0.6 0.7 1.0 2.0 5];
+% lambdas = [0.1 0.3 0.4 0.45 0.5 0.55 0.6 0.7 1.0 2.0 5];
+lambdas = textread("lambdas.txt", "%f", "endofline", "\n")';
 lambda = 4;
 total_cost=10000;
 theta = [];
 
 fprintf("start learning: num_features %d\n", num_features);
 
-for index=1:size(la,2)
-    lambda = la(index);	
+for index=1:size(lambdas,2)
+    lambda = lambdas(index);	
 	[theta_loc fX i] = fmincg (@(t)(cofiCostFunc(t, Ynorm, R, num_users, num_marks, ...
                                 num_features, lambda)), ...
                 initial_parameters, options);
