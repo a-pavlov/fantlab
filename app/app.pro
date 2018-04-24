@@ -60,18 +60,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     htmlparser.cpp \
     octave.cpp \
-    utils.cpp \
     markstorage.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
     octave.h \
-    utils.h \
     markstorage.h
 
 include(rest/rest.pri)
 include(cothinker/cothinker.pri)
 include(statusbar/statusbar.pri)
+include(misc/misc.pri)
 
 FORMS    += mainwindow.ui
 
@@ -80,6 +79,27 @@ win32:RC_FILE = app.rc
 win32 {
     CONFIG(debug, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/debug
     CONFIG(release, release|debug):QMAKE_POST_LINK += windeployqt $$OUT_PWD/release
+    DEFINES += UNICODE
+    DEFINES += _UNICODE
+    DEFINES += WIN32
+    DEFINES += _WIN32
+    DEFINES += WIN32_LEAN_AND_MEAN
+    DEFINES += _WIN32_WINNT=0x0501
+    DEFINES += _WIN32_IE=0x0501
+    DEFINES += _CRT_SECURE_NO_DEPRECATE
+    DEFINES += _SCL_SECURE_NO_DEPRECATE
+    DEFINES += _FILE_OFFSET_BITS=64
+
+    contains(QMAKE_HOST.arch, x86) {
+        # i686 arch requires frame pointer preservation
+        QMAKE_CXXFLAGS_RELEASE += -Oy-
+        QMAKE_CXXFLAGS_DEBUG += -Oy-
+    }
+    release {
+        QMAKE_CXXFLAGS_RELEASE += -Zi
+        QMAKE_LFLAGS += "/DEBUG"
+    }
+    LIBS += dbghelp.lib
 }
 
 SUBDIRS += tests

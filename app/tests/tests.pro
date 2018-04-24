@@ -20,13 +20,13 @@ INCLUDEPATH += ../
 SOURCES += \
         main.cpp \
         testjson.cpp \
-        ../utils.cpp \
+        ../misc/misc.cpp \
         ../markstorage.cpp \
         testmarkstorage.cpp \
     testoctaveoutput.cpp
 
 HEADERS += \
-    ../utils.h \
+    ../misc/misc.h \
     ../markstorage.h \
     testjson.h \
     testmarkstorage.h \
