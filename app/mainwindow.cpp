@@ -57,6 +57,10 @@ MainWindow::MainWindow(QWidget *parent) :
     sb = new StatusBar(this, QMainWindow::statusBar());
     sb->setIteration(0);
     sb->setCost("N/A");
+
+    qDebug() << "data loc " << Utils::Fs::tempPath();
+    qDebug() << "remove " << Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
+    qDebug() << "copy " << Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());
 }
 
 MainWindow::~MainWindow() {}

@@ -71,6 +71,8 @@ namespace Utils
 
         QString cacheLocation();
         QString tempPath();
+        bool copyDirectory(const QString& src, const QString& dst);
+        bool cleanDirectory(const QString& src);
     }
 }
 

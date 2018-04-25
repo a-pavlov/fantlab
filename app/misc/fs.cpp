@@ -396,11 +396,11 @@ QString Utils::Fs::QDesktopServicesDownloadLocation()
 }
 
 QString Utils::Fs::getOctavePath() {
-    return QCoreApplication::applicationDirPath() + "/octave";
+    return QCoreApplication::applicationDirPath() + QDir::separator() + "octave";
 }
 
 QString Utils::Fs::getOctaveScriptsPath() {
-    return QCoreApplication::applicationDirPath() + "/data";
+    return QCoreApplication::applicationDirPath() + QDir::separator() + "data";
 }
 
 QString Utils::Fs::cacheLocation()
@@ -412,9 +412,30 @@ QString Utils::Fs::cacheLocation()
     return location;
 }
 
-QString Utils::Fs::tempPath()
-{
-    static const QString path = QDir::tempPath() + "/.qBittorrent/";
+QString Utils::Fs::tempPath() {
+    static const QString path = QDir::tempPath() + QDir::separator() + ".fantlab/";
     QDir().mkdir(path);
     return path;
+}
+
+bool Utils::Fs::copyDirectory(const QString &src, const QString &dst) {
+    QDir dir(src);
+    foreach (QString f, dir.entryList(QDir::Files)) {
+        if (!QFile::copy(src + QDir::separator() + f, dst + QDir::separator() + f)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool Utils::Fs::cleanDirectory(const QString &src) {
+    QDir dir(src);
+    foreach (QString f, dir.entryList(QDir::Files)) {
+        if (!QFile::remove(src + QDir::separator() + f)) {
+            return false;
+        }
+    }
+
+    return true;
 }
