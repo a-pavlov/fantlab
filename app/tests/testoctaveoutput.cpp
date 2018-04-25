@@ -1,5 +1,5 @@
 #include "testoctaveoutput.h"
-#include "utils.h"
+#include "misc.h"
 #include <QTest>
 
 TestOctaveOutput::TestOctaveOutput(QObject *parent): QObject(parent) {

@@ -1,6 +1,6 @@
 #include "cothinkermodel.h"
 #include "user.h"
-#include "utils.h"
+#include "misc.h"
 #include <QColor>
 #include <QNetworkAccessManager>
 

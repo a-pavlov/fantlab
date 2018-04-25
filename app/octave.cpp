@@ -2,7 +2,7 @@
 #include <QStringList>
 
 #include "octave.h"
-#include "utils.h"
+#include "misc.h"
 
 Octave::Octave(QObject* parent): QProcess(parent) {
     connect(this,SIGNAL(readyReadStandardError()),
