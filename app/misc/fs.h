@@ -66,6 +66,9 @@ namespace Utils
         QString QDesktopServicesDownloadLocation();
         /* End of Qt4 code */
 
+        QString getOctavePath();
+        QString getOctaveScriptsPath();
+
         QString cacheLocation();
         QString tempPath();
     }

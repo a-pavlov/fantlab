@@ -395,6 +395,14 @@ QString Utils::Fs::QDesktopServicesDownloadLocation()
     return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 }
 
+QString Utils::Fs::getOctavePath() {
+    return QCoreApplication::applicationDirPath() + "/octave";
+}
+
+QString Utils::Fs::getOctaveScriptsPath() {
+    return QCoreApplication::applicationDirPath() + "/data";
+}
+
 QString Utils::Fs::cacheLocation()
 {
     QString location = expandPathAbs(QDesktopServicesCacheLocation());

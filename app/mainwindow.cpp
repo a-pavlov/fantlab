@@ -19,6 +19,7 @@
 #include "octave.h"
 #include "user.h"
 #include "status_bar.h"
+#include "fs.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this)) {
