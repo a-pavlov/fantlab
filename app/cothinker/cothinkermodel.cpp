@@ -135,7 +135,7 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
                                         , ct.at(1)
                                         , ct.at(2).toInt()
                                         , ct.at(3).toDouble()
-                                        , Utils::url2UserId(ct.at(0))
+                                        , Misc::url2UserId(ct.at(0))
                                         , co_thinkers.size()
                                         , this
                                         , this));

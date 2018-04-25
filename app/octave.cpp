@@ -1,8 +1,10 @@
 #include <QDebug>
 #include <QStringList>
+#include <QDir>
 
 #include "octave.h"
 #include "misc.h"
+#include "fs.h"
 
 Octave::Octave(QObject* parent): QProcess(parent) {
     connect(this,SIGNAL(readyReadStandardError()),
@@ -18,8 +20,8 @@ void Octave::octaveReadyReadStandardError() {
 void Octave::octaveReadyReadStandardOutput() {
     QString data(this->readAllStandardOutput());
     foreach(const QString& line, data.split("\n", QString::SkipEmptyParts)) {
-        if (Utils::isIteration(line)) continue;
-        QPair<int, QString> cost = Utils::octaveCost(line);
+        if (Misc::isIteration(line)) continue;
+        QPair<int, QString> cost = Misc::octaveCost(line);
         if (cost.first != 0 && !cost.second.isNull()) {
             emit iteration(cost.first, cost.second);
         } else
@@ -30,6 +32,8 @@ void Octave::octaveReadyReadStandardOutput() {
 void Octave::startOctave() {
     connect(this,SIGNAL(readyReadStandardOutput()),
                 this,SLOT(octaveReadyReadStandardOutput()));
-    setWorkingDirectory("C:\\dev\\octave-4.2.2\\bin\\data");
-    start("C:\\dev\\octave-4.2.2\\bin\\octave-cli-4.2.2.exe", QStringList() << "flrec.m");
+    qDebug() << "start " << (Utils::Fs::getOctavePath() + QDir::separator() + "octave-cli-4.2.2.exe")
+             << "work dir " << Utils::Fs::tempPath();
+    setWorkingDirectory(Utils::Fs::tempPath());
+    start(Utils::Fs::getOctavePath() + QDir::separator() + "octave-cli-4.2.2.exe", QStringList() << "flrec.m");
 }

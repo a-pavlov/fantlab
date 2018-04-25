@@ -40,7 +40,7 @@ private slots:
     void on_actionCancel_triggered();
     void on_actionRecommend_triggered();
 
-    void onIteration(int, QString);
+    void onIteration(int, QString);    
 };
 
 #endif // MAINWINDOW_H

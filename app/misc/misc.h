@@ -4,7 +4,7 @@
 #include <QString>
 #include <QPair>
 
-class Utils {
+class Misc {
 public:
     static int url2UserId(const QString&);
     static QPair<int, QString> octaveCost(const QString&);
