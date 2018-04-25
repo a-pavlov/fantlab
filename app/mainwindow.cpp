@@ -23,6 +23,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this)) {
     setupUi(this);
+    setWindowIcon(QIcon(":/icons/computer.ico"));
     co_thinkers = new CoThinkerModel(nam, this);
     ct_sort = new QSortFilterProxyModel(this);
     ct_sort->setSourceModel(co_thinkers);
