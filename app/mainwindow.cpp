@@ -1,4 +1,3 @@
-#include "mainwindow.h"
 #include <QDebug>
 #include <QStandardPaths>
 #include <QFileDialog>
@@ -14,6 +13,7 @@
 
 #include <myhtml/api.h>
 
+#include "mainwindow.h"
 #include "htmlparser.h"
 #include "cothinkermodel.h"
 #include "octave.h"
@@ -35,25 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ctTree->header(), SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
             this, SLOT(ctSortChanged(int, Qt::SortOrder)));
-
-    /*ptracker = new PiwikTracker(NULL, QUrl("http://www.emuletorrent.com"), 1);
-    connect(ptracker, SIGNAL(requestStarted(QUrl)), this, SLOT(on_requestStarted(QUrl)));
-    connect(ptracker, SIGNAL(piwikReplyError(QNetworkReply::NetworkError)), this, SLOT(on_piwikReplyError(QNetworkReply::NetworkError)));
-    connect(ptracker, SIGNAL(piwikReplyFinished(QNetworkReply::NetworkError,QString)), this, SLOT(on_piwikReplyFinished(QNetworkReply::NetworkError,QString)));
-    QString loc = QLocale::system().name();
-    if (loc.size() > 2) loc = loc.mid(0, 2);
-
-
-#ifdef Q_OS_LINUX
-    promo = new Promotions("/home/a-pavlov/dev/promoted.xml", "en");
-#else
-    promo = new Promotions("c:\\dev\\promoted.xml", "");
-#endif
-
-    connect(promo, SIGNAL(receivedItems(int)), this, SLOT(on_promoReceived(int)));
-    connect(promo, SIGNAL(restoredItems(int)), this, SLOT(on_promoRestored(int)));
-    promo->requestPromotions();
-    */
 
     menu->addAction(actionOpen);
     menu->addSeparator();
@@ -131,6 +112,9 @@ void MainWindow::on_actionOpen_triggered() {
 
     co_thinkers->populate(hp.getResults());
     actionRequest->setEnabled(co_thinkers->rowCount() > 0);
+    QMessageBox::information(this
+                             , tr("Import completed")
+                             , tr("%1 records have been imported").arg(hp.getResults().size()));
 }
 
 void MainWindow::on_actionRequest_triggered() {

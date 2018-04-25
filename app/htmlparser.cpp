@@ -79,7 +79,6 @@ int HtmlParser::Controller::processImpl(const char* data, size_t len, int curren
     Q_UNUSED(totalIndexes);
 
     if (QString::fromUtf8(data, static_cast<int>(len)) == tmpl) {
-        //qDebug() << "found " << tmpl << " set index to " << currentIndex + 1;
         return currentIndex + 1;
     }
 
