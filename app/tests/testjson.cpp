@@ -1,6 +1,6 @@
 #include <QTest>
 #include "testjson.h"
-#include "utils.h"
+#include "misc.h"
 
 void TestJson::testUtils() {
     QCOMPARE(Utils::url2UserId("https://fantlab/user456"), 456);
