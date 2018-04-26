@@ -72,6 +72,7 @@ include(cothinker/cothinker.pri)
 include(statusbar/statusbar.pri)
 include(misc/misc.pri)
 include(preferences/preferences.pri)
+include(data.pri)
 
 FORMS    += mainwindow.ui
 
