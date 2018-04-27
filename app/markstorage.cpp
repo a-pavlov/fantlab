@@ -1,11 +1,13 @@
 #include "markstorage.h"
+#include <QMap>
+#include <QFile>
+#include <QTextStream>
 
 MarkStorage::MarkStorage() {
 
 }
 
 void MarkStorage::addMark(int user, int work, int mark) {
-    //public void addMark(final String userName, final String bookName, int mark) {
     Q_ASSERT(mark != 0);
     int userPos = -1;
     QMap<int, int>::const_iterator itr = userIndexes.find(user);
@@ -37,4 +39,35 @@ void MarkStorage::addMark(int user, int work, int mark) {
     Q_ASSERT(workIndexes.size() == markMatrix.at(0).size());
     Q_ASSERT(workIndexes.size() == markMatrix.at(userPos).size());
     markMatrix[userPos].replace(index, mark);
+}
+
+bool MarkStorage::saveData(const QString& worksFilename, const QString& marksFilename) {
+
+    // write books in sorted order
+    QFile worksFile(worksFilename);
+
+    if (worksFile.open(QFile::WriteOnly | QFile::Text)) {
+        QStringList worksList;
+        worksList.reserve(workIndexes.size());
+        for(int i = 0; i < workIndexes.size(); ++i) worksList << QString();
+        for(QMap<int, int>::const_iterator itr = workIndexes.constBegin(); itr != workIndexes.constEnd(); ++itr) worksList[itr.value()] = QString::number(itr.value() + 1) + "," + QString::number(itr.key());
+        QTextStream fs(&worksFile);
+        foreach(const QString& s, worksList) fs << s << "\n";
+        worksFile.close();
+    } else return false;
+
+    // write marks - in columns - users in lines - marks
+    //    u1  u2  u3  u4
+    // m1 *   *   *   *
+    // m2 *   *   *   *
+
+    QFile marksFile(marksFilename);
+
+    if (marksFile.open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream fs(&marksFile);
+        for(int i = 0; i < userIndexes.size(); ++i) fs << getMarksByIndex(i).join(",") << "\n";
+        marksFile.close();
+    } else return false;
+
+    return true;
 }

@@ -3,6 +3,7 @@
 
 #include <QMap>
 #include <QList>
+#include <QStringList>
 
 class MarkStorage {
 private:
@@ -48,15 +49,17 @@ public:
         return markMatrix.isEmpty()?0:markMatrix.at(0).size();
     }
 
-    QList<int> getMarksByIndex(int i) {
+    QStringList getMarksByIndex(int i) {
         Q_ASSERT(i < getTotalMarks());
-        QList<int> res;
+        QStringList res;
         foreach(const QList<int>& userMarks, markMatrix) {
-            res.append(userMarks.at(i));
+            res << QString::number(userMarks.at(i));
         }
 
         return res;
     }
+
+    bool saveData(const QString& worksFilename, const QString& marksFilename);
 };
 
 #endif // MARKSTORAGE_H
