@@ -31,6 +31,22 @@ private:
     QMap<int, int> userIndexes;
 public:
     MarkStorage();
+
+    /**
+     *
+     * @brief addUser adds user to dictionary. Useful for register users in pre-defined order
+     * because owner must be first user registered in storage
+     * @param user identifier of user
+     * @return user position
+     */
+    int addUser(int user);
+
+    /**
+     * @brief addMark creates mark from specified user for specified work
+     * @param user identifier of user
+     * @param work identifier of book
+     * @param mark value in range 1-10, zero means no mark
+     */
     void addMark(int user, int work, int mark);
 
     const QMap<int, int>& getWorkIndexes() const {

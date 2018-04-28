@@ -85,3 +85,28 @@ void TestMarkStorage::testStorageArbitraryInput() {
     QCOMPARE(accum.getMarkMatrix().at(0).size(), 3);
     QCOMPARE(accum.getMarkMatrix().at(1).size(), 3);
 }
+
+void TestMarkStorage::testAddUser() {
+    MarkStorage accum;
+    QCOMPARE(accum.addUser(5), 0);
+    QCOMPARE(accum.addUser(5), 0);
+    QCOMPARE(accum.addUser(3), 1);
+    QCOMPARE(accum.addUser(5), 0);
+    QCOMPARE(accum.addUser(3), 1);
+    QCOMPARE(accum.addUser(4), 2);
+    accum.addMark(4, 2, 5);
+    accum.addMark(4, 1, 6);
+    accum.addMark(3, 2, 1);
+    accum.addMark(5, 1, 10);
+    accum.addMark(5, 2, 9);
+    QCOMPARE(accum.getUsers().size(), 3);
+    QCOMPARE(accum.getMarkMatrix().size(), 3);
+    QCOMPARE(accum.getMarkMatrix().at(0).size(), 2);
+    QCOMPARE(accum.getMarkMatrix().at(1).size(), 2);
+    QCOMPARE(accum.getMarkMatrix().at(2).size(), 2);
+
+    // validate user 5 first book is 2 second book is 1
+    QCOMPARE(accum.getMarkMatrix().at(0).at(0), 9);
+    QCOMPARE(accum.getMarkMatrix().at(0).at(1), 10);
+
+}

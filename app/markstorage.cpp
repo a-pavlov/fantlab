@@ -7,8 +7,9 @@ MarkStorage::MarkStorage() {
 
 }
 
-void MarkStorage::addMark(int user, int work, int mark) {
-    Q_ASSERT(mark != 0);
+int MarkStorage::addUser(int user) {
+    Q_ASSERT(user != 0);
+
     int userPos = -1;
     QMap<int, int>::const_iterator itr = userIndexes.find(user);
     if (itr == userIndexes.end()) {
@@ -20,6 +21,13 @@ void MarkStorage::addMark(int user, int work, int mark) {
         userPos = itr.value();
     }
 
+    Q_ASSERT(markMatrix.size() == userIndexes.size());
+    return userPos;
+}
+
+void MarkStorage::addMark(int user, int work, int mark) {
+    Q_ASSERT(mark != 0);
+    int userPos = addUser(user);
     Q_ASSERT(userPos != -1);
     Q_ASSERT(markMatrix.size() == userIndexes.size());
 

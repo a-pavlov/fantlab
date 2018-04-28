@@ -15,6 +15,7 @@ private slots:
     void testStorageInit();
     void testStorageGetters();
     void testStorageArbitraryInput();
+    void testAddUser();
 };
 
 #endif // TESTMARKSTORAGE_H
