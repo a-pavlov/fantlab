@@ -14,6 +14,7 @@ private slots:
     void octaveReadyReadStandardOutput();
 signals:
     void iteration(int, QString);
+    void lambda(QString);
 };
 
 #endif // OCTAVE_H

@@ -10,6 +10,7 @@ public:
 private slots:
     void testIterationsDetails();
     void testIterationDetection();
+    void testLambdaDetection();
 };
 
 #endif // TESTOCTAVEOUTPUT_H

@@ -21,3 +21,10 @@ bool Misc::isIteration(const QString& input) {
     static QRegExp rx("^Iteration\\s*\\r?\\n?");
     return rx.exactMatch(input);
 }
+
+QString Misc::octaveLambda(const QString& input) {
+    static QRegExp rx("current_lambda:\\s+([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
+    rx.indexIn(input);
+    QStringList res = rx.capturedTexts();
+    return (res.size() == 3)?res.at(1):QString();
+}

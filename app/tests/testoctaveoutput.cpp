@@ -21,3 +21,13 @@ void TestOctaveOutput::testIterationDetection() {
     QVERIFY(Misc::isIteration("Iteration  \r"));
     QVERIFY(!Misc::isIteration("  Iteration"));
 }
+
+void TestOctaveOutput::testLambdaDetection() {
+    QCOMPARE(Misc::octaveLambda("current_lambda: 100"), QString("100"));
+    QCOMPARE(Misc::octaveLambda("current_lambda: 0.1"), QString("0.1"));
+    QCOMPARE(Misc::octaveLambda("current_lambda:   0.0005"), QString("0.0005"));
+    QCOMPARE(Misc::octaveLambda("current_lambda: 12.444789"), QString("12.444789"));
+    QCOMPARE(Misc::octaveLambda("current_lambda: -1.07"), QString("-1.07"));
+    QCOMPARE(Misc::octaveLambda("current_lambdas: 100"), QString());
+    QCOMPARE(Misc::octaveLambda("current_lambda  100"), QString());
+}

@@ -21,10 +21,19 @@ void Octave::octaveReadyReadStandardOutput() {
     QString data(this->readAllStandardOutput());
     foreach(const QString& line, data.split("\n", QString::SkipEmptyParts)) {
         if (Misc::isIteration(line)) continue;
+
         QPair<int, QString> cost = Misc::octaveCost(line);
         if (cost.first != 0 && !cost.second.isNull()) {
             emit iteration(cost.first, cost.second);
-        } else
+            continue;
+        }
+
+        QString ld = Misc::octaveLambda(line);
+        if (!ld.isNull()) {
+            emit lambda(ld);
+            continue;
+        }
+
         qDebug() << "line " << line;
     }
 }
