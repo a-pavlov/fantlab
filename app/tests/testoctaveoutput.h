@@ -11,6 +11,8 @@ private slots:
     void testIterationsDetails();
     void testIterationDetection();
     void testLambdaDetection();
+    void testMinCostDetection();
+    void testIsLambdaFinsihed();
 };
 
 #endif // TESTOCTAVEOUTPUT_H

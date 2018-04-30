@@ -10,20 +10,17 @@
 QT_BEGIN_NAMESPACE
 class CoThinkerModel;
 class QSortFilterProxyModel;
-class Octave;
 class Request;
 class QNetworkAccessManager;
 class StatusBar;
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow, private Ui::MainWindow
-{
+class MainWindow : public QMainWindow, private Ui::MainWindow {
     Q_OBJECT
 private:
     HtmlParser hp;
     CoThinkerModel* co_thinkers;
     QSortFilterProxyModel* ct_sort;
-    Octave* octave;
     Request* user;
     QNetworkAccessManager* nam;
     StatusBar* sb;
@@ -40,7 +37,7 @@ private slots:
     void on_actionCancel_triggered();
     void on_actionRecommend_triggered();
 
-    void onIteration(int, QString);    
+    void onIteration(int, QString);
 };
 
 #endif // MAINWINDOW_H

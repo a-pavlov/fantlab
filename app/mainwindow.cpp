@@ -16,7 +16,6 @@
 #include "mainwindow.h"
 #include "htmlparser.h"
 #include "cothinkermodel.h"
-#include "octave.h"
 #include "user.h"
 #include "status_bar.h"
 #include "fs.h"
@@ -48,9 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
     actionOpen->setEnabled(true);
     actionRequest->setEnabled(false);
     actionCancel->setEnabled(false);
-
-    octave = new Octave(this);
-    connect(octave, SIGNAL(iteration(int,QString)), this, SLOT(onIteration(int,QString)));
 
     connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
     connect(co_thinkers, SIGNAL(dataRefreshed(int,int)), this, SLOT(onRefreshCompleted(int,int)));
@@ -137,10 +133,6 @@ void MainWindow::on_actionRecommend_triggered() {
     qDebug() << "copy " << Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());*/
     OctaveDlg dialog(this);
     dialog.exec();
-
-    //Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
-    //Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());
-    //octave->startOctave();
 }
 
 void MainWindow::onIteration(int step, QString cost) {

@@ -22,9 +22,21 @@ void Octave::octaveReadyReadStandardOutput() {
     foreach(const QString& line, data.split("\n", QString::SkipEmptyParts)) {
         if (Misc::isIteration(line)) continue;
 
+        if (Misc::isLambdaFinished(line)) {
+            emit lambdaFinished();
+            continue;
+        }
+
         QPair<int, QString> cost = Misc::octaveCost(line);
         if (cost.first != 0 && !cost.second.isNull()) {
             emit iteration(cost.first, cost.second);
+            continue;
+        }
+
+        QString minCost = Misc::octaveMinCost(line);
+
+        if (!minCost.isNull()) {
+            emit minimalCost(minCost);
             continue;
         }
 
@@ -35,6 +47,7 @@ void Octave::octaveReadyReadStandardOutput() {
         }
 
         qDebug() << "line " << line;
+        lastLine = line;
     }
 }
 

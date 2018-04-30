@@ -23,8 +23,20 @@ bool Misc::isIteration(const QString& input) {
 }
 
 QString Misc::octaveLambda(const QString& input) {
-    static QRegExp rx("current_lambda:\\s+([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
+    static QRegExp rx("cur_lambda:([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
     rx.indexIn(input);
     QStringList res = rx.capturedTexts();
     return (res.size() == 3)?res.at(1):QString();
+}
+
+QString Misc::octaveMinCost(const QString& input) {
+    static QRegExp rx("min_cost:([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
+    rx.indexIn(input);
+    QStringList res = rx.capturedTexts();
+    return (res.size() == 3)?res.at(1):QString();
+}
+
+bool Misc::isLambdaFinished(const QString& input) {
+    static QRegExp rx("^fin_lambda\\s*\\r?\\n?");
+    return rx.exactMatch(input);
 }

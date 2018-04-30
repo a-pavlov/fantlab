@@ -6,6 +6,8 @@
 
 class Octave : public QProcess {
     Q_OBJECT
+private:
+    QString lastLine;
 public:
     Octave(QObject* parent = 0);
     void startOctave();
@@ -15,6 +17,8 @@ private slots:
 signals:
     void iteration(int, QString);
     void lambda(QString);
+    void lambdaFinished();
+    void minimalCost(QString);
 };
 
 #endif // OCTAVE_H

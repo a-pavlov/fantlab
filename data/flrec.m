@@ -36,16 +36,17 @@ fprintf("start learning: num_features %d\n", num_features);
 
 for index=1:size(lambdas,2)
     lambda = lambdas(index);
-    fprintf("current_lambda: %f\n", lambda);
-        [theta_loc fX i] = fmincg (@(t)(cofiCostFunc(t, Ynorm, R, num_users, num_marks, ...
-                                num_features, lambda)), ...
-                initial_parameters, options);
+    fprintf("cur_lambda:%f\n", lambda);
+    [theta_loc fX i] = fmincg (@(t)(cofiCostFunc(t, Ynorm, R, num_users, num_marks, ...
+                            num_features, lambda)), ...
+            initial_parameters, options);
 
-        if (total_cost > fX(end))
-                theta = theta_loc;
-                fprintf("set minimal theta on lambda %f cost %f\n", lambda, fX(end));
-                total_cost = fX(end);
-        end
+    if (total_cost > fX(end))
+            theta = theta_loc;
+            total_cost = fX(end);
+            fprintf("min_cost:%f\n", total_cost);
+    end
+    fprintf("fin_lambda\n");
 end
 
 % Unfold the returned theta back into U and W
