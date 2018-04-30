@@ -20,6 +20,7 @@
 #include "user.h"
 #include "status_bar.h"
 #include "fs.h"
+#include "octavedlg.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this)) {
@@ -51,12 +52,12 @@ MainWindow::MainWindow(QWidget *parent) :
     octave = new Octave(this);
     connect(octave, SIGNAL(iteration(int,QString)), this, SLOT(onIteration(int,QString)));
 
-    connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));    
+    connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
     connect(co_thinkers, SIGNAL(dataRefreshed(int,int)), this, SLOT(onRefreshCompleted(int,int)));
 
     sb = new StatusBar(this, QMainWindow::statusBar());
     sb->setIteration(0);
-    sb->setCost("N/A");    
+    sb->setCost("N/A");
 }
 
 MainWindow::~MainWindow() {}
@@ -134,10 +135,12 @@ void MainWindow::on_actionRecommend_triggered() {
     /*qDebug() << "data loc " << Utils::Fs::tempPath();
     qDebug() << "remove " << Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
     qDebug() << "copy " << Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());*/
+    OctaveDlg dialog(this);
+    dialog.exec();
 
-    Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
-    Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());
-    octave->startOctave();
+    //Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
+    //Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());
+    //octave->startOctave();
 }
 
 void MainWindow::onIteration(int step, QString cost) {

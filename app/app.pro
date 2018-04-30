@@ -59,12 +59,10 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     htmlparser.cpp \
-    octave.cpp \
     markstorage.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
-    octave.h \
     markstorage.h
 
 include(rest/rest.pri)
@@ -72,9 +70,11 @@ include(cothinker/cothinker.pri)
 include(statusbar/statusbar.pri)
 include(misc/misc.pri)
 include(preferences/preferences.pri)
+include(octave/octave.pri)
 include(data.pri)
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    octave/octavedlg.ui
 
 win32:RC_FILE = app.rc
 
