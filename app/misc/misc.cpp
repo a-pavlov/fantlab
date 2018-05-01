@@ -1,6 +1,8 @@
 #include "misc.h"
 #include <QRegExp>
 #include <QStringList>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 
 int Misc::url2UserId(const QString& url) {
@@ -39,4 +41,13 @@ QString Misc::octaveMinCost(const QString& input) {
 bool Misc::isLambdaFinished(const QString& input) {
     static QRegExp rx("^fin_lambda\\s*\\r?\\n?");
     return rx.exactMatch(input);
+}
+
+WorkInfo Misc::getWorkInfo(const QJsonDocument& doc) {
+    WorkInfo wi;
+    QJsonObject o = doc.object();
+    wi.title = o["title"].toString();
+    wi.name = o["work_name"].toString();
+    wi.description = o["work_description"].toString();
+    return wi;
 }

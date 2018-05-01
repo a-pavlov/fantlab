@@ -31,3 +31,5 @@ HEADERS += \
     testjson.h \
     testmarkstorage.h \
     testoctaveoutput.h
+
+RESOURCES += res.qrc

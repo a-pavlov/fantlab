@@ -4,6 +4,14 @@
 #include <QString>
 #include <QPair>
 
+class QJsonDocument;
+
+struct WorkInfo {
+    QString title;
+    QString description;
+    QString name;
+};
+
 class Misc {
 public:
     static int url2UserId(const QString&);
@@ -12,6 +20,7 @@ public:
     static QString octaveLambda(const QString&);
     static QString octaveMinCost(const QString&);
     static bool isLambdaFinished(const QString&);
+    static WorkInfo getWorkInfo(const QJsonDocument&);
 };
 
 #endif // UTILS_H

@@ -1,5 +1,5 @@
-#ifndef WORK_H
-#define WORK_H
+#ifndef REQUEST_H
+#define REQUEST_H
 
 #include <QObject>
 #include <QList>
@@ -13,7 +13,7 @@ class QNetworkRequest;
 QT_END_NAMESPACE
 
 class Request : public QObject {
-    Q_OBJECT    
+    Q_OBJECT
 public:
     static QString apiUrl;
     explicit Request(QObject *parent = 0);
@@ -29,4 +29,4 @@ private slots:
     void handleSslErrors(QList<QSslError> errors);
 };
 
-#endif // WORK_H
+#endif // REQUEST_H

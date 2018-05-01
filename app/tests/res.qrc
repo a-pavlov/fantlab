@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/data">
+        <file alias="work">work.json</file>
+    </qresource>
+</RCC>
