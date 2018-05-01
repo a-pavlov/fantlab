@@ -18,9 +18,17 @@ void Octave::octaveReadyReadStandardError() {
 }
 
 void Octave::octaveReadyReadStandardOutput() {
-    QString data(this->readAllStandardOutput());
+    QString input(this->readAllStandardOutput());
+
+    // to avoid uncontrolled buffer's size increment just reset it if length too big
+    if (lastLine.length() > 100) lastLine.clear();
+    QString data = lastLine + input;
+    lastLine.clear();
+
     foreach(const QString& line, data.split("\n", QString::SkipEmptyParts)) {
-        if (Misc::isIteration(line)) continue;
+        if (Misc::isIteration(line)) {
+            continue;
+        }
 
         if (Misc::isLambdaFinished(line)) {
             emit lambdaFinished();
@@ -41,12 +49,14 @@ void Octave::octaveReadyReadStandardOutput() {
         }
 
         QString ld = Misc::octaveLambda(line);
+
         if (!ld.isNull()) {
             emit lambda(ld);
             continue;
         }
 
         qDebug() << "line " << line;
+        lastLine = line;
     }
 }
 
