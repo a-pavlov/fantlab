@@ -19,6 +19,7 @@ public:
 private slots:
     void close();
     void onStart();
+    void onStop();
     void onCost(int iteration, QString cost);
     void onMinCost(QString cost);
     void onLambda(QString lambda);

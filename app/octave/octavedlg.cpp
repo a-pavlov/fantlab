@@ -12,13 +12,10 @@ OctaveDlg::OctaveDlg(QWidget *parent): QDialog(parent)
     setupUi(this);
     connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
     connect(btnStart, SIGNAL(clicked(bool)), this, SLOT(onStart()));
+    connect(btnStop, SIGNAL(clicked(bool)), this, SLOT(onStop()));
 }
 
 void OctaveDlg::close() {
-    if (octave != NULL) {
-        octave->kill();
-        qDebug() << "process killed";
-    }
     accept();
 }
 
@@ -29,12 +26,18 @@ void OctaveDlg::onStart() {
     progressBar->setValue(0);
     Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
     Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());
-    Octave* octave = new Octave(this);
+    octave = new Octave(this);
     connect(octave, SIGNAL(lambda(QString)), this, SLOT(onLambda(QString)));
     connect(octave, SIGNAL(lambdaFinished()), this, SLOT(onLambdaFinished()));
     connect(octave, SIGNAL(iteration(int,QString)), this, SLOT(onCost(int,QString)));
     connect(octave, SIGNAL(minimalCost(QString)), this, SLOT(onMinCost(QString)));
     octave->startOctave();
+}
+
+void OctaveDlg::onStop() {
+    if (octave != NULL) {
+        octave->kill();
+    }
 }
 
 void OctaveDlg::onCost(int iteration, QString cost) {

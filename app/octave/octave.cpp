@@ -47,7 +47,6 @@ void Octave::octaveReadyReadStandardOutput() {
         }
 
         qDebug() << "line " << line;
-        lastLine = line;
     }
 }
 
@@ -57,5 +56,5 @@ void Octave::startOctave() {
     qDebug() << "start " << (Utils::Fs::getOctavePath() + QDir::separator() + "octave-cli-4.2.2.exe")
              << "work dir " << Utils::Fs::tempPath();
     setWorkingDirectory(Utils::Fs::tempPath());
-    start(Utils::Fs::getOctavePath() + QDir::separator() + "octave.bat", QStringList() << "flrec.m");
+    start(Utils::Fs::getOctavePath() + QDir::separator() + "bin\\octave-cli.exe", QStringList() << "flrec.m");
 }
