@@ -31,6 +31,8 @@ void OctaveDlg::onStart() {
     connect(octave, SIGNAL(lambdaFinished()), this, SLOT(onLambdaFinished()));
     connect(octave, SIGNAL(iteration(int,QString)), this, SLOT(onCost(int,QString)));
     connect(octave, SIGNAL(minimalCost(QString)), this, SLOT(onMinCost(QString)));
+    connect(octave, SIGNAL(started()), this, SLOT(onProcStarted()));
+    connect(octave, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcFinished(int,QProcess::ExitStatus)));
     octave->startOctave();
 }
 
@@ -55,4 +57,13 @@ void OctaveDlg::onLambda(QString lambda) {
 
 void OctaveDlg::onLambdaFinished() {
     progressBar->setValue(++finishedLambdas);
+}
+
+void OctaveDlg::onProcStarted() {
+    lbProcStatus->setText(tr("Running"));
+}
+
+void OctaveDlg::onProcFinished(int exitCode, QProcess::ExitStatus exitStatus) {
+    Q_UNUSED(exitCode);
+    lbProcStatus->setText(exitStatus==QProcess::NormalExit?tr("Done"):tr("Failed"));
 }

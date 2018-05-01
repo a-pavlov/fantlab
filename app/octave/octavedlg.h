@@ -2,6 +2,7 @@
 #define OCTAVEDLG_H
 
 #include <QObject>
+#include <QProcess>
 #include "ui_octavedlg.h"
 
 QT_BEGIN_NAMESPACE
@@ -24,6 +25,9 @@ private slots:
     void onMinCost(QString cost);
     void onLambda(QString lambda);
     void onLambdaFinished();
+
+    void onProcStarted();
+    void onProcFinished(int exitCode, QProcess::ExitStatus exitStatus);
 };
 
 #endif // OCTAVEDLG_H
