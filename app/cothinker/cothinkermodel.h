@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include "user.h"
+#include "misc.h"
 
 QT_BEGIN_NAMESPACE
 class QNetworkAccessManager;
@@ -41,6 +42,8 @@ public:
     void stop();
     void updateData(int pos);
     QNetworkAccessManager* getNetworkManager() const { return nam; }
+    void addWork(int workId, const WorkInfo& wi);
+    bool hasWork(int workId) const;
 private:
     int updateIndex;
     int pendingRequests;
@@ -50,6 +53,7 @@ private:
     QList<User*> co_thinkers;
     QNetworkAccessManager* nam;
     const User& at(const QModelIndex&) const;
+    QMap<int, WorkInfo> workDict;
 signals:
     void dataRefreshed(int totalCount, int errorsCount);
 private slots:

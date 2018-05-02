@@ -2,6 +2,7 @@
 #define WORK_H
 
 #include <QObject>
+#include "misc.h"
 
 QT_BEGIN_NAMESPACE
 class Request;
@@ -14,6 +15,7 @@ private:
     Request* request;
     CoThinkerModel* model;
     int workId;
+    WorkInfo wi;
     void finishRequest();
 public:
     explicit Work(CoThinkerModel* mod, int work, QObject *parent = 0);

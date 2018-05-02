@@ -10,7 +10,7 @@ class Request;
 QT_END_NAMESPACE
 
 class User : public QObject {
-    Q_OBJECT    
+    Q_OBJECT
 
 private:
     Request* request;
@@ -20,7 +20,7 @@ public:
     int pairs;
     double similarity;
     int userId;
-    int position;    
+    int position;
     QString login;
     QString className;
     int markCount;
@@ -41,8 +41,6 @@ public:
          , int pos
          , CoThinkerModel* mod
          , QObject *parent = 0);
-
-    //User(const User&);
 
     ~User();
     void requestData();

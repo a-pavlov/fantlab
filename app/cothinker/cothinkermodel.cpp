@@ -187,3 +187,11 @@ void CoThinkerModel::updateData(int pos) {
         emit dataRefreshed(totalCount, errorCount);
     }
 }
+
+void CoThinkerModel::addWork(int workId, const WorkInfo& wi) {
+    workDict.insert(workId, wi);
+}
+
+bool CoThinkerModel::hasWork(int workId) const {
+    return workDict.contains(workId);
+}

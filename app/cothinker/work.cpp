@@ -34,24 +34,17 @@ void Work::finishRequest() {
 }
 
 void Work::jsonError(int ec) {
+    Q_UNUSED(ec);
     finishRequest();
 }
 
 void Work::networkError(int ec) {
+    Q_UNUSED(ec);
     finishRequest();
 }
 
 void Work::processResponse(const QJsonDocument& jd) {
-    QJsonObject o = jd.object();
-    /*
-    login = o["login"].toString();
-    className = o["class_name"].toString();
-    markCount = o["markcount"].toString().trimmed().toInt();
-    messageCount = o["messagecount"].toString().trimmed().toInt();
-    responseCount = o["responsecount"].toString().trimmed().toInt();
-    ticketsCount = o["tickets_count"].toString().trimmed().toInt();
-    topicCount = o["topiccount"].toString().trimmed().toInt();
-    status = tr("Finished");
-    */
+    wi = Misc::getWorkInfo(jd);
+    model->addWork(workId, wi);
     finishRequest();
 }
