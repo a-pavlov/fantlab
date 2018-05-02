@@ -8,6 +8,7 @@ class TestJson : public QObject {
 private slots:
     void testUtils();
     void testWorkJson();
+    void testWorkJsonNoFanGenre();
 };
 
 #endif // TESTJSON_H

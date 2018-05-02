@@ -1,0 +1,311 @@
+﻿{
+    "authors": [
+        {
+            "id": "187",
+            "is_opened": "1",
+            "name": "Вячеслав Рыбаков",
+            "name_orig": "",
+            "type": "autor"
+        },
+        {
+            "id": "189",
+            "is_opened": "1",
+            "name": "Игорь Алимов",
+            "name_orig": "",
+            "type": "autor"
+        }
+    ],
+    "awards": {
+        "nom": [
+            {
+                "award_icon": "//data.fantlab.ru/images/awards/icons/12_icon",
+                "award_id": "12",
+                "award_in_list": "1",
+                "award_is_opened": "1",
+                "award_name": "",
+                "award_rusname": "Бронзовая Улитка",
+                "contest_id": "162",
+                "contest_name": "2003",
+                "contest_year": "2003",
+                "cw_id": "37378",
+                "cw_is_winner": "0",
+                "cw_postfix": "",
+                "cw_prefix": "",
+                "nomination_id": "55",
+                "nomination_name": "",
+                "nomination_rusname": "Крупная форма"
+            },
+            {
+                "award_icon": "//data.fantlab.ru/images/awards/icons/11_icon",
+                "award_id": "11",
+                "award_in_list": "1",
+                "award_is_opened": "1",
+                "award_name": "",
+                "award_rusname": "Интерпресскон",
+                "contest_id": "116",
+                "contest_name": "2003",
+                "contest_year": "2003",
+                "cw_id": "37763",
+                "cw_is_winner": "0",
+                "cw_postfix": null,
+                "cw_prefix": null,
+                "nomination_id": "46",
+                "nomination_name": "",
+                "nomination_rusname": "Крупная форма (роман)"
+            }
+        ]
+    },
+    "children": null,
+    "classificatory": [
+        {
+            "genre": [
+                {
+                    "genre_id": 52,
+                    "label": "Приключенческое"
+                }
+            ],
+            "genre_group_id": 2,
+            "label": "Общие характеристики"
+        },
+        {
+            "genre": [
+                {
+                    "genre": [
+                        {
+                            "genre_id": "79",
+                            "label": "Россия/СССР/Русь"
+                        },
+                        {
+                            "genre": [
+                                {
+                                    "genre_id": "82",
+                                    "label": "Восточная Азия"
+                                }
+                            ],
+                            "genre_id": "199",
+                            "label": "Азия"
+                        }
+                    ],
+                    "genre_id": 78,
+                    "label": "Альтернативная история нашего мира/Земли"
+                }
+            ],
+            "genre_group_id": 3,
+            "label": "Место действия"
+        },
+        {
+            "genre": [
+                {
+                    "genre_id": 101,
+                    "label": "21 век"
+                }
+            ],
+            "genre_group_id": 4,
+            "label": "Время действия"
+        },
+        {
+            "genre": [
+                {
+                    "genre_id": 171,
+                    "label": "Линейно-параллельный"
+                }
+            ],
+            "genre_group_id": 7,
+            "label": "Линейность сюжета"
+        },
+        {
+            "genre": [
+                {
+                    "genre_id": 106,
+                    "label": "Любой"
+                }
+            ],
+            "genre_group_id": 5,
+            "label": "Возраст читателя"
+        }
+    ],
+    "editions": null,
+    "editions_blocks": {
+        "10": {
+            "block": "paper",
+            "id": 10,
+            "list": [
+                {
+                    "autors": "Хольм ван Зайчик",
+                    "compilers": "",
+                    "correct_level": 1,
+                    "ebook": 0,
+                    "edition_id": "3074",
+                    "isbn": "2-352-00182-2",
+                    "lang": "русский",
+                    "lang_code": "ru",
+                    "lang_id": 1,
+                    "name": "Дело победившей обезьяны",
+                    "pic_num": "1",
+                    "plandate": null,
+                    "plandate_txt": "",
+                    "type": 10,
+                    "year": "2002"
+                },
+                {
+                    "autors": "Хольм ван Зайчик",
+                    "compilers": "",
+                    "correct_level": 1,
+                    "ebook": 0,
+                    "edition_id": "3073",
+                    "isbn": "5-352-00348-5",
+                    "lang": "русский",
+                    "lang_code": "ru",
+                    "lang_id": 1,
+                    "name": "Дело победившей обезьяны",
+                    "pic_num": "1",
+                    "plandate": null,
+                    "plandate_txt": "",
+                    "type": 10,
+                    "year": "2003"
+                },
+                {
+                    "autors": "Хольм ван Зайчик",
+                    "compilers": "",
+                    "correct_level": 1,
+                    "ebook": 0,
+                    "edition_id": "3214",
+                    "isbn": "5-352-00890-8",
+                    "lang": "русский",
+                    "lang_code": "ru",
+                    "lang_id": 1,
+                    "name": "Дело победившей обезьяны",
+                    "pic_num": "1",
+                    "plandate": null,
+                    "plandate_txt": "",
+                    "type": 10,
+                    "year": "2004"
+                },
+                {
+                    "autors": "Хольм ван Зайчик",
+                    "compilers": "",
+                    "correct_level": 1,
+                    "ebook": 0,
+                    "edition_id": "5545",
+                    "isbn": "5-352-01602-1",
+                    "lang": "русский",
+                    "lang_code": "ru",
+                    "lang_id": 1,
+                    "name": "Дело лис-оборотней. Дело победившей обезьяны. Дело Судьи Ди",
+                    "pic_num": "1",
+                    "plandate": null,
+                    "plandate_txt": "",
+                    "type": 10,
+                    "year": "2005"
+                }
+            ],
+            "name": "paper",
+            "title": "Издания"
+        }
+    },
+    "editions_info": {
+        "all": 4,
+        "booktype": {
+            "10": {
+                "count": 4,
+                "id": 10,
+                "name": "paper",
+                "title": "книги"
+            }
+        },
+        "isbn_list": [
+            "2-352-00182-2",
+            "5-352-00348-5",
+            "5-352-00890-8",
+            "5-352-01602-1"
+        ],
+        "langs": {
+            "1": {
+                "count": 4,
+                "lang_code": "ru",
+                "lang_id": 1,
+                "lang_name": "русский"
+            }
+        },
+        "translators": []
+    },
+    "films": null,
+    "image": "//data.fantlab.ru/images/editions/big/3074",
+    "image_preview": "//data.fantlab.ru/images/editions/small/3074",
+    "la_resume": [
+        "Приблизительно страниц: 212",
+        "Активный словарный запас: высокий (3219 уникальных слов на 10000 слов текста)",
+        "Средняя длина предложения: 78 знаков, что близко к среднему (81)",
+        "Доля диалогов в тексте: 38%, что близко к среднему (37%)"
+    ],
+    "last_modified": "2016-07-06 03:39:38",
+    "parents": {
+        "cycles": [
+            [
+                {
+                    "work_id": 481124,
+                    "work_name": "Мир Ордуси",
+                    "work_type": "цикл",
+                    "work_type_id": "4",
+                    "work_type_in": "цикл",
+                    "work_year": null
+                },
+                {
+                    "work_id": 7181,
+                    "work_name": "Евразийская симфония",
+                    "work_type": "цикл",
+                    "work_type_id": "4",
+                    "work_type_in": "цикл",
+                    "work_year": null
+                },
+                {
+                    "work_name": "Вторая цзюань"
+                }
+            ]
+        ]
+    },
+    "public_download_file": 0,
+    "publish_statuses": [],
+    "rating": {
+        "rating": "7.91",
+        "voters": "349"
+    },
+    "stat": {
+        "editioncount": 4
+    },
+    "title": "title",
+    "translations": [],
+    "val_midmark": "7.99",
+    "val_midmark_by_weight": "7.91",
+    "val_responsecount": "2",
+    "val_voters": "349",
+    "work_description": "description",
+    "work_description_author": "",
+    "work_id": "7067",
+    "work_lp": "1",
+    "work_name": "name",
+    "work_name_alts": [],
+    "work_name_bonus": "под псевдонимом Хольм ван Зайчик",
+    "work_name_orig": "",
+    "work_notes": "",
+    "work_notfinished": "0",
+    "work_parent": "0",
+    "work_preparing": "0",
+    "work_published": "1",
+    "work_root_saga": [
+        {
+            "work_id": 481124,
+            "work_name": "Мир Ордуси",
+            "work_type": "цикл",
+            "work_type_id": "4",
+            "work_type_in": "цикл",
+            "work_year": null
+        }
+    ],
+    "work_type": "Роман",
+    "work_type_icon": "novel",
+    "work_type_id": "1",
+    "work_type_name": "novel",
+    "work_year": "2003",
+    "work_year_of_write": null
+}

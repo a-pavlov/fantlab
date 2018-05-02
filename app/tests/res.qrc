@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/data">
         <file alias="work">work.json</file>
+        <file alias="work_no_genre">work_no_genre.json</file>
     </qresource>
 </RCC>

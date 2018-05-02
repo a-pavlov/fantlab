@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QPair>
+#include <QList>
 
 class QJsonDocument;
 
@@ -10,6 +11,7 @@ struct WorkInfo {
     QString title;
     QString description;
     QString name;
+    QList<int> genres;
 };
 
 class Misc {

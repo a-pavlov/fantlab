@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 
 int Misc::url2UserId(const QString& url) {
@@ -49,5 +50,17 @@ WorkInfo Misc::getWorkInfo(const QJsonDocument& doc) {
     wi.title = o["title"].toString();
     wi.name = o["work_name"].toString();
     wi.description = o["work_description"].toString();
+    QJsonArray classificatory = o["classificatory"].toArray();
+
+    foreach(const QJsonValue& cv, classificatory) {
+        if (cv.toObject()["genre_group_id"].toInt() == 1) {
+            QJsonArray ga = cv.toObject()["genre"].toArray();
+            foreach(const QJsonValue& gv, ga) {
+                wi.genres.append(gv.toObject()["genre_id"].toInt());
+            }
+            break;
+        }
+    }
+
     return wi;
 }
