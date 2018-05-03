@@ -20,6 +20,7 @@
 #include "status_bar.h"
 #include "fs.h"
 #include "octavedlg.h"
+#include "recommendmodel.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this)) {
@@ -33,6 +34,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ctTree->setModel(ct_sort);
     ctTree->setRootIsDecorated(false);
     ctTree->setSortingEnabled(true);
+
+    recommendations = new RecommendModel(this);
+    recommendations_sort = new QSortFilterProxyModel(this);
+    recommendations_sort->setSourceModel(recommendations);
+    recommendations_sort->setSortRole(RecommendModel::SortRole);
+    rTree->setModel(recommendations_sort);
+    rTree->setRootIsDecorated(false);
+    rTree->setSortingEnabled(true);
+    recommendations->populate(Utils::Fs::tempPath() + "/recommendations.csv");
 
     connect(ctTree->header(), SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
             this, SLOT(ctSortChanged(int, Qt::SortOrder)));

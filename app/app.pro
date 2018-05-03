@@ -59,11 +59,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     htmlparser.cpp \
-    markstorage.cpp
+    markstorage.cpp \
+    recommendmodel.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
-    markstorage.h
+    markstorage.h \
+    recommendmodel.h
 
 include(rest/rest.pri)
 include(cothinker/cothinker.pri)

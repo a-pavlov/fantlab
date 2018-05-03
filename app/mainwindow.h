@@ -13,6 +13,7 @@ class QSortFilterProxyModel;
 class Request;
 class QNetworkAccessManager;
 class StatusBar;
+class RecommendModel;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow, private Ui::MainWindow {
@@ -20,7 +21,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
 private:
     HtmlParser hp;
     CoThinkerModel* co_thinkers;
+    RecommendModel* recommendations;
     QSortFilterProxyModel* ct_sort;
+    QSortFilterProxyModel* recommendations_sort;
     Request* user;
     QNetworkAccessManager* nam;
     StatusBar* sb;
