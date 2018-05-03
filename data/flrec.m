@@ -12,6 +12,7 @@ num_users = size(Y, 2);
 num_marks = size(Y, 1);
 num_features = textread("num_features.txt", "%d", "endofline", "\n");
 num_iterations = textread("num_iterations.txt", "%d", "endofline", "\n");
+min_predicted = textread("min_predicted.txt", "%f", "endofline", "\n");
 
 %fprintf("start with %d users %d marks learn %d features\n", num_users, num_marks, num_features)
 
@@ -74,16 +75,16 @@ rfid=fopen('recommendations.csv','wt');
 
 for i=1:size(my_predictions)
     j = ix(i);
-        if (my_predictions(j) < 10)
-                break;
-        end
-        %fprintf("indexes %d Predicting rating %.1f book: %s\n", j, my_predictions(j), books{2}(j){1,1});
-        %fprintf(rfid, "https://fantlab.ru/%s\n", books{2}(j){1,1});
+    if (my_predictions(j) < min_predicted)
+            break;
+    end
+    %fprintf("indexes %d Predicting rating %.1f book: %s\n", j, my_predictions(j), books{2}(j){1,1});
+    fprintf(rfid, "%f,%d,%s\n", my_ratings(j), my_predictions(j), books{2}(j){1,1});
 end
 
-for i=1:size(my_predictions,1)
-        if (my_ratings(i) ~= 0)
-                %fprintf("book %s actual/predict %d/%d\n", books{2}(i){1,1}, my_ratings(i), my_predictions(i));
-        end
-end
+%for i=1:size(my_predictions,1)
+%        if (my_ratings(i) ~= 0)
+%                %fprintf("book %s actual/predict %d/%d\n", books{2}(i){1,1}, my_ratings(i), my_predictions(i));
+%        end
+%end
 
