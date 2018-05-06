@@ -3,8 +3,6 @@
 #include "request.h"
 
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QUrl>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QDebug>
@@ -15,15 +13,14 @@ User::User(const QString& u
            , double sim
            , int id
            , int pos
-           , CoThinkerModel* mod          
+           , CoThinkerModel* mod
            , QObject *parent): QObject(parent)
-    , request(NULL)
     , url(u)
     , name(nm)
     , pairs(pr)
     , similarity(sim)
     , userId(id)
-    , position(pos)    
+    , position(pos)
     , markCount(0)
     , messageCount(0)
     , responseCount(0)
@@ -60,32 +57,22 @@ User::~User() {
 }
 
 void User::requestData() {
-    Q_ASSERT(request == NULL);
-    request = new Request();
+    Request* request = new Request(Request::apiUrl + "/user/" + QString::number(userId));
     connect(request, SIGNAL(finished(QJsonDocument)), this, SLOT(processResponse(QJsonDocument)));
     connect(request, SIGNAL(jsonError(int)), this, SLOT(jsonError(int)));
     connect(request, SIGNAL(networkError(int)), this, SLOT(networkError(int)));
-    request->start(new QNetworkRequest(QUrl(Request::apiUrl + "/user/" + QString::number(userId))), model->getNetworkManager());
-}
-
-void User::finishRequest() {
-    Q_ASSERT(request != NULL);
-    disconnect(request, 0, 0, 0);
-    request->deleteLater();
-    request = NULL;
+    request->start(model->getNetworkManager());
 }
 
 void User::jsonError(int ec) {
     errorCode = ec;
     status = tr("Json error %1").arg(ec);
-    finishRequest();
-    model->updateData(position);    
+    model->updateData(position);
 }
 
 void User::networkError(int ec) {
     errorCode = ec;
     status = tr("Network error %1").arg(ec);
-    finishRequest();
     model->updateData(position);
 }
 
@@ -99,6 +86,5 @@ void User::processResponse(const QJsonDocument& jd) {
     ticketsCount = o["tickets_count"].toString().trimmed().toInt();
     topicCount = o["topiccount"].toString().trimmed().toInt();
     status = tr("Finished");
-    finishRequest();
     model->updateData(position);
 }

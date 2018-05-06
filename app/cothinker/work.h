@@ -5,18 +5,15 @@
 #include "misc.h"
 
 QT_BEGIN_NAMESPACE
-class Request;
 class CoThinkerModel;
 QT_END_NAMESPACE
 
 class Work : public QObject {
     Q_OBJECT
 private:
-    Request* request;
     CoThinkerModel* model;
     int workId;
     WorkInfo wi;
-    void finishRequest();
 public:
     explicit Work(CoThinkerModel* mod, int work, QObject *parent = 0);
     void requestData();

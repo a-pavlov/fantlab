@@ -11,9 +11,6 @@ QT_END_NAMESPACE
 
 class User : public QObject {
     Q_OBJECT
-
-private:
-    Request* request;
 public:
     QString url;
     QString name;
@@ -46,8 +43,6 @@ public:
     void requestData();
 
     int getPosition() const { return position; }
-private:
-    void finishRequest();
 private slots:
     void processResponse(const QJsonDocument&);
     void jsonError(int);

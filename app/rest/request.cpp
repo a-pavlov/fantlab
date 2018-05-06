@@ -1,20 +1,25 @@
 #include "request.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QUrl>
 #include <QDebug>
 
 QString Request::apiUrl = QString("https://api.fantlab.ru");
 
-Request::Request(QObject *parent)
-    : QObject(parent) {
+Request::Request(const QString& u, QObject *parent)
+    : QObject(parent), request(QUrl(u)) {
+    request.setRawHeader("Content-Type", "application/json");
+    request.setOriginatingObject(this);
 }
 
-void Request::start(QNetworkRequest* request, QNetworkAccessManager* manager) {
+Request::~Request() {
+    //qDebug() << "delete request " << request.url();
+}
+
+void Request::start(QNetworkAccessManager* manager) {
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(endRequest(QNetworkReply*)));
     connect(manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this, SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    request->setRawHeader("Content-Type", "application/json");
-    request->setOriginatingObject(this);
-    QNetworkReply* reply = manager->get(*request);
+    QNetworkReply* reply = manager->get(request);
 
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
                 this, SLOT(handleReplyError(QNetworkReply::NetworkError)));
@@ -39,6 +44,9 @@ void Request::endRequest(QNetworkReply* reply) {
             emit jsonError(static_cast<int>(error.error));
         }
     }
+
+    disconnect(this, 0, 0, 0);
+    deleteLater();
 }
 
 void Request::sslErrors(QNetworkReply * reply, const QList<QSslError> & errors) {
@@ -46,8 +54,10 @@ void Request::sslErrors(QNetworkReply * reply, const QList<QSslError> & errors) 
     reply->ignoreSslErrors();
 }
 
-void Request::handleReplyError(QNetworkReply::NetworkError error) {    
+void Request::handleReplyError(QNetworkReply::NetworkError error) {
     emit networkError(static_cast<int>(error));
+    disconnect(this, 0, 0, 0);
+    deleteLater();
 }
 
 void Request::handleSslErrors(QList<QSslError> errors) {
