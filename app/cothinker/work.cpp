@@ -1,5 +1,5 @@
 #include "work.h"
-#include "request.h"
+#include "workrequest.h"
 #include "cothinkermodel.h"
 
 #include <QNetworkAccessManager>
@@ -16,22 +16,25 @@ Work::Work(CoThinkerModel* mod, int work, QObject *parent) :
 }
 
 void Work::requestData() {
-    Request* request = new Request(Request::apiUrl + "/work/" + QString::number(workId) + "/extended");
-    connect(request, SIGNAL(finished(QJsonDocument)), this, SLOT(processResponse(QJsonDocument)));
-    connect(request, SIGNAL(jsonError(int)), this, SLOT(jsonError(int)));
-    connect(request, SIGNAL(networkError(int)), this, SLOT(networkError(int)));
+    Request* request = new WorkRequest(workId);
+    connect(request, SIGNAL(finished(int,QJsonDocument)), this, SLOT(processResponse(int,QJsonDocument)));
+    connect(request, SIGNAL(jsonError(int,int)), this, SLOT(jsonError(int,int)));
+    connect(request, SIGNAL(networkError(int,int)), this, SLOT(networkError(int,int)));
     request->start(model->getNetworkManager());
 }
 
-void Work::jsonError(int ec) {
+void Work::jsonError(int param, int ec) {
+    Q_UNUSED(param);
     Q_UNUSED(ec);
 }
 
-void Work::networkError(int ec) {
+void Work::networkError(int param, int ec) {
+    Q_UNUSED(param);
     Q_UNUSED(ec);
 }
 
-void Work::processResponse(const QJsonDocument& jd) {
+void Work::processResponse(int param, const QJsonDocument& jd) {
+    Q_UNUSED(param);
     wi = Misc::getWorkInfo(jd);
     model->addWork(workId, wi);
 }

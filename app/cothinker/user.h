@@ -44,9 +44,9 @@ public:
 
     int getPosition() const { return position; }
 private slots:
-    void processResponse(const QJsonDocument&);
-    void jsonError(int);
-    void networkError(int);
+    void processResponse(int,const QJsonDocument&);
+    void jsonError(int,int);
+    void networkError(int,int);
 };
 
 #endif // USER_H

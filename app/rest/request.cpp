@@ -6,10 +6,8 @@
 
 QString Request::apiUrl = QString("https://api.fantlab.ru");
 
-Request::Request(const QString& u, QObject *parent)
-    : QObject(parent), request(QUrl(u)) {
-    request.setRawHeader("Content-Type", "application/json");
-    request.setOriginatingObject(this);
+Request::Request(int p, QObject *parent)
+    : QObject(parent), param(p) {
 }
 
 Request::~Request() {
@@ -17,6 +15,9 @@ Request::~Request() {
 }
 
 void Request::start(QNetworkAccessManager* manager) {
+    QNetworkRequest request = getRequest();
+    request.setRawHeader("Content-Type", "application/json");
+    request.setOriginatingObject(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(endRequest(QNetworkReply*)));
     connect(manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this, SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
     QNetworkReply* reply = manager->get(request);
@@ -34,14 +35,14 @@ void Request::endRequest(QNetworkReply* reply) {
     }
 
     if (reply->error() != QNetworkReply::NoError) {
-        emit networkError(static_cast<int>(reply->error()));
+        emit networkError(param, static_cast<int>(reply->error()));
     } else {
         QJsonParseError error;
         QJsonDocument jd = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error == QJsonParseError::NoError) {
-            emit finished(jd);
+            emit finished(param, jd);
         } else {
-            emit jsonError(static_cast<int>(error.error));
+            emit jsonError(param, static_cast<int>(error.error));
         }
     }
 
@@ -55,7 +56,7 @@ void Request::sslErrors(QNetworkReply * reply, const QList<QSslError> & errors) 
 }
 
 void Request::handleReplyError(QNetworkReply::NetworkError error) {
-    emit networkError(static_cast<int>(error));
+    emit networkError(param, static_cast<int>(error));
     disconnect(this, 0, 0, 0);
     deleteLater();
 }

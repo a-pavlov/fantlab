@@ -1,6 +1,6 @@
 #include "user.h"
 #include "cothinkermodel.h"
-#include "request.h"
+#include "userrequest.h"
 
 #include <QNetworkAccessManager>
 #include <QJsonObject>
@@ -57,26 +57,29 @@ User::~User() {
 }
 
 void User::requestData() {
-    Request* request = new Request(Request::apiUrl + "/user/" + QString::number(userId));
-    connect(request, SIGNAL(finished(QJsonDocument)), this, SLOT(processResponse(QJsonDocument)));
-    connect(request, SIGNAL(jsonError(int)), this, SLOT(jsonError(int)));
-    connect(request, SIGNAL(networkError(int)), this, SLOT(networkError(int)));
+    Request* request = new UserRequest(userId);
+    connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processResponse(int,QJsonDocument)));
+    connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
+    connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
     request->start(model->getNetworkManager());
 }
 
-void User::jsonError(int ec) {
+void User::jsonError(int param, int ec) {
+    Q_UNUSED(param);
     errorCode = ec;
     status = tr("Json error %1").arg(ec);
     model->updateData(position);
 }
 
-void User::networkError(int ec) {
+void User::networkError(int param, int ec) {
+    Q_UNUSED(param);
     errorCode = ec;
     status = tr("Network error %1").arg(ec);
     model->updateData(position);
 }
 
-void User::processResponse(const QJsonDocument& jd) {
+void User::processResponse(int param, const QJsonDocument& jd) {
+    Q_UNUSED(param);
     QJsonObject o = jd.object();
     login = o["login"].toString();
     className = o["class_name"].toString();
