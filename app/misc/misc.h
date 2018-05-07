@@ -14,6 +14,12 @@ struct WorkInfo {
     QList<int> genres;
 };
 
+namespace Misc2 {
+    template <typename A, typename B>
+    inline A divCeil(A a, B b) { return A((a + b - 1)/b); }
+
+}
+
 class Misc {
 public:
     static int url2UserId(const QString&);

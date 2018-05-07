@@ -1,6 +1,7 @@
 #include "user.h"
 #include "cothinkermodel.h"
 #include "userrequest.h"
+#include "markrequest.h"
 
 #include <QNetworkAccessManager>
 #include <QJsonObject>
@@ -29,39 +30,24 @@ User::User(const QString& u
     , failCount(0)
     , errorCode(0)
     , model(mod) {
+    pendingOperations.append([this]() mutable {
+        Request* request = new UserRequest(this->userId);
+        connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processDetailsResponse(int,QJsonDocument)));
+        connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
+        connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
+        request->start(this->model->getNetworkManager());
+    });
 }
-
-/*
-User::User(const User& u) {
-    url = u.url;
-    name = u.name;
-    pairs = u.pairs;
-    similarity = u.similarity;
-    userId = u.userId;
-    model = u.model;
-    manager = u.manager;
-    login = u.login;
-    className = u.className;
-    markCount = u.markCount;
-    messageCount = u.messageCount;
-    responseCount = u.responseCount;
-    ticketsCount = u.ticketsCount;
-    topicCount = u.topicCount;
-    failCount = u.failCount;
-    status = u.status;
-}
-*/
 
 User::~User() {
     qDebug() << "removed user " << getPosition();
 }
 
 void User::requestData() {
-    Request* request = new UserRequest(userId);
-    connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processResponse(int,QJsonDocument)));
-    connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
-    connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
-    request->start(model->getNetworkManager());
+    while(!pendingOperations.isEmpty()) {
+        std::function<void()> oper = pendingOperations.takeFirst();
+        oper();
+    }
 }
 
 void User::jsonError(int param, int ec) {
@@ -78,7 +64,7 @@ void User::networkError(int param, int ec) {
     model->updateData(position);
 }
 
-void User::processResponse(int param, const QJsonDocument& jd) {
+void User::processDetailsResponse(int param, const QJsonDocument& jd) {
     Q_UNUSED(param);
     QJsonObject o = jd.object();
     login = o["login"].toString();
@@ -90,4 +76,25 @@ void User::processResponse(int param, const QJsonDocument& jd) {
     topicCount = o["topiccount"].toString().trimmed().toInt();
     status = tr("Finished");
     model->updateData(position);
+    // prepare mark requests
+    int pages = Misc2::divCeil(markCount, 50);
+    for(int i = 0; i < pages; ++i) {
+        /*
+        pendingOperations.append([this,i]() mutable {
+            Request* request = new MarkRequest(userId, i);
+            connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processMarksResponse(int,QJsonDocument)));
+            connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
+            connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
+            request->start(model->getNetworkManager());
+        });
+        */
+    }
+}
+
+void User::processMarksResponse(int, const QJsonDocument &) {
+    // add pending work requests here
+}
+
+void User::processWorkResponse(int, const QJsonDocument &) {
+    // update work response here
 }

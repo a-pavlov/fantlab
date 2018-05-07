@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <functional>
 
 QT_BEGIN_NAMESPACE
 class CoThinkerModel;
@@ -43,8 +44,11 @@ public:
     void requestData();
 
     int getPosition() const { return position; }
+    QList<std::function<void()>>    pendingOperations;
 private slots:
-    void processResponse(int,const QJsonDocument&);
+    void processDetailsResponse(int,const QJsonDocument&);
+    void processMarksResponse(int,const QJsonDocument&);
+    void processWorkResponse(int,const QJsonDocument&);
     void jsonError(int,int);
     void networkError(int,int);
 };
