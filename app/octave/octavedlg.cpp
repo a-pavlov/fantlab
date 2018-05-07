@@ -6,9 +6,9 @@
 
 
 OctaveDlg::OctaveDlg(QWidget *parent): QDialog(parent)
-    , octave(NULL)
     , totalLambdas(0)
-    , finishedLambdas(0) {
+    , finishedLambdas(0)
+    , octave(NULL) {
     setupUi(this);
     connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
     connect(btnStart, SIGNAL(clicked(bool)), this, SLOT(onStart()));
