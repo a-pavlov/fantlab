@@ -181,6 +181,8 @@ void CoThinkerModel::updateData(int pos) {
             co_thinkers[updateIndex]->status = tr("Requested");
             emit dataChanged(index(updateIndex, CTM_STATUS), index(updateIndex, CTM_STATUS));
             active_users.append(co_thinkers[updateIndex]);
+            // register user to save the same order in storage as in origin list
+            markStorage.addUser(active_users.back()->userId);
             active_users.back()->requestData();
             ++updateIndex;
         }
