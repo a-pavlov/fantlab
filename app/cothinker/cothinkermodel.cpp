@@ -150,7 +150,7 @@ const User& CoThinkerModel::at(const QModelIndex& index) const {
 
 void CoThinkerModel::start() {
     updateIndex = 0;
-    pendingRequests = 0;
+    activeRequests = 0;
     totalCount = 0;
     errorCount = 0;
     executeRequests = true;
@@ -164,25 +164,33 @@ void CoThinkerModel::stop() {
 void CoThinkerModel::updateData(int pos) {
     if (pos != -1) {
         Q_ASSERT(pos < rowCount());
-        // position finished, update model
-        --pendingRequests;
         ++totalCount;
         errorCount += (co_thinkers.at(pos)->errorCode != 0)?1:0;
         emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_STATUS));
     }
 
-    // load new data here
-    if (executeRequests && pendingRequests < 5) {
-        while(pendingRequests < 15 && updateIndex < co_thinkers.size()) {
+    while(1) {
+        int before = requestSlots();
+
+        foreach(User* au, active_users) {
+            au->requestData();
+        }
+
+        // load new data here
+        while(requestSlots() > 0 && updateIndex < co_thinkers.size()) {
             co_thinkers[updateIndex]->status = tr("Requested");
             emit dataChanged(index(updateIndex, CTM_STATUS), index(updateIndex, CTM_STATUS));
-            co_thinkers[updateIndex]->requestData();
+            active_users.append(co_thinkers[updateIndex]);
+            active_users.back()->requestData();
             ++updateIndex;
-            ++pendingRequests;
         }
+
+        if (before == requestSlots()) break;
     }
 
-    if (pendingRequests == 0) {
+    qDebug() << "cycle passed";
+
+    if (activeRequests == 0) {
         // data request finished
         emit dataRefreshed(totalCount, errorCount);
     }
@@ -194,4 +202,25 @@ void CoThinkerModel::addWork(int workId, const WorkInfo& wi) {
 
 bool CoThinkerModel::hasWork(int workId) const {
     return workDict.contains(workId);
+}
+
+bool CoThinkerModel::takeRequestSlot() {
+    if (requestSlots() > 0) {
+        ++activeRequests;
+        Q_ASSERT(activeRequests <= maxSimultaneousRequests);
+        return true;
+    }
+
+    return false;
+}
+
+void CoThinkerModel::releaseRequestSlot() {
+    --activeRequests;
+    Q_ASSERT(activeRequests >= 0);
+}
+
+void CoThinkerModel::deactivateUser(User* user) {
+    qDebug() << "deacivate user " << user->getPosition() << " total " << active_users.size();
+    bool res = active_users.removeOne(user);
+    Q_ASSERT(res);
 }

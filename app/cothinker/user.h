@@ -44,7 +44,9 @@ public:
     void requestData();
 
     int getPosition() const { return position; }
+private:
     QList<std::function<void()>>    pendingOperations;
+    void finishRequst();
 private slots:
     void processDetailsResponse(int,const QJsonDocument&);
     void processMarksResponse(int,const QJsonDocument&);

@@ -17,6 +17,8 @@ public:
         SortRole = Qt::UserRole + 1
     };
 
+    const static int maxSimultaneousRequests = 20;
+
     enum Columns { CTM_URL
                    , CTM_NAME
                    , CTM_MARKS_PAIR
@@ -44,13 +46,32 @@ public:
     QNetworkAccessManager* getNetworkManager() const { return nam; }
     void addWork(int workId, const WorkInfo& wi);
     bool hasWork(int workId) const;
+    int requestSlots() const { return executeRequests?maxSimultaneousRequests - activeRequests:0; }
+
+    /**
+     * @brief takeRequestSlot
+     * @return true if new request slot was allocated
+     */
+    bool takeRequestSlot();
+
+    /**
+     * @brief releaseRequestSlot return slot to origin
+     */
+    void releaseRequestSlot();
+
+    /**
+     * @brief deactivateUser remove user from active users list when user completed requests
+     * @param user pointer to object
+     */
+    void deactivateUser(User* user);
 private:
     int updateIndex;
-    int pendingRequests;
+    int activeRequests;
     int totalCount;
     int errorCount;
     bool executeRequests;
     QList<User*> co_thinkers;
+    QList<User*> active_users;
     QNetworkAccessManager* nam;
     const User& at(const QModelIndex&) const;
     QMap<int, WorkInfo> workDict;

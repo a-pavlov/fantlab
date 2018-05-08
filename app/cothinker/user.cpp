@@ -43,8 +43,10 @@ User::~User() {
     qDebug() << "removed user " << getPosition();
 }
 
-void User::requestData() {
-    while(!pendingOperations.isEmpty()) {
+void User::requestData() {    
+    while(!pendingOperations.isEmpty() && model->requestSlots() > 0) {
+        bool slotRequested = model->takeRequestSlot();
+        Q_ASSERT(slotRequested);
         std::function<void()> oper = pendingOperations.takeFirst();
         oper();
     }
@@ -54,14 +56,14 @@ void User::jsonError(int param, int ec) {
     Q_UNUSED(param);
     errorCode = ec;
     status = tr("Json error %1").arg(ec);
-    model->updateData(position);
+    finishRequst();
 }
 
 void User::networkError(int param, int ec) {
     Q_UNUSED(param);
     errorCode = ec;
     status = tr("Network error %1").arg(ec);
-    model->updateData(position);
+    finishRequst();
 }
 
 void User::processDetailsResponse(int param, const QJsonDocument& jd) {
@@ -75,7 +77,7 @@ void User::processDetailsResponse(int param, const QJsonDocument& jd) {
     ticketsCount = o["tickets_count"].toString().trimmed().toInt();
     topicCount = o["topiccount"].toString().trimmed().toInt();
     status = tr("Finished");
-    model->updateData(position);
+    finishRequst();
     // prepare mark requests
     int pages = Misc2::divCeil(markCount, 50);
     for(int i = 0; i < pages; ++i) {
@@ -97,4 +99,10 @@ void User::processMarksResponse(int, const QJsonDocument &) {
 
 void User::processWorkResponse(int, const QJsonDocument &) {
     // update work response here
+}
+
+void User::finishRequst() {
+    if (pendingOperations.isEmpty()) model->deactivateUser(this);
+    model->releaseRequestSlot();
+    model->updateData(position);
 }
