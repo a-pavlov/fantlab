@@ -40,10 +40,9 @@ User::User(const QString& u
 }
 
 User::~User() {
-    qDebug() << "removed user " << getPosition();
 }
 
-void User::requestData() {    
+void User::requestData() {
     while(!pendingOperations.isEmpty() && model->requestSlots() > 0) {
         bool slotRequested = model->takeRequestSlot();
         Q_ASSERT(slotRequested);

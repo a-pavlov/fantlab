@@ -169,7 +169,7 @@ void CoThinkerModel::updateData(int pos) {
         emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_STATUS));
     }
 
-    while(1) {
+    while(requestSlots() > 0) {
         int before = requestSlots();
 
         foreach(User* au, active_users) {
@@ -187,8 +187,6 @@ void CoThinkerModel::updateData(int pos) {
 
         if (before == requestSlots()) break;
     }
-
-    qDebug() << "cycle passed";
 
     if (activeRequests == 0) {
         // data request finished
@@ -220,7 +218,6 @@ void CoThinkerModel::releaseRequestSlot() {
 }
 
 void CoThinkerModel::deactivateUser(User* user) {
-    qDebug() << "deacivate user " << user->getPosition() << " total " << active_users.size();
     bool res = active_users.removeOne(user);
     Q_ASSERT(res);
 }
