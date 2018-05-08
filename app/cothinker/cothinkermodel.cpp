@@ -202,6 +202,11 @@ bool CoThinkerModel::hasWork(int workId) const {
     return workDict.contains(workId);
 }
 
+const WorkInfo& CoThinkerModel::getWork(int workId) const {
+    static const WorkInfo w;
+    return workDict.value(workId, w);
+}
+
 bool CoThinkerModel::takeRequestSlot() {
     if (requestSlots() > 0) {
         ++activeRequests;

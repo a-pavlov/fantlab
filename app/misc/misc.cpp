@@ -64,3 +64,7 @@ WorkInfo Misc::getWorkInfo(const QJsonDocument& doc) {
 
     return wi;
 }
+
+bool Misc::isSF(const WorkInfo& wi) {
+    return wi.genres.contains(1);
+}

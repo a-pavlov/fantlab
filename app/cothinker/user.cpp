@@ -2,11 +2,13 @@
 #include "cothinkermodel.h"
 #include "userrequest.h"
 #include "markrequest.h"
+#include "workrequest.h"
 
 #include <QNetworkAccessManager>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QDebug>
+#include <QPair>
 
 User::User(const QString& u
            , const QString& nm
@@ -92,12 +94,41 @@ void User::processDetailsResponse(int param, const QJsonDocument& jd) {
     }
 }
 
-void User::processMarksResponse(int, const QJsonDocument &) {
+void User::processMarksResponse(int page, const QJsonDocument &) {
+    Q_UNUSED(page);
     // add pending work requests here
+    QList<QPair<int, int> > marks;
+    typedef QPair<int,int> markPair;
+    foreach(const markPair& m, marks) {
+        // check we have information about work
+        const WorkInfo& wi = model->getWork(m.first);
+        // no information - prepare request and set it to the head of requests
+        if (wi.isNull()) {
+            pendingWorkMarks.insert(m.first, m.second);
+            pendingOperations.push_front([this,m]() mutable {
+                Request* request = new WorkRequest(m.first);
+                connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processWorkResponse(int,QJsonDocument)));
+                connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
+                connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
+                request->start(model->getNetworkManager());
+            });
+        } else if (Misc::isSF(wi)) {
+            // for SF books add marks to mark storage
+            model->getMarkStorage().addMark(userId, m.first, m.second);
+        }
+    }
 }
 
-void User::processWorkResponse(int, const QJsonDocument &) {
-    // update work response here
+void User::processWorkResponse(int workId, const QJsonDocument& jd) {
+    WorkInfo wi = Misc::getWorkInfo(jd);
+    // cache work in dictionary
+    model->addWork(workId, wi);
+    // for SF store mark
+    if (Misc::isSF(wi)) {
+        int mark = pendingWorkMarks.value(workId, -1);
+        Q_ASSERT(mark != -1);
+        model->getMarkStorage().addMark(userId, workId, mark);
+    }
 }
 
 void User::finishRequst() {

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QMap>
 #include <functional>
 
 QT_BEGIN_NAMESPACE
@@ -30,6 +31,7 @@ public:
     QString status;
     int errorCode;
     CoThinkerModel* model;
+    QMap<int, int> pendingWorkMarks;
 
     User(const QString& u
          , const QString& nm

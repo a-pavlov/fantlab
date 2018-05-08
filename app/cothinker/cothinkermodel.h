@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include "user.h"
 #include "misc.h"
+#include "markstorage.h"
 
 QT_BEGIN_NAMESPACE
 class QNetworkAccessManager;
@@ -46,7 +47,12 @@ public:
     QNetworkAccessManager* getNetworkManager() const { return nam; }
     void addWork(int workId, const WorkInfo& wi);
     bool hasWork(int workId) const;
+    const WorkInfo& getWork(int workId) const;
     int requestSlots() const { return executeRequests?maxSimultaneousRequests - activeRequests:0; }
+
+    MarkStorage& getMarkStorage() {
+        return markStorage;
+    }
 
     /**
      * @brief takeRequestSlot
@@ -75,6 +81,7 @@ private:
     QNetworkAccessManager* nam;
     const User& at(const QModelIndex&) const;
     QMap<int, WorkInfo> workDict;
+    MarkStorage markStorage;
 signals:
     void dataRefreshed(int totalCount, int errorsCount);
 private slots:

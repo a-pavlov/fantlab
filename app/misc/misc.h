@@ -12,6 +12,9 @@ struct WorkInfo {
     QString description;
     QString name;
     QList<int> genres;
+    inline bool isNull() const {
+        return name.isNull() || genres.isEmpty();
+    }
 };
 
 namespace Misc2 {
@@ -29,6 +32,7 @@ public:
     static QString octaveMinCost(const QString&);
     static bool isLambdaFinished(const QString&);
     static WorkInfo getWorkInfo(const QJsonDocument&);
+    static bool isSF(const WorkInfo&);
 };
 
 #endif // UTILS_H
