@@ -15,10 +15,16 @@ public:
 
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(int id READ getId WRITE setId NOTIFY idChanged)
+
     void setName(const QString&);
     QString name() const;
+
+    int getId() const;
+    void setId(int);
 signals:
     void nameChanged(const QString& nm);
+    void idChanged(int);
 };
 
 #endif // PREFERENCES_H
