@@ -66,8 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(co_thinkers, SIGNAL(dataRefreshed(int,int)), this, SLOT(onRefreshCompleted(int,int)));
 
     sb = new StatusBar(this, QMainWindow::statusBar());
-    sb->setIteration(0);
-    sb->setCost("N/A");
+    sb->setId(pref.getId());
+    sb->setCothinkersCount(0);
 }
 
 MainWindow::~MainWindow() {}
@@ -130,6 +130,7 @@ void MainWindow::on_actionOpen_triggered() {
          << "100"
          << "1.0";
 
+    sb->setCothinkersCount(hp.getResults().count());
     hp.getResults().push_front(self);
 
     co_thinkers->populate(hp.getResults());
@@ -152,9 +153,6 @@ void MainWindow::on_actionCancel_triggered() {
 }
 
 void MainWindow::on_actionRecommend_triggered() {
-    /*qDebug() << "data loc " << Utils::Fs::tempPath();
-    qDebug() << "remove " << Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
-    qDebug() << "copy " << Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());*/
     OctaveDlg dialog(this);
     dialog.exec();
 }
@@ -177,9 +175,10 @@ void MainWindow::on_actionMyId_triggered() {
     }
 
     actionOpen->setEnabled(pref.hasId());
+    sb->setId(pref.getId());
 }
 
 void MainWindow::onIteration(int step, QString cost) {
-    sb->setIteration(step);
-    sb->setCost(cost);
+    Q_UNUSED(step);
+    Q_UNUSED(cost);
 }

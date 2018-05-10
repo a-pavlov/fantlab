@@ -22,8 +22,8 @@ class StatusBar : public QWidget, public Ui::status_bar
 public:
     StatusBar(QWidget *parent, QStatusBar *bar);
     ~StatusBar();
-    void setIteration(int step);
-    void setCost(const QString&);
+    void setId(int);
+    void setCothinkersCount(int);
 };
 
 #endif // STATUS_BAR_H

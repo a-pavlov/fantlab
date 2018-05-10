@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>976</width>
+    <width>616</width>
     <height>130</height>
    </rect>
   </property>
@@ -60,9 +60,9 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="lbIteration">
+       <widget class="QLabel" name="lbId">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -74,10 +74,10 @@
          </size>
         </property>
         <property name="text">
-         <string/>
+         <string>My ID</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -127,7 +127,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="lbCost">
+       <widget class="QLabel" name="lbCoThinkersCount">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -142,7 +142,7 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>16</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
@@ -221,7 +221,7 @@
       <item>
        <widget class="QLabel" name="labelSpeed">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -298,7 +298,7 @@
       <item>
        <widget class="QLabel" name="labelNet">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>

@@ -20,7 +20,7 @@ StatusBar::StatusBar(QWidget *parent, QStatusBar *bar)
     Up1Down0.addFile(res::statusUD10(), QSize(), QIcon::Normal, QIcon::Off);
     Up1Down1.addFile(res::statusUD11(), QSize(), QIcon::Normal, QIcon::Off);
 
-    labelInfoImg->setPixmap(QIcon(":/emule/common/User.ico").pixmap(16,16));    
+    labelInfoImg->setPixmap(QIcon(":/emule/common/User.ico").pixmap(16,16));
 
     reset();
     */
@@ -30,12 +30,12 @@ StatusBar::~StatusBar()
 {
 }
 
-void StatusBar::setIteration(int step) {
-    lbIteration->setText(QString::number(step));
+void StatusBar::setId(int id) {
+    lbId->setText(tr("My ID: %1").arg(id));
 }
 
-void StatusBar::setCost(const QString& cost) {
-    lbCost->setText(cost);
+void StatusBar::setCothinkersCount(int c) {
+    lbCoThinkersCount->setText(tr("My co-thinkers count: %1").arg(c));
 }
 /*
 void status_bar::setConnected(bool conn)

@@ -32,8 +32,8 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
             case CTM_TYPE:  return at(index).myRecord?tr("My"):tr("Co Thinker");
             case CTM_URL:   return at(index).url;
             case CTM_NAME:  return at(index).name;
-            case CTM_MARKS_PAIR:  return at(index).pairs;
-            case CTM_SIMILARITY:  return at(index).similarity;
+            case CTM_MARKS_PAIR:  return at(index).myRecord?tr("N/A"):QString::number(at(index).pairs);
+            case CTM_SIMILARITY:  return at(index).myRecord?tr("N/A"):QString::number(at(index).similarity);
             case CTM_LOGIN: return at(index).login;
             case CTM_CLASS: return at(index).className;
             case CTM_MARK_COUNT: return at(index).markCount;
@@ -70,8 +70,9 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
         }
         break;
     case Qt::ForegroundRole: {
+            if (at(index).myRecord) return QColor("orange");
             if (at(index).similarity > 0) return QColor("green");
-            if (at(index).similarity < 0) return QColor("orange");
+            if (at(index).similarity < 0) return QColor("red");
         }
         break;
     case Qt::TextAlignmentRole: {
