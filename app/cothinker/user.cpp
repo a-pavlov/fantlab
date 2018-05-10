@@ -101,7 +101,7 @@ void User::processMarksResponse(int page, const QJsonDocument &) {
     typedef QPair<int,int> markPair;
     foreach(const markPair& m, marks) {
         // check we have information about work
-        const WorkInfo& wi = model->getWork(m.first);
+        WorkInfo wi = model->getWork(m.first);
         // no information - prepare request and set it to the head of requests
         if (wi.isNull()) {
             pendingWorkMarks.insert(m.first, m.second);

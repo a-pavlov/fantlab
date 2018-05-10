@@ -47,7 +47,7 @@ public:
     QNetworkAccessManager* getNetworkManager() const { return nam; }
     void addWork(int workId, const WorkInfo& wi);
     bool hasWork(int workId) const;
-    const WorkInfo& getWork(int workId) const;
+    WorkInfo getWork(int workId) const;
     int requestSlots() const { return executeRequests?maxSimultaneousRequests - activeRequests:0; }
 
     MarkStorage& getMarkStorage() {
