@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>964</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -88,6 +88,15 @@
    </property>
    <property name="toolTip">
     <string>Generate recommendations</string>
+   </property>
+  </action>
+  <action name="actionMyId">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/control_panel.ico</normaloff>:/icons/control_panel.ico</iconset>
+   </property>
+   <property name="text">
+    <string>MyId</string>
    </property>
   </action>
  </widget>

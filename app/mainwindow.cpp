@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QMessageBox>
 #include <QMainWindow>
+#include <QInputDialog>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +22,7 @@
 #include "fs.h"
 #include "octavedlg.h"
 #include "recommendmodel.h"
+#include "preferences.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), nam(new QNetworkAccessManager(this)) {
@@ -47,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ctTree->header(), SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
             this, SLOT(ctSortChanged(int, Qt::SortOrder)));
 
+    menu->addAction(actionMyId);
     menu->addAction(actionOpen);
     menu->addSeparator();
     menu->addAction(actionRequest);
@@ -54,7 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addSeparator();
     menu->addAction(actionRecommend);
 
-    actionOpen->setEnabled(true);
+    Preferences pref;
+    actionOpen->setEnabled(pref.hasId());
     actionRequest->setEnabled(false);
     actionCancel->setEnabled(false);
 
@@ -118,6 +122,16 @@ void MainWindow::on_actionOpen_triggered() {
         myhtml_destroy(myhtml);
     }
 
+    Preferences pref;
+
+    QStringList self;
+    self << ("http://fantlab.ru/user" + QString::number(pref.getId()))
+         << "my_login_here"
+         << "100"
+         << "1.0";
+
+    hp.getResults().push_front(self);
+
     co_thinkers->populate(hp.getResults());
     actionRequest->setEnabled(co_thinkers->rowCount() > 0);
     QMessageBox::information(this
@@ -143,6 +157,26 @@ void MainWindow::on_actionRecommend_triggered() {
     qDebug() << "copy " << Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());*/
     OctaveDlg dialog(this);
     dialog.exec();
+}
+
+void MainWindow::on_actionMyId_triggered() {
+    Preferences pref;
+    bool ok;
+    int id = QInputDialog::getInt(this
+                                  , tr("Self id")
+                                  , tr("Set your id in fantlab site here")
+                                  , 4500
+                                  , 1
+                                  , 999999
+                                  , 1
+                                  , &ok);
+    if (ok) {
+        pref.setId(id);
+    } else if (!pref.hasId()) {
+        QMessageBox::warning(this, tr("Recommendations problem"), tr("Unable to create recommendations without your id"));
+    }
+
+    actionOpen->setEnabled(pref.hasId());
 }
 
 void MainWindow::onIteration(int step, QString cost) {

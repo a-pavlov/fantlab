@@ -20,7 +20,9 @@ public:
 
     const static int maxSimultaneousRequests = 20;
 
-    enum Columns { CTM_URL
+    enum Columns {
+                    CTM_TYPE
+                   , CTM_URL
                    , CTM_NAME
                    , CTM_MARKS_PAIR
                    , CTM_SIMILARITY

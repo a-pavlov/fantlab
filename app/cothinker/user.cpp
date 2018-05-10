@@ -10,7 +10,8 @@
 #include <QDebug>
 #include <QPair>
 
-User::User(const QString& u
+User::User(bool myRec
+           , const QString& u
            , const QString& nm
            , int pr
            , double sim
@@ -18,6 +19,7 @@ User::User(const QString& u
            , int pos
            , CoThinkerModel* mod
            , QObject *parent): QObject(parent)
+    , myRecord(myRec)
     , url(u)
     , name(nm)
     , pairs(pr)

@@ -22,6 +22,7 @@ public:
 
     int getId() const;
     void setId(int);
+    bool hasId() const { return getId() != 0; }
 signals:
     void nameChanged(const QString& nm);
     void idChanged(int);

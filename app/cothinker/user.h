@@ -14,6 +14,7 @@ QT_END_NAMESPACE
 class User : public QObject {
     Q_OBJECT
 public:
+    bool myRecord;
     QString url;
     QString name;
     int pairs;
@@ -33,7 +34,9 @@ public:
     CoThinkerModel* model;
     QMap<int, int> pendingWorkMarks;
 
-    User(const QString& u
+    User(
+         bool nyRec
+         , const QString& u
          , const QString& nm
          , int pr
          , double sim

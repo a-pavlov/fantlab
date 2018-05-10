@@ -54,6 +54,10 @@ public:
     const QList<QStringList>& getResults() const {
         return result;
     }
+
+    QList<QStringList>& getResults() {
+        return result;
+    }
 };
 
 #endif // HTMLPARSER_H

@@ -29,6 +29,7 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
     switch(role) {
     case Qt::DisplayRole:  {
         switch(index.column()) {
+            case CTM_TYPE:  return at(index).myRecord?tr("My"):tr("Co Thinker");
             case CTM_URL:   return at(index).url;
             case CTM_NAME:  return at(index).name;
             case CTM_MARKS_PAIR:  return at(index).pairs;
@@ -49,6 +50,7 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
         break;
     case SortRole: {
         switch(index.column()) {
+            case CTM_TYPE:      return at(index).myRecord?0:1;
             case CTM_URL:       return at(index).url;
             case CTM_NAME:      return at(index).name;
             case CTM_MARKS_PAIR:return at(index).pairs;
@@ -104,6 +106,7 @@ QVariant CoThinkerModel::headerData(int section, Qt::Orientation orientation, in
 
     if (role == Qt::DisplayRole) {
         switch(section) {
+            case CTM_TYPE:      return tr("Type");
             case CTM_URL:       return tr("Url");
             case CTM_NAME:      return tr("Name");
             case CTM_MARKS_PAIR:return tr("Pairs");
@@ -128,10 +131,12 @@ QVariant CoThinkerModel::headerData(int section, Qt::Orientation orientation, in
 
 void CoThinkerModel::populate(const QList<QStringList>& data) {
     co_thinkers.reserve(data.size());
+    int pos = 0;
     foreach(const QStringList& ct, data) {
         Q_ASSERT(ct.size() == 4);
         emit beginInsertRows(QModelIndex(), co_thinkers.size(), co_thinkers.size());
-        co_thinkers.push_back(new User(ct.at(0)
+        co_thinkers.push_back(new User( pos++ == 0
+                                        , ct.at(0)
                                         , ct.at(1)
                                         , ct.at(2).toInt()
                                         , ct.at(3).toDouble()
