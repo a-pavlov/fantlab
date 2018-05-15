@@ -72,6 +72,9 @@ public:
      * @param user pointer to object
      */
     void deactivateUser(User* user);
+
+    double getMinSim() const { return minSim; }
+    QList<User*> getSimilarUsers(double minBorder) const;
 private:
     int updateIndex;
     int activeRequests;
@@ -84,6 +87,7 @@ private:
     const User& at(const QModelIndex&) const;
     QMap<int, WorkInfo> workDict;
     MarkStorage markStorage;
+    double minSim;
 signals:
     void dataRefreshed(int totalCount, int errorsCount);
 private slots:

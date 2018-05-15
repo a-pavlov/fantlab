@@ -1,5 +1,5 @@
 QT -= gui
-QT += testlib
+QT += testlib core network gui
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -15,6 +15,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+include(../cothinker/cothinker.pri)
+include(../rest/rest.pri)
+
 INCLUDEPATH += ../ ../misc
 
 SOURCES += \
@@ -23,13 +26,15 @@ SOURCES += \
         ../misc/misc.cpp \
         ../markstorage.cpp \
         testmarkstorage.cpp \
-    testoctaveoutput.cpp
+    testoctaveoutput.cpp \
+    testcothinkermodel.cpp
 
 HEADERS += \
     ../misc/misc.h \
     ../markstorage.h \
     testjson.h \
     testmarkstorage.h \
-    testoctaveoutput.h
+    testoctaveoutput.h \
+    testcothinkermodel.h
 
 RESOURCES += res.qrc

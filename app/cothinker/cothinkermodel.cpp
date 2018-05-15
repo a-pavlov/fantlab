@@ -1,3 +1,6 @@
+#include <iterator>
+#include <algorithm>
+
 #include "cothinkermodel.h"
 #include "user.h"
 #include "misc.h"
@@ -131,6 +134,7 @@ QVariant CoThinkerModel::headerData(int section, Qt::Orientation orientation, in
 }
 
 void CoThinkerModel::populate(const QList<QStringList>& data) {
+    minSim = 1.0f;
     co_thinkers.reserve(data.size());
     int pos = 0;
     foreach(const QStringList& ct, data) {
@@ -145,6 +149,7 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
                                         , co_thinkers.size()
                                         , this
                                         , this));
+        if (co_thinkers.back()->similarity > 0 && minSim > co_thinkers.back()->similarity) minSim = co_thinkers.back()->similarity;
         endInsertRows();
     }
 }
@@ -233,4 +238,13 @@ void CoThinkerModel::releaseRequestSlot() {
 void CoThinkerModel::deactivateUser(User* user) {
     bool res = active_users.removeOne(user);
     Q_ASSERT(res);
+}
+
+QList<User*> CoThinkerModel::getSimilarUsers(double minBorder) const {
+    QList<User*> tmp;
+    std::copy_if(co_thinkers.begin()
+                 , co_thinkers.end()
+                 , std::back_inserter(tmp)
+                 , [minBorder](const User* u) -> bool { return u->similarity >= minBorder; });
+    return std::move(tmp);
 }
