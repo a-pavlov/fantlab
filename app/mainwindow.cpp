@@ -46,8 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     rTree->setSortingEnabled(true);
     recommendations->populate(Utils::Fs::tempPath() + "/recommendations.csv");
 
-    connect(ctTree->header(), SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
-            this, SLOT(ctSortChanged(int, Qt::SortOrder)));
+    connect(ctTree->header(), &QHeaderView::sortIndicatorChanged, [=](int logicalIndex, Qt::SortOrder order) {
+        ct_sort->sort(logicalIndex, order);
+    });
 
     menu->addAction(actionMyId);
     menu->addAction(actionOpen);
@@ -62,8 +63,12 @@ MainWindow::MainWindow(QWidget *parent) :
     actionRequest->setEnabled(false);
     actionCancel->setEnabled(false);
 
-    connect(actionOpen, SIGNAL(triggered(bool)), this, SLOT(on_openFile(bool)));
-    connect(co_thinkers, SIGNAL(dataRefreshed(int,int)), this, SLOT(onRefreshCompleted(int,int)));
+    connect(co_thinkers, &CoThinkerModel::dataRefreshed, [=](int total, int error) {
+        actionOpen->setEnabled(true);
+        actionRequest->setEnabled(true);
+        actionCancel->setEnabled(false);
+        QMessageBox::information(this, tr("Refresh completed"), tr("Total users %1 with errors %2").arg(total).arg(error));
+    });
 
     sb = new StatusBar(this, QMainWindow::statusBar());
     sb->setId(pref.getId());
@@ -76,20 +81,6 @@ mystatus_t serialization_callback(const char* data, size_t len, void* ctx) {
     Q_ASSERT(ctx != NULL);
     ((HtmlParser*)ctx)->exec(data, len);
     return MyCORE_STATUS_OK;
-}
-
-void MainWindow::on_openFile(bool) {
-}
-
-void MainWindow::ctSortChanged(int logicalIndex, Qt::SortOrder order) {
-    ct_sort->sort(logicalIndex, order);
-}
-
-void MainWindow::onRefreshCompleted(int total, int error) {
-    actionOpen->setEnabled(true);
-    actionRequest->setEnabled(true);
-    actionCancel->setEnabled(false);
-    QMessageBox::information(this, tr("Refresh completed"), tr("Total users %1 with errors %2").arg(total).arg(error));
 }
 
 void MainWindow::on_actionOpen_triggered() {
