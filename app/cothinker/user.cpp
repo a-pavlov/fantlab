@@ -35,6 +35,7 @@ User::User(bool myRec
     , topicCount(0)
     , failCount(0)
     , errorCode(0)
+    , processedMarks(0)
     , model(mod) {
     pendingOperations.append([this]() mutable {
         Request* request = new UserRequest(this->userId);
@@ -135,6 +136,7 @@ void User::processMarksResponse(int page, const QJsonDocument & jd) {
                 // for SF books add marks to mark storage
                 qDebug() << "we know work " << workId;
                 model->getMarkStorage().addMark(userId, workId, mark);
+                ++processedMarks;
             }
         }
     }
@@ -152,6 +154,10 @@ void User::processWorkResponse(int workId, const QJsonDocument& jd) {
         Q_ASSERT(mark != -1);
         model->getMarkStorage().addMark(userId, workId, mark);
     }
+
+    ++processedMarks;
+
+    finishRequst();
 }
 
 void User::finishRequst() {

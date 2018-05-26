@@ -31,6 +31,7 @@ public:
     int failCount;
     QString status;
     int errorCode;
+    int processedMarks;
     CoThinkerModel* model;
     QMap<int, int> pendingWorkMarks;
 

@@ -46,6 +46,7 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
             case CTM_TOPIC_COUNT: return at(index).topicCount;
             case CTM_FAILCOUNT: return at(index).failCount;
             case CTM_STATUS: return at(index).status;
+            case CTM_PROCESSED_MARKS: return at(index).processedMarks;
             default:
             break;
             }
@@ -67,6 +68,7 @@ QVariant CoThinkerModel::data(const QModelIndex& index, int role) const {
             case CTM_TOPIC_COUNT: return at(index).topicCount;
             case CTM_FAILCOUNT: return at(index).failCount;
             case CTM_STATUS: return at(index).status;
+            case CTM_PROCESSED_MARKS: return at(index) .processedMarks;
             default:
             break;
             }
@@ -124,6 +126,7 @@ QVariant CoThinkerModel::headerData(int section, Qt::Orientation orientation, in
             case CTM_TOPIC_COUNT: return tr("Topics");
             case CTM_FAILCOUNT: return tr("Fail count");
             case CTM_STATUS: return tr("Status");
+            case CTM_PROCESSED_MARKS: return tr("Processed marks");
             default:
                 Q_ASSERT(false);
                 break;
@@ -179,7 +182,7 @@ void CoThinkerModel::updateData(int pos) {
         Q_ASSERT(pos < rowCount());
         ++totalCount;
         errorCount += (co_thinkers.at(pos)->errorCode != 0)?1:0;
-        emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_STATUS));
+        emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_PROCESSED_MARKS));
     }
 
     while(requestSlots() > 0) {
@@ -238,8 +241,8 @@ void CoThinkerModel::releaseRequestSlot() {
 }
 
 void CoThinkerModel::deactivateUser(User* user) {
+    // deactivation cab executed many times after all pending requests were started, but some requests still in progress
     bool res = active_users.removeOne(user);
-    Q_ASSERT(res);
 }
 
 QList<User*> CoThinkerModel::getSimilarUsers(double minBorder) const {

@@ -35,6 +35,7 @@ public:
                    , CTM_TOPIC_COUNT
                    , CTM_FAILCOUNT
                    , CTM_STATUS
+                   , CTM_PROCESSED_MARKS
                    , CTM_COLCOUNT};
 
     explicit CoThinkerModel(QNetworkAccessManager* man, QObject *parent = 0);
