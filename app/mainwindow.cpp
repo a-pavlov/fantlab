@@ -17,6 +17,7 @@
 #include "mainwindow.h"
 #include "htmlparser.h"
 #include "cothinkermodel.h"
+#include "cothinkerfilterproxymodel.h"
 #include "user.h"
 #include "status_bar.h"
 #include "fs.h"
@@ -29,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupUi(this);
     setWindowIcon(QIcon(":/icons/computer.ico"));
     co_thinkers = new CoThinkerModel(nam, this);
-    ct_sort = new QSortFilterProxyModel(this);
+    ct_sort = new CoThinkerFilterProxyModel(slSim->value(), sbMaxMarks->value(), this);
     ct_sort->setSourceModel(co_thinkers);
     ct_sort->setSortRole(CoThinkerModel::SortRole);
     ct_sort->setDynamicSortFilter(true);
@@ -60,6 +61,12 @@ MainWindow::MainWindow(QWidget *parent) :
         }
 
     });
+
+    connect(slSim, &QSlider::valueChanged, [=]() {
+       ct_sort->setFilterParameter(slSim->value(), sbMaxMarks->value());
+    });
+
+    connect(sbMaxMarks, SIGNAL(valueChanged(int)), this, SLOT(onMaxMarksChanged(int)));
 
     recommendations = new RecommendModel(this);
     recommendations_sort = new QSortFilterProxyModel(this);
@@ -196,4 +203,8 @@ void MainWindow::on_actionMyId_triggered() {
 void MainWindow::onIteration(int step, QString cost) {
     Q_UNUSED(step);
     Q_UNUSED(cost);
+}
+
+void MainWindow::onMaxMarksChanged(int value) {
+    ct_sort->setFilterParameter(slSim->value(), value);
 }

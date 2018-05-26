@@ -9,6 +9,7 @@
 
 QT_BEGIN_NAMESPACE
 class CoThinkerModel;
+class CoThinkerFilterProxyModel;
 class QSortFilterProxyModel;
 class Request;
 class QNetworkAccessManager;
@@ -22,7 +23,7 @@ private:
     HtmlParser hp;
     CoThinkerModel* co_thinkers;
     RecommendModel* recommendations;
-    QSortFilterProxyModel* ct_sort;
+    CoThinkerFilterProxyModel* ct_sort;
     QSortFilterProxyModel* recommendations_sort;
     Request* user;
     QNetworkAccessManager* nam;
@@ -39,6 +40,7 @@ private slots:
     void on_actionMyId_triggered();
 
     void onIteration(int, QString);
+    void onMaxMarksChanged(int);
 };
 
 #endif // MAINWINDOW_H
