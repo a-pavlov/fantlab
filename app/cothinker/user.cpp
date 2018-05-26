@@ -7,6 +7,8 @@
 #include <QNetworkAccessManager>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonArray>
+#include <QJsonValueRef>
 #include <QDebug>
 #include <QPair>
 
@@ -80,11 +82,14 @@ void User::processDetailsResponse(int param, const QJsonDocument& jd) {
     ticketsCount = o["tickets_count"].toString().trimmed().toInt();
     topicCount = o["topiccount"].toString().trimmed().toInt();
     status = tr("Finished");
-    finishRequst();
+
     // prepare mark requests
-    int pages = Misc2::divCeil(markCount, 50);
-    for(int i = 0; i < pages; ++i) {
-        /*
+    int pageLastIndex = Misc2::divCeil(markCount, 200);
+    qDebug() << "mark count " << markCount << " last page index " << pageLastIndex;
+
+    // pages start from 1
+    for(int i = 1; i <= pageLastIndex; ++i) {
+        qDebug() << "add marks request " << i;
         pendingOperations.append([this,i]() mutable {
             Request* request = new MarkRequest(userId, i);
             connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processMarksResponse(int,QJsonDocument)));
@@ -92,33 +97,49 @@ void User::processDetailsResponse(int param, const QJsonDocument& jd) {
             connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
             request->start(model->getNetworkManager());
         });
-        */
     }
+
+    finishRequst();
 }
 
-void User::processMarksResponse(int page, const QJsonDocument &) {
+void User::processMarksResponse(int page, const QJsonDocument & jd) {
     Q_UNUSED(page);
-    // add pending work requests here
-    QList<QPair<int, int> > marks;
-    typedef QPair<int,int> markPair;
-    foreach(const markPair& m, marks) {
-        // check we have information about work
-        WorkInfo wi = model->getWork(m.first);
-        // no information - prepare request and set it to the head of requests
-        if (wi.isNull()) {
-            pendingWorkMarks.insert(m.first, m.second);
-            pendingOperations.push_front([this,m]() mutable {
-                Request* request = new WorkRequest(m.first);
-                connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processWorkResponse(int,QJsonDocument)));
-                connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
-                connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
-                request->start(model->getNetworkManager());
-            });
-        } else if (Misc::isSF(wi)) {
-            // for SF books add marks to mark storage
-            model->getMarkStorage().addMark(userId, m.first, m.second);
+    QJsonObject o = jd.object();
+    QJsonArray a = o["items"].toArray();
+    qDebug() << "marks count " << a.size();
+    for(const QJsonValueRef& ref: a) {
+        if (ref.isObject()) {
+            QJsonObject item = ref.toObject();
+            int workId = item["work_id"].toInt();
+            int mark = item["mark"].toString().trimmed().toInt();
+            if (mark <= 0) {
+                qWarning() << "mark for work " << workId << " has incorrect value " << mark;
+                continue;
+            }
+
+            // check we have information about work
+            WorkInfo wi = model->getWork(workId);
+            // no information - prepare request and set it to the head of requests
+            if (wi.isNull()) {
+                qDebug() << "add request work " << workId << " with mark " << mark;
+                pendingWorkMarks.insert(workId, mark);
+
+                pendingOperations.push_front([this,workId]() mutable {
+                    Request* request = new WorkRequest(workId);
+                    connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processWorkResponse(int,QJsonDocument)));
+                    connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
+                    connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
+                    request->start(model->getNetworkManager());
+                });
+            } else if (Misc::isSF(wi)) {
+                // for SF books add marks to mark storage
+                qDebug() << "we know work " << workId;
+                model->getMarkStorage().addMark(userId, workId, mark);
+            }
         }
     }
+
+    finishRequst();
 }
 
 void User::processWorkResponse(int workId, const QJsonDocument& jd) {

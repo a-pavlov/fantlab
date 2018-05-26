@@ -137,6 +137,7 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
     minSim = 1.0f;
     co_thinkers.reserve(data.size());
     int pos = 0;
+    int lim = 4;
     foreach(const QStringList& ct, data) {
         Q_ASSERT(ct.size() == 4);
         emit beginInsertRows(QModelIndex(), co_thinkers.size(), co_thinkers.size());
@@ -151,6 +152,7 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
                                         , this));
         if (co_thinkers.back()->similarity > 0 && minSim > co_thinkers.back()->similarity) minSim = co_thinkers.back()->similarity;
         endInsertRows();
+        if (--lim == 0) break;
     }
 }
 
