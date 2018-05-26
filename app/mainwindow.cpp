@@ -36,6 +36,30 @@ MainWindow::MainWindow(QWidget *parent) :
     ctTree->setModel(ct_sort);
     ctTree->setRootIsDecorated(false);
     ctTree->setSortingEnabled(true);
+    ctTree->header()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ctTree->header(), &QHeaderView::customContextMenuRequested, [=](const QPoint&) {
+        QMenu hideshowColumn(this);
+        hideshowColumn.setTitle(tr("Column visibility"));
+        QList<QAction*> actions;
+        for (int i=0; i < co_thinkers->columnCount(); ++i) {
+            QAction *myAct = hideshowColumn.addAction(
+                co_thinkers->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString());
+            myAct->setCheckable(true);
+            myAct->setChecked(!ctTree->isColumnHidden(i));
+            actions.append(myAct);
+        }
+        // Call menu
+        QAction *act = hideshowColumn.exec(QCursor::pos());
+        if (act) {
+            int col = actions.indexOf(act);
+            Q_ASSERT(col >= 0);
+            qDebug("Toggling column %d visibility", col);
+            ctTree->setColumnHidden(col, !ctTree->isColumnHidden(col));
+            if (!ctTree->isColumnHidden(col) && ctTree->columnWidth(col) <= 5)
+                ctTree->setColumnWidth(col, 100);
+        }
+
+    });
 
     recommendations = new RecommendModel(this);
     recommendations_sort = new QSortFilterProxyModel(this);
