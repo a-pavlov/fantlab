@@ -49,6 +49,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="lbMin">
+        <property name="text">
+         <string>0 %</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QSlider" name="slSim">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -58,6 +65,13 @@
         </property>
         <property name="tickInterval">
          <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbMax">
+        <property name="text">
+         <string>100 %</string>
         </property>
        </widget>
       </item>

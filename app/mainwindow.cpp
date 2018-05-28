@@ -175,7 +175,7 @@ void MainWindow::on_actionCancel_triggered() {
 }
 
 void MainWindow::on_actionRecommend_triggered() {
-    OctaveDlg dialog(this);
+    OctaveDlg dialog(this, *co_thinkers);
     dialog.exec();
 }
 

@@ -57,6 +57,10 @@ public:
         return markStorage;
     }
 
+    const MarkStorage& getMarkStorage() const {
+        return markStorage;
+    }
+
     /**
      * @brief takeRequestSlot
      * @return true if new request slot was allocated

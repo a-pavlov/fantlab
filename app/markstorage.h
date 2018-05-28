@@ -65,17 +65,17 @@ public:
         return markMatrix.isEmpty()?0:markMatrix.at(0).size();
     }
 
-    QStringList getMarksByIndex(int i) {
+    QStringList getMarksByWorkIndex(int i) const {
         Q_ASSERT(i < getTotalMarks());
         QStringList res;
-        foreach(const QList<int>& userMarks, markMatrix) {
+        for(const QList<int>& userMarks: markMatrix) {
             res << QString::number(userMarks.at(i));
         }
 
         return res;
     }
 
-    bool saveData(const QString& worksFilename, const QString& marksFilename);
+    bool saveData(const QString& worksFilename, const QString& marksFilename) const;
 };
 
 #endif // MARKSTORAGE_H

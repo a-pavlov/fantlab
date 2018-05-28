@@ -241,7 +241,7 @@ void CoThinkerModel::releaseRequestSlot() {
 }
 
 void CoThinkerModel::deactivateUser(User* user) {
-    // deactivation cab executed many times after all pending requests were started, but some requests still in progress
+    // deactivation can executed many times after all pending requests were started, but some requests still in progress
     bool res = active_users.removeOne(user);
 }
 

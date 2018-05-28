@@ -7,6 +7,7 @@
 
 QT_BEGIN_NAMESPACE
 class Octave;
+class CoThinkerModel;
 QT_END_NAMESPACE
 
 class OctaveDlg : public QDialog, public Ui::OctaveDlg {
@@ -15,8 +16,9 @@ private:
     int totalLambdas;
     int finishedLambdas;
     Octave* octave;
+    const CoThinkerModel& model;
 public:
-    OctaveDlg(QWidget *parent);
+    OctaveDlg(QWidget *parent, const CoThinkerModel& model);
 private slots:
     void close();
     void onStart();

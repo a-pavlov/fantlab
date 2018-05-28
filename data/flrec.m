@@ -65,7 +65,7 @@ Theta = reshape(theta(num_marks*num_features+1:end), ...
 p = X * Theta';
 my_predictions = p(:,1) + Ymean;
 
-fb = fopen('books.csv', 'r');
+fb = fopen('works.csv', 'r');
 books = textscan(fb, '%d %s', 'delimiter', ',');
 
 [r, ix] = sort(my_predictions, 'descend');
