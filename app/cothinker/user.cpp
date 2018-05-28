@@ -107,7 +107,7 @@ void User::processMarksResponse(int page, const QJsonDocument & jd) {
     Q_UNUSED(page);
     QJsonObject o = jd.object();
     QJsonArray a = o["items"].toArray();
-    qDebug() << "marks count " << a.size();
+    qDebug() << "user " << userId << " page " << page << " marks count " << a.size();
     for(const QJsonValueRef& ref: a) {
         if (ref.isObject()) {
             QJsonObject item = ref.toObject();
@@ -122,20 +122,20 @@ void User::processMarksResponse(int page, const QJsonDocument & jd) {
             WorkInfo wi = model->getWork(workId);
             // no information - prepare request and set it to the head of requests
             if (wi.isNull()) {
-                qDebug() << "add request work " << workId << " with mark " << mark;
+                //qDebug() << "add request work " << workId << " with mark " << mark;
                 pendingWorkMarks.insert(workId, mark);
 
                 pendingOperations.push_front([this,workId]() mutable {
                     Request* request = new WorkRequest(workId);
                     connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processWorkResponse(int,QJsonDocument)));
                     connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
-                    connect(request, SIGNAL(networkError(int, int)), this, SLOT(networkError(int,int)));
+                    connect(request, &Request::networkError, [=](int p,int e) {
+                        qDebug() << "network error occurred param " << " error " << e;
+                    });
                     request->start(model->getNetworkManager());
                 });
-            } else if (Misc::isSF(wi)) {
-                // for SF books add marks to mark storage
-                qDebug() << "we know work " << workId;
-                model->getMarkStorage().addMark(userId, workId, mark);
+            } else {
+                if (Misc::isSF(wi)) model->getMarkStorage().addMark(userId, workId, mark);
                 ++processedMarks;
             }
         }

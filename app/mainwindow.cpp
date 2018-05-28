@@ -185,7 +185,7 @@ void MainWindow::on_actionMyId_triggered() {
     int id = QInputDialog::getInt(this
                                   , tr("Self id")
                                   , tr("Set your id in fantlab site here")
-                                  , 4500
+                                  , pref.getId()
                                   , 1
                                   , 999999
                                   , 1
