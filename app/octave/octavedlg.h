@@ -7,7 +7,7 @@
 
 QT_BEGIN_NAMESPACE
 class Octave;
-class CoThinkerModel;
+class MarkStorage;
 QT_END_NAMESPACE
 
 class OctaveDlg : public QDialog, public Ui::OctaveDlg {
@@ -16,9 +16,10 @@ private:
     int totalLambdas;
     int finishedLambdas;
     Octave* octave;
-    const CoThinkerModel& model;
+    const MarkStorage& stg;
+    const QList<int> indexes;
 public:
-    OctaveDlg(QWidget *parent, const CoThinkerModel& model);
+    OctaveDlg(QWidget *parent, const MarkStorage& s, const QList<int> i);
 private slots:
     void close();
     void onStart();

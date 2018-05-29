@@ -80,6 +80,8 @@ public:
 
     double getMinSim() const { return minSim; }
     QList<User*> getSimilarUsers(double minBorder) const;
+
+    QList<int> getAdoptedIndexes(int minSim, int maxMark) const;
 private:
     int updateIndex;
     int activeRequests;

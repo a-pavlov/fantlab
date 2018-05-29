@@ -1,5 +1,22 @@
 % read marks file
 Y = csvread('marks.csv');
+books = csvread('works.csv');
+
+if (size(Y,1) != size(books,1))
+    error("Books size is not equals marks size");
+endif
+
+rm_idx = sum(Y,2) == 0;
+
+% remove empty works from marks and books
+Y(rm_idx,:) = [];
+books(rm_idx,:) = [];
+
+if (size(Y,1) != size(books,1))
+    error("Books size is not equals marks size after cleanup");
+endif
+
+
 R = Y ~= 0;
 
 my_ratings = Y(:,1);
@@ -65,9 +82,6 @@ Theta = reshape(theta(num_marks*num_features+1:end), ...
 p = X * Theta';
 my_predictions = p(:,1) + Ymean;
 
-fb = fopen('works.csv', 'r');
-books = textscan(fb, '%d %s', 'delimiter', ',');
-
 [r, ix] = sort(my_predictions, 'descend');
 %fprintf('\nMy top recommendations:\n');
 
@@ -79,7 +93,7 @@ for i=1:size(my_predictions)
             break;
     end
     %fprintf("indexes %d Predicting rating %.1f book: %s\n", j, my_predictions(j), books{2}(j){1,1});
-    fprintf(rfid, "%f,%d,%s\n", my_ratings(j), my_predictions(j), books{2}(j){1,1});
+    fprintf(rfid, "%f,%d,%d\n", my_ratings(j), my_predictions(j), books(j, 2));
 end
 
 %for i=1:size(my_predictions,1)

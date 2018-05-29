@@ -154,6 +154,8 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
                                         , this
                                         , this));
         if (co_thinkers.back()->similarity > 0 && minSim > co_thinkers.back()->similarity) minSim = co_thinkers.back()->similarity;
+        // register all users to save the same order in storage as in model list
+        markStorage.addUser(co_thinkers.back()->userId);
         endInsertRows();
         if (--lim == 0) break;
     }
@@ -197,8 +199,6 @@ void CoThinkerModel::updateData(int pos) {
             co_thinkers[updateIndex]->status = tr("Requested");
             emit dataChanged(index(updateIndex, CTM_STATUS), index(updateIndex, CTM_STATUS));
             active_users.append(co_thinkers[updateIndex]);
-            // register user to save the same order in storage as in origin list
-            markStorage.addUser(active_users.back()->userId);
             active_users.back()->requestData();
             ++updateIndex;
         }
@@ -243,6 +243,7 @@ void CoThinkerModel::releaseRequestSlot() {
 void CoThinkerModel::deactivateUser(User* user) {
     // deactivation can executed many times after all pending requests were started, but some requests still in progress
     bool res = active_users.removeOne(user);
+    Q_UNUSED(res);
 }
 
 QList<User*> CoThinkerModel::getSimilarUsers(double minBorder) const {
@@ -253,3 +254,14 @@ QList<User*> CoThinkerModel::getSimilarUsers(double minBorder) const {
                  , [minBorder](const User* u) -> bool { return u->similarity >= minBorder; });
     return std::move(tmp);
 }
+
+QList<int> CoThinkerModel::getAdoptedIndexes(int minSim, int maxMark) const {
+    QList<int> res;
+    for(int i = 0; i < co_thinkers.size(); ++i) {
+        if (co_thinkers.at(i)->similarity*100 >= minSim && co_thinkers.at(i)->markCount <= maxMark) res.append(i);
+    }
+
+    return res;
+}
+
+
