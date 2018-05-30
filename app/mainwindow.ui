@@ -157,6 +157,15 @@
     <string>MyId</string>
    </property>
   </action>
+  <action name="actionRequestMarks">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/favorits.ico</normaloff>:/icons/favorits.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Request marks for users</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

@@ -18,6 +18,10 @@ public:
         SortRole = Qt::UserRole + 1
     };
 
+    static bool acceptUser(double sim, int marks, int minSim, int maxMarks) {
+        return sim*100 >= minSim && marks <= maxMarks;
+    }
+
     const static int maxSimultaneousRequests = 20;
 
     enum Columns {
@@ -44,7 +48,7 @@ public:
     QVariant data(const QModelIndex& index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     void populate(const QList<QStringList>&);
-    void start();
+    void start(int minSim, int maxMarks);
     void stop();
     void updateData(int pos);
     QNetworkAccessManager* getNetworkManager() const { return nam; }

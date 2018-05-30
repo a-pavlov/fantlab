@@ -85,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addAction(actionOpen);
     menu->addSeparator();
     menu->addAction(actionRequest);
+    menu->addAction(actionRequestMarks);
     menu->addAction(actionCancel);
     menu->addSeparator();
     menu->addAction(actionRecommend);
@@ -165,7 +166,13 @@ void MainWindow::on_actionOpen_triggered() {
 void MainWindow::on_actionRequest_triggered() {
     actionRequest->setEnabled(false);
     actionCancel->setEnabled(true);
-    co_thinkers->start();
+    co_thinkers->start(slSim->value(), sbMaxMarks->value());
+}
+
+void MainWindow::on_actionRequestMarks_triggered() {
+    actionRequestMarks->setEnabled(false);
+    actionCancel->setEnabled(true);
+
 }
 
 void MainWindow::on_actionCancel_triggered() {

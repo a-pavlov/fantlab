@@ -83,14 +83,17 @@ void User::processDetailsResponse(int param, const QJsonDocument& jd) {
     ticketsCount = o["tickets_count"].toString().trimmed().toInt();
     topicCount = o["topiccount"].toString().trimmed().toInt();
     status = tr("Finished");
+    finishRequst();
+}
 
+void User::prepareMarksRequests() {
     // prepare mark requests
     int pageLastIndex = Misc2::divCeil(markCount, 200);
-    qDebug() << "mark count " << markCount << " last page index " << pageLastIndex;
+    //qDebug() << "mark count " << markCount << " last page index " << pageLastIndex;
 
     // pages start from 1
     for(int i = 1; i <= pageLastIndex; ++i) {
-        qDebug() << "add marks request " << i;
+        //qDebug() << "add marks request " << i;
         pendingOperations.append([this,i]() mutable {
             Request* request = new MarkRequest(userId, i);
             connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processMarksResponse(int,QJsonDocument)));
@@ -99,8 +102,6 @@ void User::processDetailsResponse(int param, const QJsonDocument& jd) {
             request->start(model->getNetworkManager());
         });
     }
-
-    finishRequst();
 }
 
 void User::processMarksResponse(int page, const QJsonDocument & jd) {

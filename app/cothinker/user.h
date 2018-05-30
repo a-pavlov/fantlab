@@ -50,6 +50,7 @@ public:
     void requestData();
 
     int getPosition() const { return position; }
+    void prepareMarksRequests();
 private:
     QList<std::function<void()>>    pendingOperations;
     void finishRequst();

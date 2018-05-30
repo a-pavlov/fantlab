@@ -35,6 +35,7 @@ public:
 private slots:
     void on_actionOpen_triggered();
     void on_actionRequest_triggered();
+    void on_actionRequestMarks_triggered();
     void on_actionCancel_triggered();
     void on_actionRecommend_triggered();
     void on_actionMyId_triggered();

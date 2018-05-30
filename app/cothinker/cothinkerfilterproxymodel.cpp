@@ -89,7 +89,7 @@ void CoThinkerFilterProxyModel::setFilterParameter(int minSim, int maxMark) {
 }
 
 bool CoThinkerFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const {
-    double sim = sourceModel()->index(source_row, CoThinkerModel::CTM_SIMILARITY, source_parent).data(CoThinkerModel::SortRole).toDouble()*100;
+    double sim = sourceModel()->index(source_row, CoThinkerModel::CTM_SIMILARITY, source_parent).data(CoThinkerModel::SortRole).toDouble();
     int marks = sourceModel()->index(source_row, CoThinkerModel::CTM_MARK_COUNT, source_parent).data(CoThinkerModel::SortRole).toInt();
-    return sim >= minSimilarity && marks <= maxMarksCount;
+    return CoThinkerModel::acceptUser(sim, marks, minSimilarity, maxMarksCount);
 }
