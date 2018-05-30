@@ -57,12 +57,25 @@ void TestMarkStorage::testStorageGetters() {
     accum.addMark(2, 4, 1);
     accum.addMark(3, 5, 8);
     QCOMPARE(accum.getTotalMarks(), 5);
-    QStringList book1 = accum.getMarksByWorkIndex(0);
+    QList<bool> l1 = {true, true, true};
+    QStringList book1 = accum.getMarksByWorkIndex(0, l1);
     QCOMPARE(book1.size(), 3);
     QCOMPARE(book1.at(0), QString("10"));
     QCOMPARE(book1.at(1), QString("3"));
     QCOMPARE(book1.at(2), QString("0"));
-    QStringList book3 = accum.getMarksByWorkIndex(4);
+    QStringList book3 = accum.getMarksByWorkIndex(4, l1);
+
+    QStringList book1_filter = accum.getMarksByWorkIndex(0, {true, true, false});
+    QCOMPARE(2, book1_filter.size());
+    QCOMPARE(book1_filter.at(0), QString("10"));
+    QCOMPARE(book1_filter.at(1), QString("3"));
+
+    QStringList book1_filter2 = accum.getMarksByWorkIndex(0, {false, true, false});
+    QCOMPARE(1, book1_filter2.size());
+    QCOMPARE(book1_filter2.at(0), QString("3"));
+
+    QCOMPARE(0, accum.getMarksByWorkIndex(0, {false, false, false}).size());
+
     QCOMPARE(book3.size(), 3);
     QCOMPARE(book3.at(0), QString("0"));
     QCOMPARE(book3.at(1), QString("0"));

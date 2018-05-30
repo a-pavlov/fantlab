@@ -65,17 +65,26 @@ public:
         return markMatrix.isEmpty()?0:markMatrix.at(0).size();
     }
 
-    QStringList getMarksByWorkIndex(int i) const {
+    QStringList getMarksByWorkIndex(int i, QList<bool> users) const {
         Q_ASSERT(i < getTotalMarks());
+        Q_ASSERT(users.size() == markMatrix.size());
         QStringList res;
-        for(const QList<int>& userMarks: markMatrix) {
-            res << QString::number(userMarks.at(i));
+        for(int j = 0; j < markMatrix.size(); ++j) {
+            if (users.at(j)) res << QString::number(markMatrix.at(j).at(i));
         }
+        //for(const QList<int>& userMarks: markMatrix) {
+        //    res << QString::number(userMarks.at(i));
+        //}
 
+        int total = 0;
+        std::for_each(users.begin(), users.end(), [&total](bool b) -> void { if (b) ++total; });
+        Q_ASSERT(res.size() == total);
         return res;
     }
 
-    bool saveData(const QString& worksFilename, const QString& marksFilename) const;
+    bool saveData(const QString& worksFilename
+                  , const QString& marksFilename
+                  , const QList<bool> indexes) const;
 };
 
 #endif // MARKSTORAGE_H

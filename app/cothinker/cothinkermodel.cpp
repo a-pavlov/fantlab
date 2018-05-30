@@ -255,10 +255,10 @@ QList<User*> CoThinkerModel::getSimilarUsers(double minBorder) const {
     return std::move(tmp);
 }
 
-QList<int> CoThinkerModel::getAdoptedIndexes(int minSim, int maxMark) const {
-    QList<int> res;
-    for(int i = 0; i < co_thinkers.size(); ++i) {
-        if (co_thinkers.at(i)->similarity*100 >= minSim && co_thinkers.at(i)->markCount <= maxMark) res.append(i);
+QList<bool> CoThinkerModel::getActiveUsers(int minSim, int maxMark) const {
+    QList<bool> res;
+    for(const User* u: co_thinkers) {
+        res.append(u->similarity*100 >= minSim && u->markCount <= maxMark);
     }
 
     return res;

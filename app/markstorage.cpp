@@ -49,7 +49,9 @@ void MarkStorage::addMark(int user, int work, int mark) {
     markMatrix[userPos].replace(index, mark);
 }
 
-bool MarkStorage::saveData(const QString& worksFilename, const QString& marksFilename) const {
+bool MarkStorage::saveData(const QString& worksFilename
+                           , const QString& marksFilename
+                           , const QList<bool> indexes) const {
 
     // write books in sorted order
     QFile worksFile(worksFilename);
@@ -73,7 +75,7 @@ bool MarkStorage::saveData(const QString& worksFilename, const QString& marksFil
 
     if (marksFile.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream fs(&marksFile);
-        for(int i = 0; i < workIndexes.size(); ++i) fs << getMarksByWorkIndex(i).join(",") << "\n";
+        for(int i = 0; i < workIndexes.size(); ++i) fs << getMarksByWorkIndex(i, indexes).join(",") << "\n";
         marksFile.close();
     } else return false;
 

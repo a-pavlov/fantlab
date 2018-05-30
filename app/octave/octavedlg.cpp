@@ -6,7 +6,7 @@
 #include "markstorage.h"
 
 
-OctaveDlg::OctaveDlg(QWidget *parent, const MarkStorage& s, const QList<int> i): QDialog(parent)
+OctaveDlg::OctaveDlg(QWidget *parent, const MarkStorage& s, const QList<bool> i): QDialog(parent)
     , totalLambdas(0)
     , finishedLambdas(0)
     , octave(NULL)
@@ -32,7 +32,7 @@ void OctaveDlg::onStart() {
     progressBar->setValue(0);
     Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
     Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());
-    bool dataSaved = stg.saveData(Utils::Fs::tempPath() + "works.csv", Utils::Fs::tempPath() + "marks.csv");
+    bool dataSaved = stg.saveData(Utils::Fs::tempPath() + "works.csv", Utils::Fs::tempPath() + "marks.csv", indexes);
     if (dataSaved) {
         octave = new Octave(this);
         connect(octave, SIGNAL(lambda(QString)), this, SLOT(onLambda(QString)));

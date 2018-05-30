@@ -17,9 +17,9 @@ private:
     int finishedLambdas;
     Octave* octave;
     const MarkStorage& stg;
-    const QList<int> indexes;
+    const QList<bool> indexes;
 public:
-    OctaveDlg(QWidget *parent, const MarkStorage& s, const QList<int> i);
+    OctaveDlg(QWidget *parent, const MarkStorage& s, const QList<bool> i);
 private slots:
     void close();
     void onStart();

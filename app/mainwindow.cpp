@@ -175,8 +175,8 @@ void MainWindow::on_actionCancel_triggered() {
 }
 
 void MainWindow::on_actionRecommend_triggered() {
-    QList<int> indexes = co_thinkers->getAdoptedIndexes(slSim->value(), sbMaxMarks->value());
-    OctaveDlg dialog(this, co_thinkers->getMarkStorage(), indexes);
+    QList<bool> au = co_thinkers->getActiveUsers(slSim->value(), sbMaxMarks->value());
+    OctaveDlg dialog(this, co_thinkers->getMarkStorage(), au);
     dialog.exec();
 }
 
