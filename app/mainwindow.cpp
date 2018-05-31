@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ct_sort = new CoThinkerFilterProxyModel(slSim->value(), sbMaxMarks->value(), this);
     ct_sort->setSourceModel(co_thinkers);
     ct_sort->setSortRole(CoThinkerModel::SortRole);
-    ct_sort->setDynamicSortFilter(true);
+    ct_sort->setDynamicSortFilter(false);
     ctTree->setModel(ct_sort);
     ctTree->setRootIsDecorated(false);
     ctTree->setSortingEnabled(true);
@@ -64,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(slSim, &QSlider::valueChanged, [=]() {
        ct_sort->setFilterParameter(slSim->value(), sbMaxMarks->value());
+       lbSim->setText(tr("%1 %").arg(slSim->value()));
+       lbRecords->setText(QString::number(ct_sort->rowCount()));
     });
 
     connect(sbMaxMarks, SIGNAL(valueChanged(int)), this, SLOT(onMaxMarksChanged(int)));
@@ -161,9 +163,11 @@ void MainWindow::on_actionOpen_triggered() {
     QMessageBox::information(this
                              , tr("Import completed")
                              , tr("%1 records have been imported").arg(hp.getResults().size()));
+    lbRecords->setText(QString::number(ct_sort->rowCount()));
 }
 
 void MainWindow::on_actionRequest_triggered() {
+    ct_sort->setDynamicSortFilter(false);
     actionRequest->setEnabled(false);
     actionCancel->setEnabled(true);
     co_thinkers->start(slSim->value(), sbMaxMarks->value());
@@ -215,4 +219,5 @@ void MainWindow::onIteration(int step, QString cost) {
 
 void MainWindow::onMaxMarksChanged(int value) {
     ct_sort->setFilterParameter(slSim->value(), value);
+    lbRecords->setText(QString::number(ct_sort->rowCount()));
 }
