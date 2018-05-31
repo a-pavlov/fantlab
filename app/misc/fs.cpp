@@ -439,3 +439,17 @@ bool Utils::Fs::cleanDirectory(const QString &src) {
 
     return true;
 }
+
+bool Utils::Fs::saveToFile(const QString& filename, const QString& str) {
+    QFile file(filename);
+
+    if (file.open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream stream(&file);
+        stream << str;
+        stream.flush();
+        file.close();
+        return true;
+    }
+
+    return false;
+}

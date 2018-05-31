@@ -33,7 +33,12 @@ void OctaveDlg::onStart() {
     Utils::Fs::cleanDirectory(Utils::Fs::tempPath());
     Utils::Fs::copyDirectory(Utils::Fs::getOctaveScriptsPath(), Utils::Fs::tempPath());
     bool dataSaved = stg.saveData(Utils::Fs::tempPath() + "works.csv", Utils::Fs::tempPath() + "marks.csv", indexes);
-    if (dataSaved) {
+    bool features = Utils::Fs::saveToFile(Utils::Fs::tempPath() + "num_features.txt", QString::number(spinFeatures->value()));
+    bool iterations = Utils::Fs::saveToFile(Utils::Fs::tempPath() + "num_iterations.txt", QString::number(spinItr->value()));
+    bool minPredicted = Utils::Fs::saveToFile(Utils::Fs::tempPath() + "min_predicted.txt", QString::number(spinMinMark->value()));
+    bool lambdas = Utils::Fs::saveToFile(Utils::Fs::tempPath() + "lambdas.txt", editLambdas->text().replace("\\s+", "\n"));
+
+    if (dataSaved && features && iterations && minPredicted && lambdas) {
         octave = new Octave(this);
         connect(octave, SIGNAL(lambda(QString)), this, SLOT(onLambda(QString)));
         connect(octave, SIGNAL(lambdaFinished()), this, SLOT(onLambdaFinished()));

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>509</width>
-    <height>248</height>
+    <height>276</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -125,7 +125,7 @@
            <string>0.1 0.2 0.3 0.4 0.45 0.5 0.55 0.7 0.9 1.0 2.0</string>
           </property>
           <property name="readOnly">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>

@@ -73,6 +73,7 @@ namespace Utils
         QString tempPath();
         bool copyDirectory(const QString& src, const QString& dst);
         bool cleanDirectory(const QString& src);
+        bool saveToFile(const QString& filename, const QString& str);
     }
 }
 
