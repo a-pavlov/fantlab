@@ -174,7 +174,7 @@ void CoThinkerModel::start(int minSim, int maxMarks) {
     executeRequests = true;
 
     for(User* u: co_thinkers) {
-        if (acceptUser(u->similarity, u->markCount, minSim, maxMarks)) u->prepareMarksRequests();
+        if (acceptUser(u->myRecord, u->similarity, u->markCount, minSim, maxMarks)) u->prepareMarksRequests();
     }
 
     updateData(-1);
@@ -263,7 +263,7 @@ QList<User*> CoThinkerModel::getSimilarUsers(double minBorder) const {
 QList<bool> CoThinkerModel::getActiveUsers(int minSim, int maxMark) const {
     QList<bool> res;
     for(const User* u: co_thinkers) {
-        res.append(acceptUser(u->similarity, u->markCount, minSim, maxMark));
+        res.append(acceptUser(u->myRecord, u->similarity, u->markCount, minSim, maxMark));
     }
 
     return res;

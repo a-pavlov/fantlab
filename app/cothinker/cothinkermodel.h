@@ -18,8 +18,8 @@ public:
         SortRole = Qt::UserRole + 1
     };
 
-    static bool acceptUser(double sim, int marks, int minSim, int maxMarks) {
-        return sim*100 >= minSim && marks <= maxMarks;
+    static bool acceptUser(bool self, double sim, int marks, int minSim, int maxMarks) {
+        return self || (sim*100 >= minSim && marks <= maxMarks);
     }
 
     const static int maxSimultaneousRequests = 20;
