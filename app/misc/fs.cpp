@@ -360,7 +360,7 @@ QString Utils::Fs::QDesktopServicesCacheLocation()
 {
     QString result;
 #if defined(Q_OS_WIN) || defined(Q_OS_OS2)
-    result = QDesktopServicesDataLocation() + QLatin1String("cache");
+    result = QDesktopServicesDataLocation() + QLatin1String("cache/");
 #else
 #ifdef Q_OS_MAC
     // http://developer.apple.com/documentation/Carbon/Reference/Folder_Manager/Reference/reference.html

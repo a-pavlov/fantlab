@@ -107,9 +107,12 @@ MainWindow::MainWindow(QWidget *parent) :
     sb = new StatusBar(this, QMainWindow::statusBar());
     sb->setId(pref.getId());
     sb->setCothinkersCount(0);
+    co_thinkers->load();
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow() {
+    co_thinkers->save();
+}
 
 mystatus_t serialization_callback(const char* data, size_t len, void* ctx) {
     Q_ASSERT(ctx != NULL);

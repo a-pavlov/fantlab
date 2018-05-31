@@ -4,18 +4,23 @@
 #include <QString>
 #include <QPair>
 #include <QList>
+#include <QDataStream>
 
 class QJsonDocument;
 
 struct WorkInfo {
+    qint32 workId;
     QString title;
     QString description;
     QString name;
-    QList<int> genres;
+    QList<qint32> genres;
     inline bool isNull() const {
         return name.isNull() || genres.isEmpty();
     }
 };
+
+QDataStream &operator<<(QDataStream& out, const WorkInfo& wi);
+QDataStream &operator>>(QDataStream& in, WorkInfo& wi);
 
 namespace Misc2 {
     template <typename A, typename B>

@@ -5,6 +5,19 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+QDataStream &operator<<(QDataStream& out, const WorkInfo& wi) {
+    out << wi.workId
+        << wi.name
+        << wi.title
+        << wi.description
+        << wi.genres;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream& in, WorkInfo& wi) {
+    in >> wi.workId >> wi.name >> wi.title >> wi.description >> wi.genres;
+    return in;
+}
 
 int Misc::url2UserId(const QString& url) {
     static QRegExp rx("\\D*/user(\\d+)$");
@@ -47,6 +60,7 @@ bool Misc::isLambdaFinished(const QString& input) {
 WorkInfo Misc::getWorkInfo(const QJsonDocument& doc) {
     WorkInfo wi;
     QJsonObject o = doc.object();
+    wi.workId = o["work_id"].toString().trimmed().toInt();
     wi.title = o["title"].toString();
     wi.name = o["work_name"].toString();
     wi.description = o["work_description"].toString();

@@ -86,6 +86,9 @@ public:
     QList<User*> getSimilarUsers(double minBorder) const;
 
     QList<bool> getActiveUsers(int minSim, int maxMark) const;
+
+    void load();
+    void save() const;
 private:
     int updateIndex;
     int activeRequests;

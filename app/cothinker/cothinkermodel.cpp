@@ -4,8 +4,10 @@
 #include "cothinkermodel.h"
 #include "user.h"
 #include "misc.h"
+#include "fs.h"
 #include <QColor>
 #include <QNetworkAccessManager>
+#include <QFile>
 
 
 CoThinkerModel::CoThinkerModel(QNetworkAccessManager* m, QObject *parent) :
@@ -140,7 +142,6 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
     minSim = 1.0f;
     co_thinkers.reserve(data.size());
     int pos = 0;
-    int lim = 4;
     foreach(const QStringList& ct, data) {
         Q_ASSERT(ct.size() == 4);
         emit beginInsertRows(QModelIndex(), co_thinkers.size(), co_thinkers.size());
@@ -157,7 +158,6 @@ void CoThinkerModel::populate(const QList<QStringList>& data) {
         // register all users to save the same order in storage as in model list
         markStorage.addUser(co_thinkers.back()->userId);
         endInsertRows();
-        //if (--lim == 0) break;
     }
 }
 
@@ -267,6 +267,26 @@ QList<bool> CoThinkerModel::getActiveUsers(int minSim, int maxMark) const {
     }
 
     return res;
+}
+
+void CoThinkerModel::load() {
+    QFile file(Utils::Fs::cacheLocation() + "/works.dat");
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QDataStream ds(&file);
+        ds >> workDict;
+        file.close();
+    }
+}
+
+void CoThinkerModel::save() const {
+    QFile file(Utils::Fs::cacheLocation() + "/works.dat");
+
+    if (file.open(QIODevice::WriteOnly)) {
+        QDataStream ds(&file);
+        ds << workDict;
+        file.close();
+    }
 }
 
 
