@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupUi(this);
     setWindowIcon(QIcon(":/icons/computer.ico"));
     co_thinkers = new CoThinkerModel(nam, this);
+    co_thinkers->load();
     ct_sort = new CoThinkerFilterProxyModel(slSim->value(), sbMaxMarks->value(), this);
     ct_sort->setSourceModel(co_thinkers);
     ct_sort->setSortRole(CoThinkerModel::SortRole);
@@ -70,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(sbMaxMarks, SIGNAL(valueChanged(int)), this, SLOT(onMaxMarksChanged(int)));
 
-    recommendations = new RecommendModel(this);
+    recommendations = new RecommendModel(co_thinkers, this);
     recommendations_sort = new QSortFilterProxyModel(this);
     recommendations_sort->setSourceModel(recommendations);
     recommendations_sort->setSortRole(RecommendModel::SortRole);
@@ -107,7 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
     sb = new StatusBar(this, QMainWindow::statusBar());
     sb->setId(pref.getId());
     sb->setCothinkersCount(0);
-    co_thinkers->load();
 }
 
 MainWindow::~MainWindow() {

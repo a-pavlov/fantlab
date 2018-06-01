@@ -13,6 +13,10 @@ struct RecommendItem {
     RecommendItem(): ownMark(0), mark(0) {}
 };
 
+QT_BEGIN_NAMESPACE
+class CoThinkerModel;
+QT_END_NAMESPACE
+
 class RecommendModel : public QAbstractListModel {
     Q_OBJECT
 public:
@@ -21,12 +25,14 @@ public:
     };
 
     enum Columns {
-                   RM_OWN_MARK
-                   , RM_MARK
-                   , RM_WORK
-                   , RM_COLCOUNT};
+                    RM_OWN_MARK
+                    , RM_MARK
+                    , RM_WORK
+                    , RM_TITLE
+                    , RM_DESCR
+                    , RM_COLCOUNT};
 
-    RecommendModel(QObject* parent = 0);
+    RecommendModel(const CoThinkerModel* cm, QObject* parent = 0);
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
     int columnCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex& index, int role) const;
@@ -35,6 +41,7 @@ public:
 private:
     const RecommendItem& at(const QModelIndex&) const;
     QList<RecommendItem> items;
+    const CoThinkerModel* co_thinkers;
 };
 
 #endif // RECOMMENDMODEL_H
