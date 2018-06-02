@@ -121,10 +121,14 @@ mystatus_t serialization_callback(const char* data, size_t len, void* ctx) {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-    QString fileName = QFileDialog::getOpenFileName(this
-                                                    , tr("Open html page")
-                                                    , QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
-                                                    , tr("html files (*.html)"));
+    QFileDialog fd(this
+                 , tr("Open html page")
+                 , QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
+                 , tr("html files (*.html)"));
+
+    QString fileName;
+    if (fd.exec() && !fd.selectedFiles().isEmpty()) fileName = fd.selectedFiles().at(0);
+
     QByteArray html;
 
     if (!fileName.isEmpty()) {
@@ -132,41 +136,41 @@ void MainWindow::on_actionOpen_triggered() {
         if (file.open(QIODevice::ReadOnly)) {
             html = file.readAll();
         }
+
+        if (!html.isEmpty()) {
+            // basic init
+            myhtml_t* myhtml = myhtml_create();
+            myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
+
+            // first tree init
+            myhtml_tree_t* tree = myhtml_tree_create();
+            myhtml_tree_init(tree, myhtml);
+
+            myhtml_tree_parse_flags_set(tree, static_cast<myhtml_tree_parse_flags_t>(MyHTML_TREE_PARSE_FLAGS_WITHOUT_DOCTYPE_IN_TREE | MyHTML_TREE_PARSE_FLAGS_SKIP_WHITESPACE_TOKEN));
+            myhtml_parse(tree, MyENCODING_UTF_8, html.constData(), html.size());
+            myhtml_serialization_tree_callback(myhtml_tree_get_node_html(tree), serialization_callback, &hp);
+            myhtml_tree_destroy(tree);
+            myhtml_destroy(myhtml);
+        }
+
+        Preferences pref;
+
+        QStringList self;
+        self << ("http://fantlab.ru/user" + QString::number(pref.getId()))
+             << "my_login_here"
+             << "100"
+             << "1.0";
+
+        sb->setCothinkersCount(hp.getResults().count());
+        hp.getResults().push_front(self);
+
+        co_thinkers->populate(hp.getResults());
+        actionRequest->setEnabled(co_thinkers->rowCount() > 0);
+        QMessageBox::information(this
+                                 , tr("Import completed")
+                                 , tr("%1 records have been imported").arg(hp.getResults().size()));
+        lbRecords->setText(QString::number(ct_sort->rowCount()));
     }
-
-    if (!html.isEmpty()) {
-        // basic init
-        myhtml_t* myhtml = myhtml_create();
-        myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
-
-        // first tree init
-        myhtml_tree_t* tree = myhtml_tree_create();
-        myhtml_tree_init(tree, myhtml);
-
-        myhtml_tree_parse_flags_set(tree, static_cast<myhtml_tree_parse_flags_t>(MyHTML_TREE_PARSE_FLAGS_WITHOUT_DOCTYPE_IN_TREE | MyHTML_TREE_PARSE_FLAGS_SKIP_WHITESPACE_TOKEN));
-        myhtml_parse(tree, MyENCODING_UTF_8, html.constData(), html.size());
-        myhtml_serialization_tree_callback(myhtml_tree_get_node_html(tree), serialization_callback, &hp);
-        myhtml_tree_destroy(tree);
-        myhtml_destroy(myhtml);
-    }
-
-    Preferences pref;
-
-    QStringList self;
-    self << ("http://fantlab.ru/user" + QString::number(pref.getId()))
-         << "my_login_here"
-         << "100"
-         << "1.0";
-
-    sb->setCothinkersCount(hp.getResults().count());
-    hp.getResults().push_front(self);
-
-    co_thinkers->populate(hp.getResults());
-    actionRequest->setEnabled(co_thinkers->rowCount() > 0);
-    QMessageBox::information(this
-                             , tr("Import completed")
-                             , tr("%1 records have been imported").arg(hp.getResults().size()));
-    lbRecords->setText(QString::number(ct_sort->rowCount()));
 }
 
 void MainWindow::on_actionRequest_triggered() {
@@ -192,6 +196,7 @@ void MainWindow::on_actionRecommend_triggered() {
     QList<bool> au = co_thinkers->getActiveUsers(slSim->value(), sbMaxMarks->value());
     OctaveDlg dialog(this, co_thinkers->getMarkStorage(), au);
     dialog.exec();
+    recommendations->populate(Utils::Fs::tempPath() + "/recommendations.csv");
 }
 
 void MainWindow::on_actionMyId_triggered() {

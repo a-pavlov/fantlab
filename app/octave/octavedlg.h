@@ -18,19 +18,9 @@ private:
     Octave* octave;
     const MarkStorage& stg;
     const QList<bool> indexes;
+    void deleteOctave();
 public:
     OctaveDlg(QWidget *parent, const MarkStorage& s, const QList<bool> i);
-private slots:
-    void close();
-    void onStart();
-    void onStop();
-    void onCost(int iteration, QString cost);
-    void onMinCost(QString cost);
-    void onLambda(QString lambda);
-    void onLambdaFinished();
-
-    void onProcStarted();
-    void onProcFinished(int exitCode, QProcess::ExitStatus exitStatus);
 };
 
 #endif // OCTAVEDLG_H
