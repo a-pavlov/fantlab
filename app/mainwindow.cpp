@@ -22,6 +22,7 @@
 #include "status_bar.h"
 #include "fs.h"
 #include "octavedlg.h"
+#include "workdetailsdialog.h"
 #include "recommendmodel.h"
 #include "preferences.h"
 
@@ -79,6 +80,18 @@ MainWindow::MainWindow(QWidget *parent) :
     rTree->setRootIsDecorated(false);
     rTree->setSortingEnabled(true);
     recommendations->populate(Utils::Fs::tempPath() + "/recommendations.csv");
+
+    connect(rTree, &QTreeView::doubleClicked, [=](const QModelIndex& i){
+        QModelIndexList sel = rTree->selectionModel()->selectedRows();
+        if (sel.isEmpty()) return;
+        QModelIndex indx = sel.at(0); //recommendations_sort->mapToSource(sel.at(0));
+        QString type = rTree->model()->index(indx.row(), RecommendModel::RM_TYPE, indx.parent()).data(Qt::DisplayRole).toString();
+        QString title = rTree->model()->index(indx.row(), RecommendModel::RM_TITLE, indx.parent()).data(Qt::DisplayRole).toString();
+        QString descr = rTree->model()->index(indx.row(), RecommendModel::RM_DESCR, indx.parent()).data(Qt::DisplayRole).toString();
+        qint32 workId = rTree->model()->index(indx.row(), RecommendModel::RM_WORK, indx.parent()).data(Qt::DisplayRole).toInt();
+        WorkDetailsDialog dlg(type, title, descr, workId, this);
+        dlg.exec();
+    });
 
     connect(ctTree->header(), &QHeaderView::sortIndicatorChanged, [=](int logicalIndex, Qt::SortOrder order) {
         ct_sort->sort(logicalIndex, order);

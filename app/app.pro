@@ -60,12 +60,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     htmlparser.cpp \
     markstorage.cpp \
-    recommendmodel.cpp
+    recommendmodel.cpp \
+    workdetailsdialog.cpp
 
 HEADERS  += mainwindow.h \
     htmlparser.h \
     markstorage.h \
-    recommendmodel.h
+    recommendmodel.h \
+    workdetailsdialog.h
 
 include(rest/rest.pri)
 include(cothinker/cothinker.pri)
@@ -76,7 +78,8 @@ include(octave/octave.pri)
 include(data.pri)
 
 FORMS    += mainwindow.ui \
-    octave/octavedlg.ui
+    octave/octavedlg.ui \
+    workdetailsdialog.ui
 
 win32:RC_FILE = app.rc
 
