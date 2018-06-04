@@ -225,9 +225,11 @@ bool CoThinkerModel::hasWork(int workId) const {
     return workDict.contains(workId);
 }
 
-WorkInfo CoThinkerModel::getWork(int workId) const {
-    static const WorkInfo w;
-    return workDict.value(workId, w);
+const WorkInfo& CoThinkerModel::getWork(int workId) const {
+    static WorkInfo w;
+    QMap<int, WorkInfo>::const_iterator itr = workDict.find(workId);
+    if (itr != workDict.end()) return itr.value();
+    return w;
 }
 
 bool CoThinkerModel::takeRequestSlot() {

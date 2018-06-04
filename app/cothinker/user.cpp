@@ -120,7 +120,7 @@ void User::processMarksResponse(int page, const QJsonDocument & jd) {
             }
 
             // check we have information about work
-            WorkInfo wi = model->getWork(workId);
+            const WorkInfo& wi = model->getWork(workId);
             // no information - prepare request and set it to the head of requests
             if (wi.isNull()) {
                 //qDebug() << "add request work " << workId << " with mark " << mark;
