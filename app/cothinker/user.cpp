@@ -131,6 +131,7 @@ void User::processMarksResponse(int page, const QJsonDocument & jd) {
                     connect(request, SIGNAL(finished(int, QJsonDocument)), this, SLOT(processWorkResponse(int,QJsonDocument)));
                     connect(request, SIGNAL(jsonError(int, int)), this, SLOT(jsonError(int,int)));
                     connect(request, &Request::networkError, [=](int p,int e) {
+                        Q_UNUSED(p);
                         qDebug() << "network error occurred param " << " error " << e;
                     });
                     request->start(model->getNetworkManager());

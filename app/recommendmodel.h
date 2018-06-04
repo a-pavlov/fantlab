@@ -29,6 +29,9 @@ public:
                     , RM_MARK
                     , RM_WORK
                     , RM_TITLE
+                    , RM_TYPE
+                    , RM_TYPE_NAME
+                    , RM_YEAR
                     , RM_DESCR
                     , RM_COLCOUNT};
 

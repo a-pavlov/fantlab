@@ -13,6 +13,10 @@ struct WorkInfo {
     QString title;
     QString description;
     QString name;
+    QString workType;
+    qint32 workTypeId;
+    QString workTypeName;
+    qint32 workYear;
     QList<qint32> genres;
     inline bool isNull() const {
         return name.isNull() || genres.isEmpty();

@@ -10,12 +10,25 @@ QDataStream &operator<<(QDataStream& out, const WorkInfo& wi) {
         << wi.name
         << wi.title
         << wi.description
+        << wi.workType
+        << wi.workTypeId
+        << wi.workTypeName
+        << wi.workYear
         << wi.genres;
     return out;
 }
 
 QDataStream &operator>>(QDataStream& in, WorkInfo& wi) {
-    in >> wi.workId >> wi.name >> wi.title >> wi.description >> wi.genres;
+    in >>
+        wi.workId >>
+        wi.name >>
+        wi.title >>
+        wi.description >>
+        wi.workType >>
+        wi.workTypeId >>
+        wi.workTypeName >>
+        wi.workYear >>
+        wi.genres;
     return in;
 }
 
@@ -64,6 +77,11 @@ WorkInfo Misc::getWorkInfo(const QJsonDocument& doc) {
     wi.title = o["title"].toString();
     wi.name = o["work_name"].toString();
     wi.description = o["work_description"].toString();
+    wi.workType = o["work_type"].toString();
+    wi.workTypeId = o["work_type_id"].toString().trimmed().toInt();
+    wi.workTypeName = o["work_type_name"].toString();
+    wi.workYear = o["work_year"].toString().trimmed().toInt();
+
     QJsonArray classificatory = o["classificatory"].toArray();
 
     foreach(const QJsonValue& cv, classificatory) {
