@@ -108,7 +108,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -130,6 +130,9 @@
    </property>
   </action>
   <action name="actionRequest">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/down.ico</normaloff>:/icons/down.ico</iconset>
@@ -142,6 +145,9 @@
    </property>
   </action>
   <action name="actionCancel">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/button_cancel.ico</normaloff>:/icons/button_cancel.ico</iconset>
@@ -151,6 +157,9 @@
    </property>
   </action>
   <action name="actionRecommend">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/filefind.ico</normaloff>:/icons/filefind.ico</iconset>
@@ -163,6 +172,9 @@
    </property>
   </action>
   <action name="actionMyId">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/control_panel.ico</normaloff>:/icons/control_panel.ico</iconset>
@@ -172,6 +184,9 @@
    </property>
   </action>
   <action name="actionRequestMarks">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/favorits.ico</normaloff>:/icons/favorits.ico</iconset>

@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rTree->setSortingEnabled(true);
     recommendations->populate(Utils::Fs::tempPath() + "/recommendations.csv");
 
-    connect(rTree, &QTreeView::doubleClicked, [=](const QModelIndex& i){
+    connect(rTree, &QTreeView::doubleClicked, [=](const QModelIndex& i) {
         QModelIndexList sel = rTree->selectionModel()->selectedRows();
         if (sel.isEmpty()) return;
         QModelIndex indx = sel.at(0); //recommendations_sort->mapToSource(sel.at(0));
@@ -101,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addAction(actionOpen);
     menu->addSeparator();
     menu->addAction(actionRequest);
-    menu->addAction(actionRequestMarks);
+    //menu->addAction(actionRequestMarks);
     menu->addAction(actionCancel);
     menu->addSeparator();
     menu->addAction(actionRecommend);
@@ -188,6 +188,11 @@ void MainWindow::on_actionOpen_triggered() {
                                  , tr("Import completed")
                                  , tr("%1 records have been imported").arg(hp.getResults().size()));
         lbRecords->setText(QString::number(ct_sort->rowCount()));
+        // request users details
+        ct_sort->setDynamicSortFilter(false);
+        actionRequest->setEnabled(false);
+        actionCancel->setEnabled(true);
+        co_thinkers->start(slSim->value(), sbMaxMarks->value());
     }
 }
 
