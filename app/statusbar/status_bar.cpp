@@ -1,6 +1,7 @@
 #include "status_bar.h"
 
 #include <QStatusBar>
+#include <QIcon>
 
 StatusBar::StatusBar(QWidget *parent, QStatusBar *bar)
     : QWidget(parent) , m_bar(bar)
@@ -37,6 +38,14 @@ void StatusBar::setId(int id) {
 void StatusBar::setCothinkersCount(int c) {
     lbCoThinkersCount->setText(tr("My co-thinkers count: %1").arg(c));
 }
+
+void StatusBar::setRequests(int total, int error) {
+    Q_ASSERT(total >= 0);
+    Q_ASSERT(error >= 0);
+    labelReq->setText(tr("Requests: %1").arg(total));
+    labelReqErr->setText(tr("Errors: %1").arg(error));
+}
+
 /*
 void status_bar::setConnected(bool conn)
 {

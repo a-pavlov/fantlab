@@ -185,11 +185,13 @@ void CoThinkerModel::stop() {
 }
 
 void CoThinkerModel::updateData(int pos) {
+
     if (pos != -1) {
         Q_ASSERT(pos < rowCount());
         ++totalCount;
         errorCount += (co_thinkers.at(pos)->errorCode != 0)?1:0;
         emit dataChanged(index(pos, CTM_LOGIN), index(pos, CTM_PROCESSED_MARKS));
+        emit networkRequestsUpdate(totalCount, errorCount);
     }
 
     while(requestSlots() > 0) {
@@ -213,7 +215,7 @@ void CoThinkerModel::updateData(int pos) {
 
     if (activeRequests == 0) {
         // data request finished
-        emit dataRefreshed(totalCount, errorCount);
+        emit networkRequestsFinish(totalCount, errorCount);
     }
 }
 
@@ -235,7 +237,7 @@ const WorkInfo& CoThinkerModel::getWork(int workId) const {
 bool CoThinkerModel::takeRequestSlot() {
     if (requestSlots() > 0) {
         ++activeRequests;
-        Q_ASSERT(activeRequests <= maxSimultaneousRequests);
+        Q_ASSERT(activeRequests <= maxSimultaneousRequests);        
         return true;
     }
 

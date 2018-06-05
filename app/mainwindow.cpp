@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
     actionRequest->setEnabled(false);
     actionCancel->setEnabled(false);
 
-    connect(co_thinkers, &CoThinkerModel::dataRefreshed, [=](int total, int error) {
+    connect(co_thinkers, &CoThinkerModel::networkRequestsFinish, [=](int total, int error) {
         actionOpen->setEnabled(true);
         actionRequest->setEnabled(true);
         actionCancel->setEnabled(false);
@@ -121,6 +121,11 @@ MainWindow::MainWindow(QWidget *parent) :
     sb = new StatusBar(this, QMainWindow::statusBar());
     sb->setId(pref.getId());
     sb->setCothinkersCount(0);
+    sb->setRequests(0, 0);
+
+    connect(co_thinkers, &CoThinkerModel::networkRequestsUpdate, [=](int total, int error){
+       sb->setRequests(total, error);
+    });
 }
 
 MainWindow::~MainWindow() {

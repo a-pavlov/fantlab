@@ -56,6 +56,7 @@ public:
     bool hasWork(int workId) const;
     const WorkInfo& getWork(int workId) const;
     int requestSlots() const { return executeRequests?maxSimultaneousRequests - activeRequests:0; }
+    int getActiveRequests() const { return activeRequests; }
 
     MarkStorage& getMarkStorage() {
         return markStorage;
@@ -103,7 +104,8 @@ private:
     MarkStorage markStorage;
     double minSim;
 signals:
-    void dataRefreshed(int totalCount, int errorsCount);
+    void networkRequestsFinish(int totalCount, int errorsCount);
+    void networkRequestsUpdate(int totalCount, int errorsCount);
 private slots:
 
 public slots:
