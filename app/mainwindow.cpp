@@ -115,6 +115,7 @@ MainWindow::MainWindow(QWidget *parent) :
         actionOpen->setEnabled(true);
         actionRequest->setEnabled(true);
         actionCancel->setEnabled(false);
+        actionRecommend->setEnabled(true);
         QMessageBox::information(this, tr("Refresh completed"), tr("Total users %1 with errors %2").arg(total).arg(error));
     });
 

@@ -63,8 +63,15 @@ void Octave::octaveReadyReadStandardOutput() {
 void Octave::startOctave() {
     connect(this,SIGNAL(readyReadStandardOutput()),
                 this,SLOT(octaveReadyReadStandardOutput()));
+#ifdef Q_OS_LINUX
+    qDebug() << "start " << (Utils::Fs::getOctavePath() + QDir::separator() + "octave")
+             << "work dir " << Utils::Fs::tempPath();
+    setWorkingDirectory(Utils::Fs::tempPath());
+    start("octave", QStringList() << "flrec.m");
+#else
     qDebug() << "start " << (Utils::Fs::getOctavePath() + QDir::separator() + "octave-cli-4.2.2.exe")
              << "work dir " << Utils::Fs::tempPath();
     setWorkingDirectory(Utils::Fs::tempPath());
     start(Utils::Fs::getOctavePath() + QDir::separator() + "bin\\octave-cli.exe", QStringList() << "flrec.m");
+#endif
 }
