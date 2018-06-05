@@ -237,7 +237,7 @@ const WorkInfo& CoThinkerModel::getWork(int workId) const {
 bool CoThinkerModel::takeRequestSlot() {
     if (requestSlots() > 0) {
         ++activeRequests;
-        Q_ASSERT(activeRequests <= maxSimultaneousRequests);        
+        Q_ASSERT(activeRequests <= maxSimultaneousRequests);
         return true;
     }
 
@@ -291,6 +291,14 @@ void CoThinkerModel::save() const {
         ds << workDict;
         file.close();
     }
+}
+
+void CoThinkerModel::injectSelfId(int id) {
+    if (co_thinkers.isEmpty() && id > 0) return;
+    co_thinkers[0]->userId = id;
+    co_thinkers[0]->url = QString("https://fantlab.ru/user%1").arg(id);
+    qDebug() << "new id " << id;
+    emit dataChanged(index(0, 0), index(0, CTM_URL));
 }
 
 

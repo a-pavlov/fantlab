@@ -115,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent) :
         actionOpen->setEnabled(true);
         actionRequest->setEnabled(true);
         actionCancel->setEnabled(false);
-        actionRecommend->setEnabled(true);
+        actionRecommend->setEnabled(co_thinkers->getMarkStorage().getTotalMarks() > 0);
         QMessageBox::information(this, tr("Refresh completed"), tr("Total users %1 with errors %2").arg(total).arg(error));
     });
 
@@ -199,6 +199,7 @@ void MainWindow::on_actionOpen_triggered() {
 
 void MainWindow::on_actionRequest_triggered() {
     ct_sort->setDynamicSortFilter(false);
+    actionMyId->setEnabled(false);
     actionRequest->setEnabled(false);
     actionCancel->setEnabled(true);
     co_thinkers->start(slSim->value(), sbMaxMarks->value());
@@ -236,6 +237,7 @@ void MainWindow::on_actionMyId_triggered() {
                                   , &ok);
     if (ok) {
         pref.setId(id);
+        co_thinkers->injectSelfId(id);
     } else if (!pref.hasId()) {
         QMessageBox::warning(this, tr("Recommendations problem"), tr("Unable to create recommendations without your id"));
     }

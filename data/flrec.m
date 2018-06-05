@@ -47,7 +47,7 @@ options = optimset('GradObj', 'on', 'MaxIter', num_iterations);
 % lambdas = [0.1 0.3 0.4 0.45 0.5 0.55 0.6 0.7 1.0 2.0 5];
 lambdas = textread("lambdas.txt", "%f", "endofline", "\n")';
 lambda = 4;
-total_cost=10000;
+total_cost=10000000;
 theta = [];
 
 %fprintf("start learning: num_features %d\n", num_features);

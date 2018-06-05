@@ -41,6 +41,11 @@ OctaveDlg::OctaveDlg(QWidget *parent, const MarkStorage& s, const QList<bool> i)
     });
 
     connect(btnStart, &QPushButton::clicked, [=](bool){
+        lbLambda->setText(tr("N/A"));
+        lbIter->setText(tr("N/A"));
+        lbCost->setText("N/A");
+        lbMinCost->setText("N/A");
+
         totalLambdas = editLambdas->text().split(" ", QString::SkipEmptyParts).size();
         finishedLambdas = 0;
         progressBar->setRange(0, totalLambdas);

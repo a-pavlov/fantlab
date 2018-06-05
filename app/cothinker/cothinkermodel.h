@@ -90,6 +90,8 @@ public:
 
     void load();
     void save() const;
+
+    void injectSelfId(int id);
 private:
     int updateIndex;
     int activeRequests;
