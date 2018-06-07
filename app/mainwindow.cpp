@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     recommendations->populate(Utils::Fs::tempPath() + "/recommendations.csv");
 
     connect(rTree, &QTreeView::doubleClicked, [=](const QModelIndex& i) {
+        Q_UNUSED(i);
         QModelIndexList sel = rTree->selectionModel()->selectedRows();
         if (sel.isEmpty()) return;
         QModelIndex indx = sel.at(0); //recommendations_sort->mapToSource(sel.at(0));

@@ -110,4 +110,5 @@ win32 {
 }
 
 SUBDIRS += tests
-RESOURCES += icons.qrc
+RESOURCES += icons.qrc lang.qrc
+TRANSLATIONS += languages/f_en.ts languages/f_ru.ts
