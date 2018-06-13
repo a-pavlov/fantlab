@@ -108,68 +108,73 @@
         <translation>Основное окно</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="27"/>
+        <location filename="../mainwindow.ui" line="25"/>
+        <source>Marks filter</source>
+        <translation type="unfinished">Фильтр оценок</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="31"/>
         <source>Max marks count:</source>
         <translation>Максимальное количество оценок:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="47"/>
+        <location filename="../mainwindow.ui" line="51"/>
         <source>Minimal percent of similarity:</source>
-        <translation>Манимальное подобие:</translation>
+        <translation>Минимальное  подобие:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="67"/>
+        <location filename="../mainwindow.ui" line="71"/>
         <source>0 %</source>
         <translation>0 %</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="74"/>
+        <location filename="../mainwindow.ui" line="78"/>
         <source>Records active:</source>
         <translation>Активные записи:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="81"/>
+        <location filename="../mainwindow.ui" line="85"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="116"/>
+        <location filename="../mainwindow.ui" line="121"/>
         <source>Actions</source>
         <translation>Действия</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="129"/>
+        <location filename="../mainwindow.ui" line="134"/>
         <source>Open file</source>
         <translation>Открыть файл единомышленников</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="141"/>
-        <location filename="../mainwindow.ui" line="144"/>
+        <location filename="../mainwindow.ui" line="146"/>
+        <location filename="../mainwindow.ui" line="149"/>
         <source>Request data</source>
         <translation>Запросить оценки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="156"/>
+        <location filename="../mainwindow.ui" line="161"/>
         <source>Cancel request</source>
         <translation>Отменить запрос</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="168"/>
+        <location filename="../mainwindow.ui" line="173"/>
         <source>Recommend</source>
         <translation>Расчитать рекомендации</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="171"/>
+        <location filename="../mainwindow.ui" line="176"/>
         <source>Generate recommendations</source>
         <translation>Расчет рекомендаций</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="183"/>
+        <location filename="../mainwindow.ui" line="188"/>
         <source>MyId</source>
         <translation>Мой идентификатор</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="195"/>
+        <location filename="../mainwindow.ui" line="200"/>
         <source>Request marks for users</source>
         <translation>Запросить оценки для пользователей</translation>
     </message>
@@ -249,7 +254,7 @@
     <message>
         <location filename="../octave/octavedlg.ui" line="28"/>
         <source>Features:</source>
-        <translation>Фичи</translation>
+        <translation>Фичи:</translation>
     </message>
     <message>
         <location filename="../octave/octavedlg.ui" line="35"/>
@@ -259,12 +264,12 @@
     <message>
         <location filename="../octave/octavedlg.ui" line="51"/>
         <source>Iterations:</source>
-        <translation>Итераций</translation>
+        <translation>Итераций:</translation>
     </message>
     <message>
         <location filename="../octave/octavedlg.ui" line="58"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Claculation iterations count. Than more than more accuracy. But after some value accuracy won&apos;t improve.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>Итераций:</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Итераций в функции минимизации. Чем больше тем точнее, но медленнее.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Sameness:</source>
@@ -286,7 +291,7 @@
     <message>
         <location filename="../octave/octavedlg.ui" line="95"/>
         <source>0.1 0.2 0.3 0.4 0.45 0.5 0.55 0.7 0.9 1.0 2.0</source>
-        <translation type="unfinished">0.1 0.2 0.3 0.4 0.45 0.5 0.55 0.7 0.9 1.0 2.0</translation>
+        <translation>0.1 0.2 0.3 0.4 0.45 0.5 0.55 0.7 0.9 1.0 2.0</translation>
     </message>
     <message>
         <location filename="../octave/octavedlg.ui" line="109"/>
