@@ -2,10 +2,20 @@
 Collaborative filtering for prediction marks on fantlab.ru based on marks of your co-thinkers.
 Math model from Coursera "Machine Learning" by Andrew Ng.
 
+## Qt marks collector application
+## Приложение для сбора оценок и построения рекомендаций. Описание в процессе производства.
+-----------
+![Qt Application](https://raw.githubusercontent.com/a-pavlov/fantlab/master/app/doc/main.PNG)
+
+### Загруженные оценки после нажатия Ок на предыдущем слайде
+-----------
+![Qt Application](https://raw.githubusercontent.com/a-pavlov/fantlab/master/app/doc/marks.PNG)
+
+# Obsolete part. Java code + selenium
+-----------
 ## Parts
 * Scraper on Java + Selenium
 * Octave code from Coursera's course for collaborative filtering
-
 
 ## Features
 * Extract co-thinkers
