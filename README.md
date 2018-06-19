@@ -2,6 +2,10 @@
 Collaborative filtering for prediction marks on fantlab.ru based on marks of your co-thinkers.
 Math model from Coursera "Machine Learning" by Andrew Ng.
 
+## Builds:
+* [Win32](https://drive.google.com/open?id=1W1zMhIcEJRbKuEGowOC12er5IkhWzsMH)
+* [Win x64](https://drive.google.com/open?id=1yfYSge6zsm8RVPv24nSxLGzgMsqAh1f4)
+
 ## Qt marks collector application
 ## Приложение для сбора оценок и построения рекомендаций. Описание в процессе производства.
 -----------
