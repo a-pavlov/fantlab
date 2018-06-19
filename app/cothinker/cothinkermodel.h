@@ -88,7 +88,7 @@ public:
 
     QList<bool> getActiveUsers(int minSim, int maxMark) const;
 
-    void load();
+    bool load(const QString& filename);
     void save() const;
 
     void injectSelfId(int id);

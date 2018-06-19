@@ -9,7 +9,6 @@
 #include <QNetworkAccessManager>
 #include <QFile>
 
-
 CoThinkerModel::CoThinkerModel(QNetworkAccessManager* m, QObject *parent) :
     QAbstractListModel(parent), nam(m)
 {
@@ -273,14 +272,17 @@ QList<bool> CoThinkerModel::getActiveUsers(int minSim, int maxMark) const {
     return res;
 }
 
-void CoThinkerModel::load() {
-    QFile file(Utils::Fs::cacheLocation() + "/works.dat");
-
+bool CoThinkerModel::load(const QString& filename) {
+    QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream ds(&file);
         ds >> workDict;
         file.close();
+        qDebug() << "load works from " << filename;
+        return true;
     }
+
+    return false;
 }
 
 void CoThinkerModel::save() const {

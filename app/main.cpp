@@ -3,9 +3,20 @@
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QTranslator>
+#include <QFile>
+
+void myMessageHandler(QtMsgType, const QMessageLogContext &, const QString & txt) {
+    QFile outFile("debuglog.txt");
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream ts(&outFile);
+    ts << txt << endl;
+}
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+    qInstallMessageHandler(myMessageHandler);
+    qDebug() << "SSL build version " << QSslSocket::sslLibraryBuildVersionString()
+             << "SSL version " << QSslSocket::sslLibraryVersionString();
 
     // Load translation
     QTranslator qtTranslator;

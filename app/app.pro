@@ -107,6 +107,7 @@ win32 {
         QMAKE_LFLAGS += "/DEBUG"
     }
     LIBS += dbghelp.lib
+    QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
 }
 
 SUBDIRS += tests

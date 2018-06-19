@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QInputDialog>
+#include <QDir>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setupUi(this);
     setWindowIcon(QIcon(":/icons/computer.ico"));
     co_thinkers = new CoThinkerModel(nam, this);
-    co_thinkers->load();
+    co_thinkers->load(Utils::Fs::cacheLocation() + "/works.dat")
+            || co_thinkers->load(QDir::currentPath() + "/works.dat");
     ct_sort = new CoThinkerFilterProxyModel(slSim->value(), sbMaxMarks->value(), this);
     ct_sort->setSourceModel(co_thinkers);
     ct_sort->setSortRole(CoThinkerModel::SortRole);
