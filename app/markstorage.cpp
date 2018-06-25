@@ -31,6 +31,8 @@ void MarkStorage::addMark(int user, int work, int mark) {
     Q_ASSERT(userPos != -1);
     Q_ASSERT(markMatrix.size() == userIndexes.size());
 
+    libRec << QString("%1 %2 %3").arg(user).arg(work).arg(mark);
+
     int index = workIndexes.value(work, -1);
 
     if (index == -1) {
@@ -80,4 +82,16 @@ bool MarkStorage::saveData(const QString& worksFilename
     } else return false;
 
     return true;
+}
+
+bool MarkStorage::saveLibRecData(const QString &libRecFilename) const {
+    QFile lrFile(libRecFilename);
+    if (lrFile.open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream ts(&lrFile);
+        for(const QString& s: libRec) ts << s << "\n";
+        lrFile.close();
+        return true;
+    }
+
+    return false;
 }

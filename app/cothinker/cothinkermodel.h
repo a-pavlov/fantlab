@@ -92,6 +92,8 @@ public:
     void save() const;
 
     void injectSelfId(int id);
+
+    void setUseGenreFilterAndWorkDetails(bool b) { useGenreFilterAndWorkDetails = b; }
 private:
     int updateIndex;
     int activeRequests;
@@ -105,6 +107,8 @@ private:
     QMap<int, WorkInfo> workDict;
     MarkStorage markStorage;
     double minSim;
+    bool useGenreFilterAndWorkDetails;
+    WorkInfo sfDummy;
 signals:
     void networkRequestsFinish(int totalCount, int errorsCount);
     void networkRequestsUpdate(int totalCount, int errorsCount);

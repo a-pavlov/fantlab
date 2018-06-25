@@ -29,6 +29,7 @@ private:
      * user id as key, position as value
      */
     QMap<int, int> userIndexes;
+    QStringList libRec;
 public:
     MarkStorage();
 
@@ -85,6 +86,8 @@ public:
     bool saveData(const QString& worksFilename
                   , const QString& marksFilename
                   , const QList<bool> indexes) const;
+
+    bool saveLibRecData(const QString& libRecFilename) const;
 };
 
 #endif // MARKSTORAGE_H

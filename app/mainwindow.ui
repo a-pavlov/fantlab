@@ -86,6 +86,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QCheckBox" name="cbGenreFilter">
+         <property name="text">
+          <string>Genre filter and details</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -188,16 +195,19 @@
     <string>MyId</string>
    </property>
   </action>
-  <action name="actionRequestMarks">
+  <action name="actionSaveLibRec">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/favorits.ico</normaloff>:/icons/favorits.ico</iconset>
+     <normaloff>:/icons/filesaveas.ico</normaloff>:/icons/filesaveas.ico</iconset>
    </property>
    <property name="text">
-    <string>Request marks for users</string>
+    <string>Save libRec</string>
+   </property>
+   <property name="toolTip">
+    <string>Save data in libRec format</string>
    </property>
   </action>
  </widget>

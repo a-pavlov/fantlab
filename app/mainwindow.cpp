@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     co_thinkers = new CoThinkerModel(nam, this);
     co_thinkers->load(Utils::Fs::cacheLocation() + "/works.dat")
             || co_thinkers->load(QDir::currentPath() + "/works.dat");
+    co_thinkers->setUseGenreFilterAndWorkDetails(cbGenreFilter->isChecked());
     ct_sort = new CoThinkerFilterProxyModel(slSim->value(), sbMaxMarks->value(), this);
     ct_sort->setSourceModel(co_thinkers);
     ct_sort->setSortRole(CoThinkerModel::SortRole);
@@ -108,6 +109,8 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addAction(actionCancel);
     menu->addSeparator();
     menu->addAction(actionRecommend);
+    menu->addSeparator();
+    menu->addAction(actionSaveLibRec);
 
     Preferences pref;
     actionOpen->setEnabled(pref.hasId());
@@ -208,12 +211,6 @@ void MainWindow::on_actionRequest_triggered() {
     co_thinkers->start(slSim->value(), sbMaxMarks->value());
 }
 
-void MainWindow::on_actionRequestMarks_triggered() {
-    actionRequestMarks->setEnabled(false);
-    actionCancel->setEnabled(true);
-
-}
-
 void MainWindow::on_actionCancel_triggered() {
     actionRequest->setEnabled(true);
     actionCancel->setEnabled(false);
@@ -247,6 +244,13 @@ void MainWindow::on_actionMyId_triggered() {
 
     actionOpen->setEnabled(pref.hasId());
     sb->setId(pref.getId());
+}
+
+void MainWindow::on_actionSaveLibRec_triggered() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("libRec data file name"), Utils::Fs::cacheLocation());
+    if (!filename.isNull()) {
+        co_thinkers->getMarkStorage().saveLibRecData(filename);
+    }
 }
 
 void MainWindow::onIteration(int step, QString cost) {

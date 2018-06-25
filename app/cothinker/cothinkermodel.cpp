@@ -9,9 +9,15 @@
 #include <QNetworkAccessManager>
 #include <QFile>
 
+
 CoThinkerModel::CoThinkerModel(QNetworkAccessManager* m, QObject *parent) :
-    QAbstractListModel(parent), nam(m)
+    QAbstractListModel(parent), nam(m), useGenreFilterAndWorkDetails(false)
 {
+    sfDummy.title = tr("Skipped");
+    sfDummy.description = tr("Skipped");
+    sfDummy.workId = 0;
+    sfDummy.name = tr("Skipped");
+    sfDummy.genres.append(1);
 }
 
 int CoThinkerModel::rowCount(const QModelIndex& parent) const {
@@ -228,9 +234,13 @@ bool CoThinkerModel::hasWork(int workId) const {
 
 const WorkInfo& CoThinkerModel::getWork(int workId) const {
     static WorkInfo w;
-    QMap<int, WorkInfo>::const_iterator itr = workDict.find(workId);
-    if (itr != workDict.end()) return itr.value();
-    return w;
+    if (useGenreFilterAndWorkDetails) {
+        QMap<int, WorkInfo>::const_iterator itr = workDict.find(workId);
+        if (itr != workDict.end()) return itr.value();
+        return w;
+    }
+
+    return sfDummy;
 }
 
 bool CoThinkerModel::takeRequestSlot() {
