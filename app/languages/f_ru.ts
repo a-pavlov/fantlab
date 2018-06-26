@@ -4,98 +4,105 @@
 <context>
     <name>CoThinkerModel</name>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="37"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="16"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="17"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="19"/>
+        <source>Skipped</source>
+        <translation>Пропущено</translation>
+    </message>
+    <message>
+        <location filename="../cothinker/cothinkermodel.cpp" line="42"/>
         <source>My</source>
         <translation>Я</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="37"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="42"/>
         <source>Co Thinker</source>
         <translation>Единомышленник</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="40"/>
-        <location filename="../cothinker/cothinkermodel.cpp" line="41"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="45"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="46"/>
         <source>N/A</source>
         <translation>Н.Д</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="117"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="122"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="118"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="123"/>
         <source>Url</source>
         <translation>Ссылка</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="119"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="124"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="120"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="125"/>
         <source>Pairs</source>
         <translation>Пары</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="121"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="126"/>
         <source>Similarity</source>
         <translation>Подобие</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="122"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="127"/>
         <source>Login</source>
         <translation>Логин</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="123"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="128"/>
         <source>Class</source>
         <translation>Класс</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="124"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="129"/>
         <source>Marks</source>
         <translation>Оценки</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="125"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="130"/>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="126"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="131"/>
         <source>Responses</source>
         <translation>Ответы</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="127"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="132"/>
         <source>Tickets</source>
         <translation>Тикеты</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="128"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="133"/>
         <source>Topics</source>
         <translation>Топики</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="129"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="134"/>
         <source>Fail count</source>
         <translation>Ошибки</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="130"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="135"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="131"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="136"/>
         <source>Processed marks</source>
         <translation>Обработано оценок</translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="206"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="211"/>
         <source>Requested</source>
         <translation>Запрошен</translation>
     </message>
@@ -110,7 +117,7 @@
     <message>
         <location filename="../mainwindow.ui" line="25"/>
         <source>Marks filter</source>
-        <translation type="unfinished">Фильтр оценок</translation>
+        <translation>Фильтр оценок</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="31"/>
@@ -138,105 +145,124 @@
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="121"/>
+        <location filename="../mainwindow.ui" line="92"/>
+        <source>Genre filter and details</source>
+        <translation>Запрашивать детали и фильтровать оценки по жанру</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="128"/>
         <source>Actions</source>
         <translation>Действия</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="134"/>
+        <location filename="../mainwindow.ui" line="141"/>
         <source>Open file</source>
         <translation>Открыть файл единомышленников</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="146"/>
-        <location filename="../mainwindow.ui" line="149"/>
+        <location filename="../mainwindow.ui" line="153"/>
+        <location filename="../mainwindow.ui" line="156"/>
         <source>Request data</source>
         <translation>Запросить оценки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="161"/>
+        <location filename="../mainwindow.ui" line="168"/>
         <source>Cancel request</source>
         <translation>Отменить запрос</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="173"/>
+        <location filename="../mainwindow.ui" line="180"/>
         <source>Recommend</source>
         <translation>Расчитать рекомендации</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="176"/>
+        <location filename="../mainwindow.ui" line="183"/>
         <source>Generate recommendations</source>
         <translation>Расчет рекомендаций</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="188"/>
+        <location filename="../mainwindow.ui" line="195"/>
         <source>MyId</source>
         <translation>Мой идентификатор</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="200"/>
-        <source>Request marks for users</source>
-        <translation>Запросить оценки для пользователей</translation>
+        <location filename="../mainwindow.ui" line="207"/>
+        <source>Save libRec</source>
+        <translation>Сохранить libRec</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="45"/>
+        <location filename="../mainwindow.ui" line="210"/>
+        <source>Save data in libRec format</source>
+        <translation>Сохранить в формате libRec</translation>
+    </message>
+    <message>
+        <source>Request marks for users</source>
+        <translation type="vanished">Запросить оценки для пользователей</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="48"/>
         <source>Column visibility</source>
         <translation>Видимость колонок</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="69"/>
+        <location filename="../mainwindow.cpp" line="72"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="120"/>
+        <location filename="../mainwindow.cpp" line="125"/>
         <source>Refresh completed</source>
         <translation>Обновление завершено</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="120"/>
+        <location filename="../mainwindow.cpp" line="125"/>
         <source>Total users %1 with errors %2</source>
         <translation>Всего пользователей %1 с ошибками %2</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="145"/>
+        <location filename="../mainwindow.cpp" line="150"/>
         <source>Open html page</source>
         <translation>Открыть html файл</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="147"/>
+        <location filename="../mainwindow.cpp" line="152"/>
         <source>html files (*.html)</source>
         <translation>Файлы html (*.html)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="190"/>
+        <location filename="../mainwindow.cpp" line="195"/>
         <source>Import completed</source>
         <translation>Импорт завершен</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="191"/>
+        <location filename="../mainwindow.cpp" line="196"/>
         <source>%1 records have been imported</source>
         <translation>%1 записей импортировано</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="232"/>
+        <location filename="../mainwindow.cpp" line="231"/>
         <source>Self id</source>
         <translation>Мой идентификатор</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="233"/>
+        <location filename="../mainwindow.cpp" line="232"/>
         <source>Set your id in fantlab site here</source>
         <translation>Установите свой идентификатор на Фантлабе</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="243"/>
+        <location filename="../mainwindow.cpp" line="242"/>
         <source>Recommendations problem</source>
         <translation>Проблема рекомендаций</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="243"/>
+        <location filename="../mainwindow.cpp" line="242"/>
         <source>Unable to create recommendations without your id</source>
         <translation>Не могу создать рекомендации</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="250"/>
+        <source>libRec data file name</source>
+        <translation type="unfinished">Не могу сохранить файлы данных</translation>
     </message>
 </context>
 <context>

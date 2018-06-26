@@ -4,98 +4,105 @@
 <context>
     <name>CoThinkerModel</name>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="37"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="16"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="17"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="19"/>
+        <source>Skipped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../cothinker/cothinkermodel.cpp" line="42"/>
         <source>My</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="37"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="42"/>
         <source>Co Thinker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="40"/>
-        <location filename="../cothinker/cothinkermodel.cpp" line="41"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="45"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="46"/>
         <source>N/A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="117"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="122"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="118"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="123"/>
         <source>Url</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="119"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="124"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="120"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="125"/>
         <source>Pairs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="121"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="126"/>
         <source>Similarity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="122"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="127"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="123"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="128"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="124"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="129"/>
         <source>Marks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="125"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="130"/>
         <source>Messages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="126"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="131"/>
         <source>Responses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="127"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="132"/>
         <source>Tickets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="128"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="133"/>
         <source>Topics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="129"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="134"/>
         <source>Fail count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="130"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="135"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="131"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="136"/>
         <source>Processed marks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../cothinker/cothinkermodel.cpp" line="206"/>
+        <location filename="../cothinker/cothinkermodel.cpp" line="211"/>
         <source>Requested</source>
         <translation type="unfinished"></translation>
     </message>
@@ -138,104 +145,119 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="121"/>
+        <location filename="../mainwindow.ui" line="92"/>
+        <source>Genre filter and details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="128"/>
         <source>Actions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="134"/>
+        <location filename="../mainwindow.ui" line="141"/>
         <source>Open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="146"/>
-        <location filename="../mainwindow.ui" line="149"/>
+        <location filename="../mainwindow.ui" line="153"/>
+        <location filename="../mainwindow.ui" line="156"/>
         <source>Request data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="161"/>
+        <location filename="../mainwindow.ui" line="168"/>
         <source>Cancel request</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="173"/>
+        <location filename="../mainwindow.ui" line="180"/>
         <source>Recommend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="176"/>
+        <location filename="../mainwindow.ui" line="183"/>
         <source>Generate recommendations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="188"/>
+        <location filename="../mainwindow.ui" line="195"/>
         <source>MyId</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="200"/>
-        <source>Request marks for users</source>
+        <location filename="../mainwindow.ui" line="207"/>
+        <source>Save libRec</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="45"/>
+        <location filename="../mainwindow.ui" line="210"/>
+        <source>Save data in libRec format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="48"/>
         <source>Column visibility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="69"/>
+        <location filename="../mainwindow.cpp" line="72"/>
         <source>%1 %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="120"/>
+        <location filename="../mainwindow.cpp" line="125"/>
         <source>Refresh completed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="120"/>
+        <location filename="../mainwindow.cpp" line="125"/>
         <source>Total users %1 with errors %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="145"/>
+        <location filename="../mainwindow.cpp" line="150"/>
         <source>Open html page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="147"/>
+        <location filename="../mainwindow.cpp" line="152"/>
         <source>html files (*.html)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="190"/>
+        <location filename="../mainwindow.cpp" line="195"/>
         <source>Import completed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="191"/>
+        <location filename="../mainwindow.cpp" line="196"/>
         <source>%1 records have been imported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="232"/>
+        <location filename="../mainwindow.cpp" line="231"/>
         <source>Self id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="233"/>
+        <location filename="../mainwindow.cpp" line="232"/>
         <source>Set your id in fantlab site here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="243"/>
+        <location filename="../mainwindow.cpp" line="242"/>
         <source>Recommendations problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="243"/>
+        <location filename="../mainwindow.cpp" line="242"/>
         <source>Unable to create recommendations without your id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="250"/>
+        <source>libRec data file name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
