@@ -133,6 +133,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(co_thinkers, &CoThinkerModel::networkRequestsUpdate, [=](int total, int error){
        sb->setRequests(total, error);
     });
+
+    connect(cbGenreFilter, &QCheckBox::clicked, [=](bool b) {
+       co_thinkers->setUseGenreFilterAndWorkDetails(b);
+    });
 }
 
 MainWindow::~MainWindow() {
