@@ -111,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addAction(actionRecommend);
     menu->addSeparator();
     menu->addAction(actionSaveLibRec);
+    menu->addAction(actionKM);
 
     Preferences pref;
     actionOpen->setEnabled(pref.hasId());
@@ -254,6 +255,32 @@ void MainWindow::on_actionSaveLibRec_triggered() {
     QString filename = QFileDialog::getSaveFileName(this, tr("libRec data file name"), Utils::Fs::cacheLocation());
     if (!filename.isNull()) {
         co_thinkers->getMarkStorage().saveLibRecData(filename);
+    }
+}
+
+void MainWindow::on_actionKM_triggered() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("K-means data file name"), Utils::Fs::cacheLocation());
+    if (!filename.isNull()) {
+        QFile km(filename);
+        if (km.open(QFile::WriteOnly | QFile::Text)) {
+            QTextStream ts(&km);
+            for(int i = 0; i < co_thinkers->rowCount(); ++i) {
+                const User& u = co_thinkers->getUser(i);
+                ts  << u.userId << ","
+                    << u.markCount << ","
+                    << u.messageCount << ","
+                    << u.responseCount << ","
+                    << u.descriptioncount << ","
+                    << u.classifcount << ","
+                    << u.votecount << ","
+                    << u.ticketsCount << ","
+                    << u.topicCount << ","
+                    << u.bookcase_count << ","
+                    << u.curator_autors << "\n";
+            }
+
+            km.close();
+        }
     }
 }
 

@@ -26,8 +26,13 @@ public:
     int markCount;
     int messageCount;
     int responseCount;
+    int descriptioncount;
+    int classifcount;
+    int votecount;
     int ticketsCount;
     int topicCount;
+    int bookcase_count;
+    int curator_autors;
     int failCount;
     QString status;
     int errorCode;

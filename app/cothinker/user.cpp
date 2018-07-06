@@ -78,10 +78,16 @@ void User::processDetailsResponse(int param, const QJsonDocument& jd) {
     login = o["login"].toString();
     className = o["class_name"].toString();
     markCount = o["markcount"].toString().trimmed().toInt();
-    messageCount = o["messagecount"].toString().trimmed().toInt();
     responseCount = o["responsecount"].toString().trimmed().toInt();
-    ticketsCount = o["tickets_count"].toString().trimmed().toInt();
+    descriptioncount = o["descriptioncount"].toString().trimmed().toInt();
+    classifcount = o["classifcount"].toString().trimmed().toInt();
+    votecount = o["votecount"].toString().trimmed().toInt();
     topicCount = o["topiccount"].toString().trimmed().toInt();
+    messageCount = o["messagecount"].toString().trimmed().toInt();
+    bookcase_count = o["bookcase_count"].toString().trimmed().toInt();
+    curator_autors = o["curator_autors"].toString().trimmed().toInt();
+
+    ticketsCount = o["tickets_count"].toString().trimmed().toInt();    
     status = tr("Finished");
     finishRequst();
 }

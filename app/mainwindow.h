@@ -39,6 +39,7 @@ private slots:
     void on_actionRecommend_triggered();
     void on_actionMyId_triggered();
     void on_actionSaveLibRec_triggered();
+    void on_actionKM_triggered();
 
     void onIteration(int, QString);
     void onMaxMarksChanged(int);

@@ -94,6 +94,11 @@ public:
     void injectSelfId(int id);
 
     void setUseGenreFilterAndWorkDetails(bool b) { useGenreFilterAndWorkDetails = b; }
+
+    const User& getUser(int i) const {
+        Q_ASSERT(i < co_thinkers.size());
+        return at(index(i));
+    }
 private:
     int updateIndex;
     int activeRequests;
