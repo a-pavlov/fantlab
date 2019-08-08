@@ -16,9 +16,7 @@ class MarksSpider(scrapy.Spider):
     def parse_first_page(self, response):
         self.log("incoming url: %s" % response.url)
         json_response = json.loads(response.text)
-        if "total_count" in json_response and json_response["total_count"] <= MAX_MARKS_COUNT:
-            #self.log('total: %s pages %s' % (json_response["total_count"], math.ceil(json_response["total_count"] / 200.0)))
-
+        if "total_count" in json_response and json_response["total_count"] <= MAX_MARKS_COUNT:            
             for pageNo in range(2, int(math.ceil(json_response["total_count"] / 200.0)) + 1):
                 yield scrapy.Request(url="{0}?page={1}".format(response.url, pageNo), callback=self.parse_next_pages)
 

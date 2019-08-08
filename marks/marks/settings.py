@@ -14,9 +14,9 @@ BOT_NAME = 'marks'
 SPIDER_MODULES = ['marks.spiders']
 NEWSPIDER_MODULE = 'marks.spiders'
 
-CSV_FILE_PATH = '/tmp/marks.csv'
+CSV_FILE_PATH = '/media/elements/data/fantlab/marks.csv'
 ITEM_PIPELINES = { 'marks.pipelines.MarksPipeline' : 4}
-MAX_MARKS_COUNT = 1000
+MAX_MARKS_COUNT = 5000
 LAST_USER_ID = 180000
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
