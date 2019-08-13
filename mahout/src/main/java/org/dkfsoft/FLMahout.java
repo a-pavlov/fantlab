@@ -74,18 +74,30 @@ public class FLMahout {
 
         //Response<Work> work = fantlabApiClient.getWork("work/1958/extended").toBlocking().first();
 
-
+        long startTime = System.currentTimeMillis();
         FileDataModel dataModel = new FileDataModel(new File(args[0]));
+        System.out.println("FileDataModel " + (System.currentTimeMillis() - startTime) + " msec");
+        startTime = System.currentTimeMillis();
         UserSimilarity userSimilarity = new PearsonCorrelationSimilarity(dataModel);
+        System.out.println("UserSimilarity " + (System.currentTimeMillis() - startTime) + " msec");
+        startTime = System.currentTimeMillis();
 
         UserNeighborhood neighborhood = new NearestNUserNeighborhood(90, userSimilarity, dataModel);
+        System.out.println("UserNeighborhood " + (System.currentTimeMillis() - startTime) + " msec");
+        startTime = System.currentTimeMillis();
+
         Recommender recommender = new GenericUserBasedRecommender(dataModel, neighborhood, userSimilarity);
+        System.out.println("Recommender " + (System.currentTimeMillis() - startTime) + " msec");
+        startTime = System.currentTimeMillis();
         //User user = dataModel.getUser(userId);
         //System.out.println("-----");
         //System.out.println("User: " + user);
         //org.dkfsoft.TasteUtils.printPreferences(user, handler.map);
         List<RecommendedItem> recommendations = recommender.recommend(userId, 160);
+
         Map<Long, Float> recommendDict = recommendations.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
+        System.out.println("recommendations " + (System.currentTimeMillis() - startTime) + " msec");
+        startTime = System.currentTimeMillis();
 
         List<Work> works = Observable.from(recommendations)
                 .flatMap(x -> Observable.just(x)
