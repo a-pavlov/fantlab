@@ -95,7 +95,7 @@ public class FLMahout {
                 .toBlocking()
                 .first()
                 .stream()
-                .filter(x -> x.isSuccessful())
+                .filter(x -> x != null && x.isSuccessful())
                 .map(x -> x.body())
                 .filter(x -> x.isFantastic())
                 .collect(Collectors.toList());
