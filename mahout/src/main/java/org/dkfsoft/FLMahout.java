@@ -78,13 +78,13 @@ public class FLMahout {
         FileDataModel dataModel = new FileDataModel(new File(args[0]));
         UserSimilarity userSimilarity = new PearsonCorrelationSimilarity(dataModel);
 
-        UserNeighborhood neighborhood = new NearestNUserNeighborhood(500, userSimilarity, dataModel);
+        UserNeighborhood neighborhood = new NearestNUserNeighborhood(90, userSimilarity, dataModel);
         Recommender recommender = new GenericUserBasedRecommender(dataModel, neighborhood, userSimilarity);
         //User user = dataModel.getUser(userId);
         //System.out.println("-----");
         //System.out.println("User: " + user);
         //org.dkfsoft.TasteUtils.printPreferences(user, handler.map);
-        List<RecommendedItem> recommendations = recommender.recommend(userId, 200);
+        List<RecommendedItem> recommendations = recommender.recommend(userId, 160);
         Map<Long, Float> recommendDict = recommendations.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
 
         List<Work> works = Observable.from(recommendations)
