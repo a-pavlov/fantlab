@@ -23,7 +23,11 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) msg;
+            QueryStringDecoder queryStringDecoder = new QueryStringDecoder(request.uri());
+            System.out.println("uri: " + queryStringDecoder.path() + " query " + queryStringDecoder.parameters());
+            //if (queryStringDecoder.path().equals(""))
             System.out.println("http request " + request.toString());
+
 
             if (HttpHeaderUtil.is100ContinueExpected(request)) {
                 ctx.write(new DefaultFullHttpResponse(HTTP_1_1, CONTINUE));
@@ -50,6 +54,9 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        //cause.printStackTrace();
+        //ctx.close();
+
         super.exceptionCaught(ctx, cause);
         ctx.writeAndFlush(new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR));
     }
