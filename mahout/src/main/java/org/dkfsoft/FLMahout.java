@@ -16,6 +16,7 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.dkfsoft.client.FantlabApiClient;
+import org.dkfsoft.model.UserId;
 import org.dkfsoft.model.Work;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -68,7 +69,7 @@ public class FLMahout {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .client(new OkHttpClient.Builder()
-                        .addInterceptor(new HttpLoggingInterceptor().setLevel(NONE))
+                        .addInterceptor(new HttpLoggingInterceptor().setLevel(BODY))
                         .connectionPool(new ConnectionPool(0,10,TimeUnit.SECONDS)).build())
                         .build().create(FantlabApiClient.class);
 
@@ -98,6 +99,7 @@ public class FLMahout {
         Map<Long, Float> recommendDict = recommendations.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
         System.out.println("recommendations " + (System.currentTimeMillis() - startTime) + " msec");
         startTime = System.currentTimeMillis();
+        UserId userId1 = fantlabApiClient.getUserByLogin("userlogin", "inkpot").toBlocking().first().body();
 
         List<Work> works = Observable.from(recommendations)
                 .flatMap(x -> Observable.just(x)
