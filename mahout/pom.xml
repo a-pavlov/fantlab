@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fantlab.mahout</groupId>
-    <artifactId>fantlab.mahout</artifactId>
-    <version>1.0</version>
+    <artifactId>recd</artifactId>
+    <version>0.2</version>
 
     <properties>
         <retrofit.version>2.5.0</retrofit.version>
@@ -112,12 +112,14 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.dkfsoft.FLMahout</mainClass>
+                            <mainClass>org.dkfsoft.ServerLauncher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <finalName>recd</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
             </plugin>
         </plugins>

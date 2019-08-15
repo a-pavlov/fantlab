@@ -93,6 +93,7 @@ public class ServerLauncher extends Thread {
     synchronized public void  closeServer() {
         if (channelFuture != null) {
             channelFuture.channel().close();
+            channelFuture = null;
         }
     }
 

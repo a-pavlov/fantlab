@@ -43,7 +43,8 @@ public class FantlabService {
         return Observable.from(workIds)
                 .flatMap(x -> Observable.just(x)
                         .subscribeOn(Schedulers.from(executorService))
-                        .flatMap(item -> fantlabApiClient.getWork("work/" + Long.toString(item) + "/extended").onErrorReturn((e) -> null)))
+                        .flatMap(item -> fantlabApiClient.getWork("work/" + Long.toString(item) + "/extended")
+                                .onErrorReturn((e) -> null)))
                 .toList()
                 .toBlocking()
                 .first()
@@ -54,6 +55,8 @@ public class FantlabService {
     }
 
     public UserId getUserIdByLogin(final String login) {
-        return fantlabApiClient.getUserByLogin("userlogin", "inkpot").toBlocking().first().body();
+        return fantlabApiClient.getUserByLogin("userlogin", "inkpot")
+                //.retryWhen(errors -> errors.flatMap(error -> Observable.just(null)))
+                .toBlocking().first().body();
     }
 }
