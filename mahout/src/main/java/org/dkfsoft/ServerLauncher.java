@@ -29,10 +29,13 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.dkfsoft.model.WorkMark;
+import org.dkfsoft.service.FantlabService;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -43,16 +46,18 @@ public class ServerLauncher extends Thread {
     private final SslContext sslContext;
     private final int port;
     private final ObjectMapper objectMapper;
+    private final FantlabService fantlabService;
 
-    public ServerLauncher(final FileDataModel dataModel
+    public ServerLauncher(final ObjectMapper objectMapper
+            , ExecutorService executorService
+            , final FileDataModel dataModel
             , final SslContext sslContext
             , int port) {
         this.dataModel = dataModel;
         this.sslContext = sslContext;
         this.port = port;
-        objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.setSerializationInclusion(NON_NULL);
+        this.objectMapper = objectMapper;
+        this.fantlabService = new FantlabService(objectMapper, executorService);
     }
 
     @Override
@@ -70,7 +75,7 @@ public class ServerLauncher extends Thread {
                                     .addLast("HttpServerCodec", new HttpServerCodec())
                                     .addLast("HttpObjectAggregator", new HttpObjectAggregator(10 * 1024 * 1024))
                                     .addLast("HttpChunkedWrite", new ChunkedWriteHandler())
-                                    .addLast("HelloHttpHandler", new HttpHandler(dataModel, objectMapper));
+                                    .addLast("HelloHttpHandler", new HttpHandler(dataModel, objectMapper, fantlabService));
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -91,8 +96,14 @@ public class ServerLauncher extends Thread {
             return;
         }
 
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.setSerializationInclusion(NON_NULL);
+
         FileDataModel dataModel = new FileDataModel(new File(args[0]));
-        ServerLauncher serverLauncher = new ServerLauncher(dataModel, null, 8090);
+        ServerLauncher serverLauncher = new ServerLauncher(objectMapper, executorService, dataModel, null, 8090);
         serverLauncher.start();
         serverLauncher.join();
 

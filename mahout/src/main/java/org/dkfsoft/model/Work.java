@@ -16,8 +16,12 @@ public class Work {
     Classificatory classificatory;
 
     public boolean isFantastic() {
-        return classificatory != null &&
+        return isGenre(1);
+    }
+
+    public boolean isGenre(int genre) {
+        return genre == 0 || (classificatory != null &&
                 classificatory.getGenre_group() != null &&
-                classificatory.getGenre_group().stream().flatMap(x -> x.genre.stream().map(y -> y.genre_id)).anyMatch(x -> x.equals(1));
+                classificatory.getGenre_group().stream().flatMap(x -> x.genre.stream().map(y -> y.genre_id)).anyMatch(x -> x.equals(genre)));
     }
 }

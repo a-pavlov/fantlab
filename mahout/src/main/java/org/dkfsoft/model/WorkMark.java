@@ -8,4 +8,6 @@ import lombok.Data;
 public class WorkMark {
     private Long workId;
     private Float mark;
+    private String name;
+    private String description;
 }
