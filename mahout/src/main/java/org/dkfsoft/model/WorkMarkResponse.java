@@ -3,9 +3,11 @@ package org.dkfsoft.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
-public class WorkMark {
-    private Long workId;
-    private Float mark;
+public class WorkMarkResponse {
+    Long userId;
+    List<WorkMark> workMarks;
 }
