@@ -47,6 +47,7 @@ public class ServerLauncher extends Thread {
     private final int port;
     private final ObjectMapper objectMapper;
     private final FantlabService fantlabService;
+    private ChannelFuture channelFuture;
 
     public ServerLauncher(final ObjectMapper objectMapper
             , ExecutorService executorService
@@ -81,12 +82,17 @@ public class ServerLauncher extends Thread {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, false);
 
-            ChannelFuture f = b.bind(port).sync();
+            channelFuture = b.bind(port).sync();
             log.info("server started on port {} data model {}", port, dataModel.getDataFile().getPath());
-
-            f.channel().closeFuture().sync();
+            channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             log.error("server error {}", e.getMessage());
+        }
+    }
+
+    synchronized public void  closeServer() {
+        if (channelFuture != null) {
+            channelFuture.channel().close();
         }
     }
 
