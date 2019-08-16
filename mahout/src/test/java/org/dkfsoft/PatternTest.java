@@ -27,11 +27,11 @@ public class PatternTest {
 
     @Test
     public void testLoginMatch() {
-        assertTrue(HttpHandler.LOGIN_PATTERN.matcher("/recommendation/login").find());
-        assertTrue(HttpHandler.LOGIN_PATTERN.matcher("/recommendation/login/").find());
-        assertFalse(HttpHandler.LOGIN_PATTERN.matcher("/recommendation/login///").find());
-        assertFalse(HttpHandler.LOGIN_PATTERN.matcher("//recommendation/login/").find());
-        assertFalse(HttpHandler.LOGIN_PATTERN.matcher("/recation/login").find());
+        assertTrue(HttpHandler.LOGIN_PATTERN.matcher("/recommendation").find());
+        assertTrue(HttpHandler.LOGIN_PATTERN.matcher("/recommendation/").find());
+        assertFalse(HttpHandler.LOGIN_PATTERN.matcher("/recommendation//").find());
+        assertFalse(HttpHandler.LOGIN_PATTERN.matcher("//recommendation").find());
+        assertFalse(HttpHandler.LOGIN_PATTERN.matcher("/recation").find());
         assertFalse(HttpHandler.LOGIN_PATTERN.matcher("").find());
     }
 }

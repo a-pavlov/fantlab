@@ -46,7 +46,7 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
     private static final String LOGIN = "login";
 
     public static Pattern USER_PATTERN = Pattern.compile("(^\\/recommendation\\/user\\/)([0-9]+$)");
-    public static Pattern LOGIN_PATTERN = Pattern.compile("^\\/recommendation\\/login\\/{0,1}$");
+    public static Pattern LOGIN_PATTERN = Pattern.compile("^\\/recommendation\\/{0,1}$");
 
     private static final int DEFAULT_NEIGHBORS = 100;
     private static final int DEFAULT_RECOMMENDATIONS = 100;

@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
+import static okhttp3.logging.HttpLoggingInterceptor.Level.NONE;
 
 
 public class FantlabService {
@@ -33,7 +34,7 @@ public class FantlabService {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .client(new OkHttpClient.Builder()
-                        .addInterceptor(new HttpLoggingInterceptor().setLevel(BODY))
+                        .addInterceptor(new HttpLoggingInterceptor().setLevel(NONE))
                         .connectionPool(new ConnectionPool(0,10, TimeUnit.SECONDS)).build())
                 .build().create(FantlabApiClient.class);
         this.executorService = executorService;
