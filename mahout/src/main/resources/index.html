@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+
+        .buttonload {
+              /*background-color: #4CAF50; /* Green background */
+              background-color: #337ab7;
+              border: none; /* Remove borders */
+              color: white; /* White text */
+              padding: 12px 24px; /* Some padding */
+              font-size: 16px; /* Set a font-size */
+            }
+            
+            /* Add a right margin to each icon */
+            .fa {
+              margin-left: -12px;
+              margin-right: 8px;
+            }
+            
+            .buttonload-normal {
+                     background-color: #337ab7;
+                     border: 1px solid #2e6da4;
+                    }
+                              
+            .disabled {
+                     cursor: not-allowed;
+                     opacity: 0.65;
+                  }
+                  
+            .fail {
+                     background-color: #c9302c;
+                     border: 1px solid #ac2925;
+                  }
+            .success {
+                     background-color: #449d44;
+                     border: 1px solid #398439;
+                  }      
+                
+            </style>
+</head>
+
+<body>
+    <input type="text" id="idValue" placeholder="логин или идентификатор">
+    <input type="checkbox" id="useLogin" checked> Искать по логину
+    <button class="buttonload" onclick="abc(this);">
+        <i class="fa fa-refresh"></i>Рекомендации
+    </button>
+    <table border="1" id="recTbl">
+        <tr>
+            <th nowrap>Оценка</th>
+            <th nowrap>Название</th>
+            <th>Описание</th>
+        </tr>     
+    </table>
+
+
+    <script>
+        function abc(this1) {
+            var useLogin = document.getElementById("useLogin").checked;
+            var idValue = document.getElementById("idValue").value;
+
+            console.log("checkbox " + useLogin + " text: " + idValue + "|");
+
+            if (idValue === "") {
+                alert("Логин или идентификатор пуст");
+                this1.className = "buttonload fail";
+            } else {
+                this1.className = "buttonload disabled";
+                this1.disabled = true;
+                this1.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Запрос';
+
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    console.log("Ready state " + xhr.readyState);
+                    if (xhr.readyState != 4) return;
+                    if (xhr.status != 200) {
+                        console.log("Fail " + xhr.status + ": " + xhr.statusText);
+                        this1.className = "buttonload fail";
+                    } else {
+                        //console.log("Success: " + xhr.responseText);
+                        var jsonBody = JSON.parse(xhr.responseText);
+
+                        var table = document.getElementById("recTbl");
+                        for(i in jsonBody.workMarks) {                            
+                            var row = table.insertRow(-1);
+                            var cellMark = row.insertCell(0);
+                            var cellName = row.insertCell(1);
+                            var cellDescr = row.insertCell(2);
+
+                            //console.log("add" + jsonBody.workMarks[i].mark + ": " + jsonBody.workMarks[i].name);
+
+                            cellMark.innerHTML = jsonBody.workMarks[i].mark;
+                            cellName.innerHTML = "<a href=https://fantlab.ru/work" + jsonBody.workMarks[i].workId + ">" + jsonBody.workMarks[i].name + "</a>";
+                            cellDescr.innerHTML = jsonBody.workMarks[i].description;
+                        }
+
+                        this1.className = "buttonload success";
+                        this1.innerHTML = '<i class="fa fa-refresh"></i> Готово';
+                    }
+                }
+
+                var reqUrl = "/recommendation/user/" + idValue + "?recommendations=70&genre=1";
+                console.log("req url " + reqUrl);
+                xhr.open("GET", reqUrl, true);
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.send();
+            }
+        }
+    </script>
+</body>
+
+</html>

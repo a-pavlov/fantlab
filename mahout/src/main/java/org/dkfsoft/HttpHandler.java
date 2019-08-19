@@ -8,7 +8,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hadoop.mapred.JobHistory;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
@@ -22,12 +21,11 @@ import org.dkfsoft.model.Work;
 import org.dkfsoft.model.WorkMark;
 import org.dkfsoft.model.WorkMarkResponse;
 import org.dkfsoft.service.FantlabService;
-import org.omg.CORBA.BAD_PARAM;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -83,49 +81,58 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                 HttpRequest request = (HttpRequest) msg;
 
                 QueryStringDecoder queryStringDecoder = new QueryStringDecoder(request.uri());
-                log.debug("http request {}", request.toString());
+                log.info("http request {}", request.toString());
 
                 final String path = queryStringDecoder.path();
 
-                Matcher userMatcher = USER_PATTERN.matcher(path!=null?path:"");
-                Matcher loginMatcher = LOGIN_PATTERN.matcher(path!=null?path:"");
-
-                boolean userMatch = userMatcher.find();
-                boolean loginMatch = loginMatcher.find();
-
-                if (!userMatch && !loginMatch) {
-                    throw new FLException(NOT_FOUND, "Incorrect path");
-                }
-
-                long userId = 0;
-
-                if (userMatch) {
-                    userId = Long.parseLong(userMatcher.group(2));
-                } else {
-                    if (queryStringDecoder.parameters() == null || !queryStringDecoder.parameters().containsKey(LOGIN) || queryStringDecoder.parameters().get(LOGIN).isEmpty()) {
-                        throw new FLException(BAD_REQUEST, "Missed or empty login query parameter");
-                    }
-                    // add request user id here
-                    userId = fantlabService.getUserIdByLogin(queryStringDecoder.parameters().get(LOGIN).get(0)).getUser_id();
-                }
-
-                final int neighbors = getIntParam("neighbors", queryStringDecoder, DEFAULT_NEIGHBORS, 1, 500);
-                final int recommendations = getIntParam("recommendations", queryStringDecoder, DEFAULT_RECOMMENDATIONS, 1, 200);
-                final int genre = getIntParam("genre", queryStringDecoder, DEFAULT_GENRE, 0, 20);
-
-                List<RecommendedItem> recommends = getWorkMarks(userId, neighbors, recommendations);
-
-                Map<Long, Float> recommendDict = recommends.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
-                List<Work> works = fantlabService.getWorkDetails(recommends.stream().map(x -> x.getItemID()).collect(Collectors.toList()));
-
-                WorkMarkResponse workMarkResponse = new WorkMarkResponse(userId, works.stream().filter(x -> x.isGenre(genre)).map(x -> new WorkMark(x.getWork_id(), recommendDict.get(x.getWork_id()), x.getWork_name(), x.getWork_description())).collect(Collectors.toList()));
                 String content;
+                String contentType;
 
-                try {
-                    content = objectMapper.writeValueAsString(workMarkResponse);
-                } catch (JsonProcessingException e) {
-                    throw new FLException(INTERNAL_SERVER_ERROR, e.getMessage());
+                if (path.equals("/")) {
+                    content = new Scanner( HttpHandler.class.getResourceAsStream("/index.html")).useDelimiter("\\A").next();
+                    contentType = "text/html";
+                } else {
+                    Matcher userMatcher = USER_PATTERN.matcher(path != null ? path : "");
+                    Matcher loginMatcher = LOGIN_PATTERN.matcher(path != null ? path : "");
+
+                    boolean userMatch = userMatcher.find();
+                    boolean loginMatch = loginMatcher.find();
+
+                    if (!userMatch && !loginMatch) {
+                        throw new FLException(NOT_FOUND, "Incorrect path");
+                    }
+
+                    long userId = 0;
+
+                    if (userMatch) {
+                        userId = Long.parseLong(userMatcher.group(2));
+                    } else {
+                        if (queryStringDecoder.parameters() == null || !queryStringDecoder.parameters().containsKey(LOGIN) || queryStringDecoder.parameters().get(LOGIN).isEmpty()) {
+                            throw new FLException(BAD_REQUEST, "Missed or empty login query parameter");
+                        }
+                        // add request user id here
+                        userId = fantlabService.getUserIdByLogin(queryStringDecoder.parameters().get(LOGIN).get(0)).getUser_id();
+                    }
+
+                    final int neighbors = getIntParam("neighbors", queryStringDecoder, DEFAULT_NEIGHBORS, 1, 500);
+                    final int recommendations = getIntParam("recommendations", queryStringDecoder, DEFAULT_RECOMMENDATIONS, 1, 200);
+                    final int genre = getIntParam("genre", queryStringDecoder, DEFAULT_GENRE, 0, 20);
+
+                    List<RecommendedItem> recommends = getWorkMarks(userId, neighbors, recommendations);
+
+                    Map<Long, Float> recommendDict = recommends.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
+                    List<Work> works = fantlabService.getWorkDetails(recommends.stream().map(x -> x.getItemID()).collect(Collectors.toList()));
+
+                    WorkMarkResponse workMarkResponse = new WorkMarkResponse(userId, works.stream().filter(x -> x.isGenre(genre)).map(x -> new WorkMark(x.getWork_id(), recommendDict.get(x.getWork_id()), x.getWork_name(), x.getWork_description())).collect(Collectors.toList()));
+                    try {
+                        content = objectMapper.writeValueAsString(workMarkResponse);
+                    } catch (JsonProcessingException e) {
+                        throw new FLException(INTERNAL_SERVER_ERROR, e.getMessage());
+                    }
+
+                    contentType = "application/json";
                 }
+
 
                 if (HttpHeaderUtil.is100ContinueExpected(request)) {
                     ctx.write(new DefaultFullHttpResponse(HTTP_1_1, CONTINUE));
@@ -134,7 +141,7 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                 boolean keepAlive = HttpHeaderUtil.isKeepAlive(request);
 
                 FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.copiedBuffer(content, StandardCharsets.UTF_8));
-                fullHttpResponse.headers().set(CONTENT_TYPE, "application/json");
+                fullHttpResponse.headers().set(CONTENT_TYPE, contentType);
                 fullHttpResponse.headers().set(CONTENT_LENGTH, Integer.toString(fullHttpResponse.content().readableBytes()));
 
                 if (!keepAlive) {
