@@ -47,20 +47,24 @@
 <body>
     <input type="text" id="idValue" placeholder="логин или идентификатор">
     <input type="checkbox" id="useLogin" checked> Искать по логину
-    <button class="buttonload" onclick="abc(this);">
+    <button class="buttonload" onclick="startRec(this);">
         <i class="fa fa-refresh"></i>Рекомендации
-    </button>
+    </button>        
     <table border="1" id="recTbl">
+        <thead>
         <tr>
             <th nowrap>Оценка</th>
             <th nowrap>Название</th>
             <th>Описание</th>
-        </tr>     
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
     </table>
 
 
     <script>
-        function abc(this1) {
+        function startRec(this1) {
             var useLogin = document.getElementById("useLogin").checked;
             var idValue = document.getElementById("idValue").value;
 
@@ -72,7 +76,7 @@
             } else {
                 this1.className = "buttonload disabled";
                 this1.disabled = true;
-                this1.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Запрос';
+                this1.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Рекомендации';
 
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
@@ -82,12 +86,13 @@
                         console.log("Fail " + xhr.status + ": " + xhr.statusText);
                         this1.className = "buttonload fail";
                     } else {
-                        //console.log("Success: " + xhr.responseText);
                         var jsonBody = JSON.parse(xhr.responseText);
 
-                        var table = document.getElementById("recTbl");
+                        var tableBodyOld = document.getElementById("recTbl").getElementsByTagName('tbody')[0];
+                        var tableBodyNew = document.createElement('tbody');
+
                         for(i in jsonBody.workMarks) {                            
-                            var row = table.insertRow(-1);
+                            var row = tableBodyNew.insertRow(-1);
                             var cellMark = row.insertCell(0);
                             var cellName = row.insertCell(1);
                             var cellDescr = row.insertCell(2);
@@ -99,8 +104,11 @@
                             cellDescr.innerHTML = jsonBody.workMarks[i].description;
                         }
 
+                        tableBodyOld.parentNode.replaceChild(tableBodyNew, tableBodyOld);
+
+                        this1.disabled = false;
                         this1.className = "buttonload success";
-                        this1.innerHTML = '<i class="fa fa-refresh"></i> Готово';
+                        this1.innerHTML = '<i class="fa fa-refresh"></i> Рекомендации';
                     }
                 }
 
