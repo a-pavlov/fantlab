@@ -45,7 +45,8 @@
 </head>
 
 <body>
-    <input type="text" id="idValue" placeholder="логин или идентификатор">
+    Пользователь: <input type="text" id="idValue" placeholder="логин или идентификатор">
+    Количество рекомендаций: <input type="number" name="quantity" min="1" max="200" value="50" id="recCount">
     <input type="checkbox" id="useLogin" checked> Искать по логину
     <button class="buttonload" onclick="startRec(this);">
         <i class="fa fa-refresh"></i>Рекомендации
@@ -56,19 +57,20 @@
             <th nowrap>Оценка</th>
             <th nowrap>Название</th>
             <th>Описание</th>
+            <th>Жанр</th>
             <th>Год</th>
-            <th>Авторы</th>
+            <th>Авторы</th>            
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
 
-
     <script>
         function startRec(this1) {
-            var useLogin = document.getElementById("useLogin").checked;
-            var idValue = document.getElementById("idValue").value;
+            var useLogin    = document.getElementById("useLogin").checked;
+            var idValue     = document.getElementById("idValue").value;
+            var recCount    = document.getElementById("recCount").value;
 
             console.log("checkbox " + useLogin + " text: " + idValue + "|");
 
@@ -82,43 +84,44 @@
 
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
-                    console.log("Ready state " + xhr.readyState);
+
                     if (xhr.readyState != 4) return;
+                    var jsonBody = JSON.parse(xhr.responseText);
+
                     if (xhr.status != 200) {
                         console.log("Fail " + xhr.status + ": " + xhr.statusText);
                         this1.className = "buttonload fail";
+                        alert(xhr.status + ": " + jsonBody.message);
                     } else {
-                        var jsonBody = JSON.parse(xhr.responseText);
-
                         var tableBodyOld = document.getElementById("recTbl").getElementsByTagName('tbody')[0];
                         var tableBodyNew = document.createElement('tbody');
 
                         for(i in jsonBody.workMarks) {                            
                             var row = tableBodyNew.insertRow(-1);
-                            var cellMark = row.insertCell(0);
-                            var cellName = row.insertCell(1);
-                            var cellDescr = row.insertCell(2);
-                            var cellYear = row.insertCell(3);
-                            var cellAuthors = row.insertCell(4);
+                            var cellMark    = row.insertCell(0);
+                            var cellName    = row.insertCell(1);
+                            var cellDescr   = row.insertCell(2);
+                            var cellGenre   = row.insertCell(3);
+                            var cellYear    = row.insertCell(4);
+                            var cellAuthors = row.insertCell(5);
 
-                            //console.log("add" + jsonBody.workMarks[i].mark + ": " + jsonBody.workMarks[i].name);
-
-                            cellMark.innerHTML = jsonBody.workMarks[i].mark;
-                            cellName.innerHTML = "<a href=https://fantlab.ru/work" + jsonBody.workMarks[i].workId + ">" + jsonBody.workMarks[i].name + "</a>";
-                            cellDescr.innerHTML = jsonBody.workMarks[i].description;
-                            cellYear.innerHTML = jsonBody.workMarks[i].year;
-                            cellAuthors.innerHTML = jsonBody.workMarks[i].authors;
+                            cellMark.innerHTML      = jsonBody.workMarks[i].mark;
+                            cellName.innerHTML      = "<a href=https://fantlab.ru/work" + jsonBody.workMarks[i].workId + ">" + jsonBody.workMarks[i].name + "</a>";
+                            cellDescr.innerHTML     = jsonBody.workMarks[i].description;
+                            cellGenre.innerHTML     = jsonBody.workMarks[i].mainGenre;
+                            cellYear.innerHTML      = jsonBody.workMarks[i].year;
+                            cellAuthors.innerHTML   = jsonBody.workMarks[i].authors;
                         }
 
                         tableBodyOld.parentNode.replaceChild(tableBodyNew, tableBodyOld);
-
-                        this1.disabled = false;
-                        this1.className = "buttonload success";
-                        this1.innerHTML = '<i class="fa fa-refresh"></i> Рекомендации';
+                        this1.className = "buttonload success";                        
                     }
+
+                    this1.innerHTML = '<i class="fa fa-refresh"></i> Рекомендации';
+                    this1.disabled = false;
                 }
 
-                var reqUrl = "/recommendation/user/" + idValue + "?recommendations=70&genre=1";
+                var reqUrl = useLogin?"/recommendation?login=" + idValue + "&recommendations=" + recCount:"/recommendation/user/" + idValue + "?recommendations=" + recCount;
                 console.log("req url " + reqUrl);
                 xhr.open("GET", reqUrl, true);
                 xhr.setRequestHeader("Content-type", "application/json");

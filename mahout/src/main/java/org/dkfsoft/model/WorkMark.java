@@ -12,4 +12,5 @@ public class WorkMark {
     private String description;
     private Integer year;
     private String authors;
+    private String mainGenre;
 }

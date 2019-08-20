@@ -69,7 +69,7 @@ public class FLMahout {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .client(new OkHttpClient.Builder()
-                        .addInterceptor(new HttpLoggingInterceptor().setLevel(BODY))
+                        .addInterceptor(new HttpLoggingInterceptor().setLevel(NONE))
                         .connectionPool(new ConnectionPool(0,10,TimeUnit.SECONDS)).build())
                         .build().create(FantlabApiClient.class);
 

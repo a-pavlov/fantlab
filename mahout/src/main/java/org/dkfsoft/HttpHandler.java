@@ -46,7 +46,7 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
     public static Pattern USER_PATTERN = Pattern.compile("(^\\/recommendation\\/user\\/)([0-9]+$)");
     public static Pattern LOGIN_PATTERN = Pattern.compile("^\\/recommendation\\/{0,1}$");
 
-    private static final int DEFAULT_NEIGHBORS = 100;
+    private static final int DEFAULT_NEIGHBORS = 200;
     private static final int DEFAULT_RECOMMENDATIONS = 100;
     private static final int DEFAULT_GENRE = 0;
 
@@ -102,16 +102,25 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                         throw new FLException(NOT_FOUND, "Incorrect path");
                     }
 
-                    long userId = 0;
+                    long userId;
 
                     if (userMatch) {
-                        userId = Long.parseLong(userMatcher.group(2));
+                        try {
+                            userId = Long.parseLong(userMatcher.group(2));
+                        } catch (NumberFormatException e) {
+                            // never happened due to pattern
+                            throw new FLException(BAD_REQUEST, "ID is not a number: " + userMatcher.group(2));
+                        }
                     } else {
                         if (queryStringDecoder.parameters() == null || !queryStringDecoder.parameters().containsKey(LOGIN) || queryStringDecoder.parameters().get(LOGIN).isEmpty()) {
                             throw new FLException(BAD_REQUEST, "Missed or empty login query parameter");
                         }
                         // add request user id here
                         userId = fantlabService.getUserIdByLogin(queryStringDecoder.parameters().get(LOGIN).get(0)).getUser_id();
+
+                        if (userId == 0) {
+                            throw new FLException(NOT_FOUND, "User with specified login: " + queryStringDecoder.parameters().get(LOGIN).get(0) + " not found");
+                        }
                     }
 
                     final int neighbors = getIntParam("neighbors", queryStringDecoder, DEFAULT_NEIGHBORS, 1, 500);
@@ -127,7 +136,9 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                             , x.getWork_name()
                             , x.getWork_description()
                             , x.getWork_year()
-                            , x.getAuthors().stream().map(a -> a.getName()).collect(Collectors.joining(", ")))).collect(Collectors.toList()));
+                            , x.getAuthors().stream().map(a -> a.getName()).collect(Collectors.joining(", "))
+                            , x.getMainGenre()))
+                            .collect(Collectors.toList()));
                     try {
                         content = objectMapper.writeValueAsString(workMarkResponse);
                     } catch (JsonProcessingException e) {

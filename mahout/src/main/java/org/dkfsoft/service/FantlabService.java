@@ -56,7 +56,7 @@ public class FantlabService {
     }
 
     public UserId getUserIdByLogin(final String login) {
-        return fantlabApiClient.getUserByLogin("userlogin", "inkpot")
+        return fantlabApiClient.getUserByLogin("userlogin", login)
                 //.retryWhen(errors -> errors.flatMap(error -> Observable.just(null)))
                 .toBlocking().first().body();
     }
