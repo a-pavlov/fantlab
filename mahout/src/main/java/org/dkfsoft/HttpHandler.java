@@ -123,7 +123,11 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                     Map<Long, Float> recommendDict = recommends.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
                     List<Work> works = fantlabService.getWorkDetails(recommends.stream().map(x -> x.getItemID()).collect(Collectors.toList()));
 
-                    WorkMarkResponse workMarkResponse = new WorkMarkResponse(userId, works.stream().filter(x -> x.isGenre(genre)).map(x -> new WorkMark(x.getWork_id(), recommendDict.get(x.getWork_id()), x.getWork_name(), x.getWork_description())).collect(Collectors.toList()));
+                    WorkMarkResponse workMarkResponse = new WorkMarkResponse(userId, works.stream().filter(x -> x.isGenre(genre)).map(x -> new WorkMark(x.getWork_id(), recommendDict.get(x.getWork_id())
+                            , x.getWork_name()
+                            , x.getWork_description()
+                            , x.getWork_year()
+                            , x.getAuthors().stream().map(a -> a.getName()).collect(Collectors.joining(", ")))).collect(Collectors.toList()));
                     try {
                         content = objectMapper.writeValueAsString(workMarkResponse);
                     } catch (JsonProcessingException e) {

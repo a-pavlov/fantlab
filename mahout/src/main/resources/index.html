@@ -56,6 +56,8 @@
             <th nowrap>Оценка</th>
             <th nowrap>Название</th>
             <th>Описание</th>
+            <th>Год</th>
+            <th>Авторы</th>
         </tr>
         </thead>
         <tbody>
@@ -96,12 +98,16 @@
                             var cellMark = row.insertCell(0);
                             var cellName = row.insertCell(1);
                             var cellDescr = row.insertCell(2);
+                            var cellYear = row.insertCell(3);
+                            var cellAuthors = row.insertCell(4);
 
                             //console.log("add" + jsonBody.workMarks[i].mark + ": " + jsonBody.workMarks[i].name);
 
                             cellMark.innerHTML = jsonBody.workMarks[i].mark;
                             cellName.innerHTML = "<a href=https://fantlab.ru/work" + jsonBody.workMarks[i].workId + ">" + jsonBody.workMarks[i].name + "</a>";
                             cellDescr.innerHTML = jsonBody.workMarks[i].description;
+                            cellYear.innerHTML = jsonBody.workMarks[i].year;
+                            cellAuthors.innerHTML = jsonBody.workMarks[i].authors;
                         }
 
                         tableBodyOld.parentNode.replaceChild(tableBodyNew, tableBodyOld);

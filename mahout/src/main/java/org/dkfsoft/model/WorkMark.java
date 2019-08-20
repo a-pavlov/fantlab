@@ -10,4 +10,6 @@ public class WorkMark {
     private Float mark;
     private String name;
     private String description;
+    private Integer year;
+    private String authors;
 }

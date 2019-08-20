@@ -118,7 +118,7 @@ public class ServerLauncher extends Thread {
         final SslContext sslCtx;
 
         if (true) {
-            SelfSignedCertificate ssc = new SelfSignedCertificate();
+            SelfSignedCertificate ssc = new SelfS  SelfS  zignedCertificate();
             sslCtx = SslContext.newServerContext(ssc.certificate(), ssc.privateKey());
         } else {
             sslCtx = null;
