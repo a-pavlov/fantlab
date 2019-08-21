@@ -81,7 +81,7 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                 HttpRequest request = (HttpRequest) msg;
 
                 QueryStringDecoder queryStringDecoder = new QueryStringDecoder(request.uri());
-                log.info("http request {}", request.toString());
+                log.info("http request: {} {}", request.method(), request.uri());
 
                 final String path = queryStringDecoder.path();
 
@@ -166,6 +166,9 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                     ctx.write(fullHttpResponse);
                 }
             } catch (FLException e) {
+                log.error("request processing error code {} details {}"
+                        , e.getStatus()
+                        , e.getMessage());
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, e.getStatus()
                         , Unpooled.copiedBuffer("{\"status\": \"fail\", \"message\": \"" + e.getMessage() + "\"}", StandardCharsets.UTF_8));
                 response.headers().set(CONTENT_TYPE, "application/json");

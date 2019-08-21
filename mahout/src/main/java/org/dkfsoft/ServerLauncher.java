@@ -68,13 +68,14 @@ public class ServerLauncher extends Thread {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             if (sslContext != null) ch.pipeline().addLast(sslContext.newHandler(ch.alloc()));
                             ch.pipeline()
                                     .addLast("HttpServerCodec", new HttpServerCodec())
                                     .addLast("HttpObjectAggregator", new HttpObjectAggregator(10 * 1024 * 1024))
+                                    //.addLast(new LoggingHandler(LogLevel.INFO))
                                     .addLast("HttpChunkedWrite", new ChunkedWriteHandler())
                                     .addLast("HelloHttpHandler", new HttpHandler(dataModel, objectMapper, fantlabService));
                         }
