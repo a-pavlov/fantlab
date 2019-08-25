@@ -11,8 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
+import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
-import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
+import org.apache.mahout.cf.taste.impl.similarity.*;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
@@ -23,9 +24,7 @@ import org.dkfsoft.model.WorkMarkResponse;
 import org.dkfsoft.service.FantlabService;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
     public static Pattern USER_PATTERN = Pattern.compile("(^\\/recommendation\\/user\\/)([0-9]+$)");
     public static Pattern LOGIN_PATTERN = Pattern.compile("^\\/recommendation\\/{0,1}$");
 
-    private static final int DEFAULT_NEIGHBORS = 200;
+    private static final int DEFAULT_NEIGHBORS = 20;
     private static final int DEFAULT_RECOMMENDATIONS = 100;
     private static final int DEFAULT_GENRE = 0;
 
@@ -127,16 +126,29 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                     final int recommendations = getIntParam("recommendations", queryStringDecoder, DEFAULT_RECOMMENDATIONS, 1, 200);
                     final int genre = getIntParam("genre", queryStringDecoder, DEFAULT_GENRE, 0, 20);
 
-                    List<RecommendedItem> recommends = getWorkMarks(userId, neighbors, recommendations);
+                    log.info("[rec] start recommendations");
+                    List<RecommendedItem> recommendsLL = getWorkMarks(userId, neighbors, recommendations, new LogLikelihoodSimilarity(dataModel));
+                    log.info("[rec] calculation LogLikelihoodSimilarity done");
+                    List<RecommendedItem> recommendsCityBlock = getWorkMarks(userId, neighbors, recommendations, new CityBlockSimilarity(dataModel));
+                    log.info("[rec] calculation CityBlockSimilarity done");
 
-                    Map<Long, Float> recommendDict = recommends.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
-                    List<Work> works = fantlabService.getWorkDetails(recommends.stream().map(x -> x.getItemID()).collect(Collectors.toList()));
+                    Set<Long> distinct = new LinkedHashSet<>();
+                    distinct.addAll(recommendsLL.stream().map(x -> x.getItemID()).collect(Collectors.toList()));
+                    distinct.addAll(recommendsCityBlock.stream().map(x -> x.getItemID()).collect(Collectors.toList()));
+                    log.info("total distict works: {}", distinct.size());
+                    List<Work> works = fantlabService.getWorkDetails(distinct.stream().collect(Collectors.toList()));
 
-                    WorkMarkResponse workMarkResponse = new WorkMarkResponse(userId, works.stream().filter(x -> x.isGenre(genre)).map(x -> new WorkMark(x.getWork_id(), recommendDict.get(x.getWork_id())
+                    Map<Long, Float> recommendDictLL = recommendsLL.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
+                    Map<Long, Float> recommendDictCB = recommendsCityBlock.stream().collect(Collectors.toMap(RecommendedItem::getItemID, RecommendedItem::getValue));
+
+                    WorkMarkResponse workMarkResponse = new WorkMarkResponse(userId
+                            , works.stream().filter(x -> x.isGenre(genre)).map(x -> new WorkMark(x.getWork_id()
+                            , recommendDictLL.containsKey(x.getWork_id())?recommendDictLL.get(x.getWork_id()):0.0f
+                            , recommendDictCB.containsKey(x.getWork_id())?recommendDictCB.get(x.getWork_id()):0.0f
                             , x.getWork_name()
                             , x.getWork_description()
                             , x.getWork_year()
-                            , x.getAuthors().stream().map(a -> a.getName()).collect(Collectors.joining(", "))
+                            , x.getAuthors().stream().map(a -> a.getName()).collect(Collectors.joining(", ")).toString()
                             , x.getMainGenre()))
                             .collect(Collectors.toList()));
                     try {
@@ -192,10 +204,21 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
         ctx.writeAndFlush(new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR));
     }
 
-    private List<RecommendedItem> getWorkMarks(long userId, int nearestNeighbors, int recommendsCount) throws FLException {
+    private List<RecommendedItem> getWorkMarks(long userId, int nearestNeighbors, int recommendsCount, UserSimilarity userSimilarity) throws FLException {
         try {
-            UserSimilarity userSimilarity = new PearsonCorrelationSimilarity(dataModel);
-            UserNeighborhood neighborhood = new NearestNUserNeighborhood(nearestNeighbors, userSimilarity, dataModel);
+            //UserSimilarity userSimilarity = new LogLikelihoodSimilarity(dataModel);
+            //UserSimilarity userSimilarity = new CityBlockSimilarity(dataModel);
+            //UserSimilarity userSimilarity = new SpearmanCorrelationSimilarity(dataModel);
+            //UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.5, userSimilarity, dataModel);
+            log.info("[rec] start neighborhood");
+            UserNeighborhood neighborhood = new NearestNUserNeighborhood(50, userSimilarity, dataModel);
+            log.info("[rec] finish neighborhood");
+            //long neighbors[] = neighborhood.getUserNeighborhood(userId);
+            //log.info("total sim {}", neighbors.length);
+            //for(int i = 0; i< neighbors.length; ++i) {
+            //    log.info("{} sim: {}", neighbors[i], userSimilarity.userSimilarity(neighbors[i], userId));
+            //}
+
             Recommender recommender = new GenericUserBasedRecommender(dataModel, neighborhood, userSimilarity);
             return recommender.recommend(userId, recommendsCount);
         } catch (TasteException e) {

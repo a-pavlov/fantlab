@@ -54,7 +54,8 @@
     <table border="1" id="recTbl">
         <thead>
         <tr>
-            <th nowrap>Оценка</th>
+            <th nowrap>Оценка LL</th>
+            <th nowrap>Оценка CB</th>
             <th nowrap>Название</th>
             <th>Описание</th>
             <th>Жанр</th>
@@ -98,14 +99,16 @@
 
                         for(i in jsonBody.workMarks) {                            
                             var row = tableBodyNew.insertRow(-1);
-                            var cellMark    = row.insertCell(0);
-                            var cellName    = row.insertCell(1);
-                            var cellDescr   = row.insertCell(2);
-                            var cellGenre   = row.insertCell(3);
-                            var cellYear    = row.insertCell(4);
-                            var cellAuthors = row.insertCell(5);
+                            var cellMarkLL  = row.insertCell(0);
+                            var cellMarkCB  = row.insertCell(1);
+                            var cellName    = row.insertCell(2);
+                            var cellDescr   = row.insertCell(3);
+                            var cellGenre   = row.insertCell(4);
+                            var cellYear    = row.insertCell(5);
+                            var cellAuthors = row.insertCell(6);
 
-                            cellMark.innerHTML      = jsonBody.workMarks[i].mark;
+                            cellMarkLL.innerHTML    = jsonBody.workMarks[i].markLL;
+                            cellMarkCB.innerHTML    = jsonBody.workMarks[i].markCB;
                             cellName.innerHTML      = "<a href=https://fantlab.ru/work" + jsonBody.workMarks[i].workId + ">" + jsonBody.workMarks[i].name + "</a>";
                             cellDescr.innerHTML     = jsonBody.workMarks[i].description;
                             cellGenre.innerHTML     = jsonBody.workMarks[i].mainGenre;

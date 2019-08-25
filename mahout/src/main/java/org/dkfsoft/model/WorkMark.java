@@ -7,10 +7,12 @@ import lombok.Data;
 @AllArgsConstructor
 public class WorkMark {
     private Long workId;
-    private Float mark;
+    private Float markLL;
+    private Float markCB;
     private String name;
     private String description;
     private Integer year;
     private String authors;
     private String mainGenre;
+
 }
