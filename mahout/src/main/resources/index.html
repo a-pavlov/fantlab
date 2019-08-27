@@ -47,6 +47,7 @@
 <body>
     Пользователь: <input type="text" id="idValue" placeholder="логин или идентификатор">
     Количество рекомендаций: <input type="number" name="quantity" min="1" max="200" value="50" id="recCount">
+    Единомышленников <input type="number" name="neighbors" min="1" max="200" value="50" id="neighborsCount">
     <input type="checkbox" id="useLogin" checked> Искать по логину
     <button class="buttonload" onclick="startRec(this);">
         <i class="fa fa-refresh"></i>Рекомендации
@@ -72,6 +73,7 @@
             var useLogin    = document.getElementById("useLogin").checked;
             var idValue     = document.getElementById("idValue").value;
             var recCount    = document.getElementById("recCount").value;
+            var neighborsCount = document.getElementById("neighborsCount").value;
 
             console.log("checkbox " + useLogin + " text: " + idValue + "|");
 
@@ -124,7 +126,7 @@
                     this1.disabled = false;
                 }
 
-                var reqUrl = useLogin?"/recommendation?login=" + idValue + "&recommendations=" + recCount:"/recommendation/user/" + idValue + "?recommendations=" + recCount;
+                var reqUrl = useLogin?"/recommendation?login=" + idValue + "&recommendations=" + recCount + "&neighbors=" + neighborsCount:"/recommendation/user/" + idValue + "?recommendations=" + recCount + "&neighbors=" + neighborsCount;
                 console.log("req url " + reqUrl);
                 xhr.open("GET", reqUrl, true);
                 xhr.setRequestHeader("Content-type", "application/json");

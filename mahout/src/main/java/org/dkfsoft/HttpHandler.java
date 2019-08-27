@@ -52,11 +52,16 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
     private final FileDataModel dataModel;
     private final ObjectMapper objectMapper;
     private final FantlabService fantlabService;
+    private final List<String> similarityModels;
 
-    public HttpHandler(final FileDataModel dataModel, final ObjectMapper objectMapper, final FantlabService fantlabService) {
+    public HttpHandler(final FileDataModel dataModel
+            , final ObjectMapper objectMapper
+            , final FantlabService fantlabService
+            , final List<String> similarityModels) {
         this.dataModel = dataModel;
         this.objectMapper = objectMapper;
         this.fantlabService = fantlabService;
+        this.similarityModels = similarityModels;
     }
 
     private int getIntParam(final String name, QueryStringDecoder queryStringDecoder, int defaultValue, int minValue, int maxValue) throws FLException {
@@ -126,10 +131,10 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
                     final int recommendations = getIntParam("recommendations", queryStringDecoder, DEFAULT_RECOMMENDATIONS, 1, 200);
                     final int genre = getIntParam("genre", queryStringDecoder, DEFAULT_GENRE, 0, 20);
 
-                    log.info("[rec] start recommendations");
-                    List<RecommendedItem> recommendsLL = getWorkMarks(userId, neighbors, recommendations, new LogLikelihoodSimilarity(dataModel));
+                    log.info("[rec] start recommendations neighbors {} recommendations {}", neighbors, recommendations);
+                    List<RecommendedItem> recommendsLL = similarityModels.contains("LogLikelihood")?getWorkMarks(userId, neighbors, recommendations, new LogLikelihoodSimilarity(dataModel)):Collections.emptyList();
                     log.info("[rec] calculation LogLikelihoodSimilarity done");
-                    List<RecommendedItem> recommendsCityBlock = getWorkMarks(userId, neighbors, recommendations, new CityBlockSimilarity(dataModel));
+                    List<RecommendedItem> recommendsCityBlock = similarityModels.contains("CityBlock")?getWorkMarks(userId, neighbors, recommendations, new CityBlockSimilarity(dataModel)):Collections.emptyList();
                     log.info("[rec] calculation CityBlockSimilarity done");
 
                     Set<Long> distinct = new LinkedHashSet<>();
@@ -211,7 +216,7 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
             //UserSimilarity userSimilarity = new SpearmanCorrelationSimilarity(dataModel);
             //UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.5, userSimilarity, dataModel);
             log.info("[rec] start neighborhood");
-            UserNeighborhood neighborhood = new NearestNUserNeighborhood(50, userSimilarity, dataModel);
+            UserNeighborhood neighborhood = new NearestNUserNeighborhood(20, userSimilarity, dataModel);
             log.info("[rec] finish neighborhood");
             //long neighbors[] = neighborhood.getUserNeighborhood(userId);
             //log.info("total sim {}", neighbors.length);

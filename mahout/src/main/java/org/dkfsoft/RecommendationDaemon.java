@@ -13,6 +13,9 @@ import org.apache.commons.daemon.DaemonInitException;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,6 +50,12 @@ public class RecommendationDaemon implements Daemon {
                 .withArgName("SSL")
                 .create());
 
+        options.addOption(OptionBuilder.withLongOpt("simm")
+                .withDescription("Similarity methods: LogLikelihood and(or) CityBlock separated by spaces")
+                .hasArg()
+                .withArgName("SIMM")
+                .create());
+
         CommandLine line = new PosixParser().parse(options, daemonContext.getArguments());
 
         if (line.hasOption("h")) {
@@ -57,6 +66,10 @@ public class RecommendationDaemon implements Daemon {
 
         if (!line.hasOption("filename")) throw new Exception("filename option required");
 
+        List<String> simMethods = line.hasOption("simm")? Arrays.asList(line.getOptionValue("simm").split("\\s+")): Collections.emptyList();
+        if (simMethods.isEmpty()) {
+            throw new Exception("similarity methods missed");
+        }
 
         executorService = Executors.newFixedThreadPool(10);
 
@@ -75,8 +88,10 @@ public class RecommendationDaemon implements Daemon {
             sslContext = null;
         }
 
-        serverLauncher = new ServerLauncher(objectMapper, executorService, dataModel, sslContext
-                , line.hasOption("port")?Integer.parseInt(line.getOptionValue("port")):(line.hasOption("ssl")?8443:8080));
+        serverLauncher = new ServerLauncher(objectMapper
+                , executorService, dataModel, sslContext
+                , line.hasOption("port")?Integer.parseInt(line.getOptionValue("port")):(line.hasOption("ssl")?8443:8080)
+                , simMethods);
     }
 
     @Override

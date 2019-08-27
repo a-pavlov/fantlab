@@ -32,6 +32,7 @@ import org.dkfsoft.model.WorkMark;
 import org.dkfsoft.service.FantlabService;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -48,17 +49,20 @@ public class ServerLauncher extends Thread {
     private final ObjectMapper objectMapper;
     private final FantlabService fantlabService;
     private ChannelFuture channelFuture;
+    private List<String> similarityMethods;
 
     public ServerLauncher(final ObjectMapper objectMapper
             , ExecutorService executorService
             , final FileDataModel dataModel
             , final SslContext sslContext
-            , int port) {
+            , int port
+            , List<String> similarityMethods) {
         this.dataModel = dataModel;
         this.sslContext = sslContext;
         this.port = port;
         this.objectMapper = objectMapper;
         this.fantlabService = new FantlabService(objectMapper, executorService);
+        this.similarityMethods = similarityMethods;
     }
 
     @Override
@@ -77,7 +81,7 @@ public class ServerLauncher extends Thread {
                                     .addLast("HttpObjectAggregator", new HttpObjectAggregator(10 * 1024 * 1024))
                                     //.addLast(new LoggingHandler(LogLevel.INFO))
                                     .addLast("HttpChunkedWrite", new ChunkedWriteHandler())
-                                    .addLast("HelloHttpHandler", new HttpHandler(dataModel, objectMapper, fantlabService));
+                                    .addLast("HelloHttpHandler", new HttpHandler(dataModel, objectMapper, fantlabService, similarityMethods));
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -111,7 +115,7 @@ public class ServerLauncher extends Thread {
         objectMapper.setSerializationInclusion(NON_NULL);
 
         FileDataModel dataModel = new FileDataModel(new File(args[0]));
-        ServerLauncher serverLauncher = new ServerLauncher(objectMapper, executorService, dataModel, null, 8090);
+        ServerLauncher serverLauncher = new ServerLauncher(objectMapper, executorService, dataModel, null, 8090, Arrays.asList(new String[] {"LogLikelihood", "CityBlock"}));
         serverLauncher.start();
         serverLauncher.join();
 
