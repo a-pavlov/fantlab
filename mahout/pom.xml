@@ -11,7 +11,7 @@
     <properties>
         <retrofit.version>2.5.0</retrofit.version>
         <okhttp3.version>3.12.0</okhttp3.version>
-        <jackson.version>2.9.10.8</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
         <lombok.version>1.16.10</lombok.version>
     </properties>
 
